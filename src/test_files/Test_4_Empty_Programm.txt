@@ -1,0 +1,4 @@
+main
+    if result > 100 then
+	end if;
+end main;

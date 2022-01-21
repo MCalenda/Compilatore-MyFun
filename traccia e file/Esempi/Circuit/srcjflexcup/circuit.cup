@@ -1,0 +1,39 @@
+// CS2A Language Processing
+//
+// Description of parser for circuit description language.
+// See Lecture Note 12 for further explanation.
+//
+// This implements the following grammar
+//
+// Circuit -> SEQ Series END | PAR Parallel END | RESISTOR
+//
+// Series -> Circuit Series | empty
+// Parallel -> Circuit Parallel | empty
+//
+// The nonterminals Series and Parallel are distinguished so that we can
+// give them different semantic actions, each calculating resistance in an
+// appropriate manner.
+//
+// Ian Stark
+// Declare terminals and nonterminals in the grammar
+terminal SEQ, PAR, END;
+terminal String RESISTOR;
+nonterminal Double Circuit, Series, Parallel;
+// The value associated to a Circuit and a Series block is the resistance; for
+// a Parallel block it is the conductance.
+// Now the grammar itself
+Circuit ::=
+SEQ Series:s END {: RESULT = s; :}
+| PAR Parallel:p END {: RESULT = new Double(1/p.doubleValue()); :}
+| RESISTOR:r {: RESULT = new Double(r); :}
+;
+Series ::=
+Circuit:c Series:s
+{: RESULT = new Double(c.doubleValue()+s.doubleValue()); :}
+| /* empty */ {: RESULT = 0.0; :}
+;
+Parallel ::=
+Circuit:c Parallel:p
+{: RESULT = new Double(1/c.doubleValue()+p.doubleValue()); :}
+| /* empty */ {: RESULT = 0.0; :}
+;

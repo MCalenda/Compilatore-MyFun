@@ -1,0 +1,18 @@
+if then
+else while integer
+
+id_ciao = 2.4;
+id_arrivederci = 5
+id_stringa = 'ciao come stai ? \t'
+id_stringa_complex = 'Questa
+è
+una
+id_stringa'
+
+#* 
+Questo è un commento a blocco 
+#
+
+# Questo è un commento a riga di tipo I
+
+// Questo è un commento a riga di tipo II

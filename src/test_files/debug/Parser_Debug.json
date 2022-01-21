@@ -1,0 +1,48 @@
+{
+    "name": "ProgramNode",
+    "varDecList": [],
+    "funList": [],
+    "main": {
+        "name": "MainNode",
+        "varDeclList": [],
+        "StatList": [
+            {
+                "name": "StatNode",
+                "ifStatNode": {
+                    "name": "IfStatNode",
+                    "expr": {
+                        "name": "ExprNode",
+                        "op": "GT",
+                        "val_One": {
+                            "name": "ExprNode",
+                            "op": "ID",
+                            "val_One": {
+                                "name": "LeafID",
+                                "value": "result"
+                            },
+                            "val_Two": null
+                        },
+                        "val_Two": {
+                            "name": "ExprNode",
+                            "op": "INTEGER_CONST",
+                            "val_One": {
+                                "name": "LeafIntegerConst",
+                                "value": 100
+                            },
+                            "val_Two": null
+                        }
+                    },
+                    "varDeclList": [],
+                    "statList": [],
+                    "elseNode": null
+                },
+                "whileStatNode": null,
+                "readStatNode": null,
+                "writeStatNode": null,
+                "assignStatNode": null,
+                "callFunNode": null,
+                "expr": null
+            }
+        ]
+    }
+}
