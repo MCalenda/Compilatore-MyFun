@@ -1,0 +1,83 @@
+/*
+ *  Test per analisi semantica
+ */
+
+int x, y := 3 + 3;
+float p;
+string d := "asd";
+bool a;
+
+proc gigiox() bool:
+    -> true
+corp;
+
+proc funzione(int x, y; string op) bool, float:
+    int result := 0;
+
+    if op = "+" then
+        result := x + y;
+    else
+        result := x - y;
+    fi;
+
+    -> true, result
+corp;
+
+proc niam() void:
+    string polla;
+    bool we,po,na := false;
+    string lel := "asd";
+
+    if !we then
+        we:= true;
+    fi;
+
+    polla, we := "abcdefg", true;
+    write(polla,"\n");
+
+    if !we && !po && polla="provaaaaa" then
+        while polla >= "121212" do
+            polla:= "9895451";
+            write("Sono dentro ad un while",polla);
+            readln(lel,we);
+            od;
+    elif null then
+        we:=po;
+    else
+        while polla = "test" do
+            write(na,"aaaaaaa");
+            /* readln non può prendere costanti in input. */
+            /* readln("asd"); */
+            readln (po,na);
+            write(po, na, we);
+        od;
+    fi;
+
+    ->
+corp;
+
+proc main() int:
+    bool boolean;
+    float y;
+    int a := 12;
+    int l := 3;
+    string x := "asd";
+
+    a := 13;
+    niam();
+    boolean,y:=funzione(a,l,x);
+
+    if true then
+        while false do
+            readln (l,p);
+            write(x);
+        od;
+
+    /*
+     * test2.toy.
+     */
+    else gigiox();
+    fi;
+
+    -> 0
+corp;

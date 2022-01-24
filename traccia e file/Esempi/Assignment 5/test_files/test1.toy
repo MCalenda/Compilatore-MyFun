@@ -1,0 +1,71 @@
+proc add(int op1,op2) int:
+    -> op1 + op2
+corp;
+
+proc sub(int op1,op2) int:
+    int result := 0;
+
+    if op1 > op2 then
+        result := op1 - op2;
+    else
+        result := op2 - op2;
+    fi;
+
+    ->result
+corp;
+
+proc mult(int op1,op2) int:
+    -> op1 * op2
+corp;
+
+proc divi(int op1,op2)int:
+    int result := 0;
+
+    if op1 > op2 then
+        result := op1 / op2;
+    else
+        result := op2 / op1;
+    fi;
+
+    -> result
+corp;
+
+proc main()int:
+    int op1 := 3;
+    int op2 := 3;
+    int x := 1;
+    int result := sub(op1,op2);
+    string a := "asd";
+    string y:="aaa", z:="bbb";
+    if y>=z then
+        write("x maggiore di y\n");
+    elif y<z then
+        write("x minore di y\n");
+    fi;
+    while x = 1 do
+        write("Inserisci l'operazione che vuoi svolgere: ");
+        readln(a);
+        write("\nInserisci il primo operando: ");
+        readln(op1);
+        write("\nInserisci il secondo operando: ");
+        readln(op2);
+
+        if a = "+" then
+                result := add(op1,op2);
+        elif a = "-" then
+            result := sub(op1,op2);
+        elif a = "*" then
+            result := mult(op1,op2);
+        elif a = "/" then
+            result := divi(op1,op2);
+        else
+            write("Input errato!\n");
+        fi;
+
+        write("\nIl risultato è ", result, ".\n");
+        write("Inserisci 1 per continuare o 0 per terminare l'esecuzione: ");
+        readln(x);
+    od;
+
+    -> 0
+corp;

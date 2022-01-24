@@ -61,8 +61,6 @@ Comment_Line_Start_II = "//"
     "return"        {return symbol(sym.RETURN);}
     ","             {return symbol(sym.COMMA);}
     ";"             {return symbol(sym.SEMI);}
-    "false"         {return symbol(sym.FALSE);}
-    "true"          {return symbol(sym.TRUE);}
     "null"          {return symbol(sym.NULL);}
     "not"           {return symbol(sym.NOT);}
     "or"            {return symbol(sym.OR);}
@@ -105,6 +103,22 @@ Comment_Line_Start_II = "//"
 
     // Spazi
     {White_Space}   { }
+
+    // Booleani
+    "true" { 
+        try{ 
+            return new Symbol(sym.TRUE, Boolean.parseBoolean(yytext()));
+        } catch(Exception e) { 
+            return new Symbol(sym.error, "Boolean.parseBoolean() error!"); 
+        }
+    }
+    "false" { 
+        try{ 
+            return new Symbol(sym.FALSE, Boolean.parseBoolean(yytext()));
+        } catch(Exception e) {
+            return new Symbol(sym.error, "Boolean.parseBoolean() error!"); 
+        }
+    }
 
     // Identificatori
     {ID}            {return symbol(sym.ID, yytext()); }

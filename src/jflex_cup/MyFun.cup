@@ -1,4 +1,3 @@
-import java_cup.runtime.*;
 import java.util.ArrayList;
 
 import tree.nodes.*;
@@ -20,15 +19,15 @@ nonterminal Program, VarDecList, FunList, Main, VarDecl, Type, IdListInit, IdLis
     WhileStat, ReadStat, WriteStat, AssignStat, Else;
 
 // PRECEDENCES
-precedence left LPAR, RPAR;
-precedence right POW;
-precedence left TIMES, DIV, DIVINT;
-precedence left PLUS, MINUS;
-precedence left STR_CONCAT;
-precedence nonassoc EQ, NE, LT, LE, GT, GE;
-precedence right NOT;
-precedence left AND;
 precedence left OR;
+precedence left AND;
+precedence right NOT;
+precedence nonassoc EQ, NE, LT, LE, GT, GE;
+precedence left STR_CONCAT;
+precedence left PLUS, MINUS;
+precedence left TIMES, DIV, DIVINT;
+precedence right POW;
+precedence left LPAR, RPAR;
 
 
 // Production
@@ -120,7 +119,7 @@ Stat ::= IfStat:ifStat SEMI                                                     
     | WriteStat:writeStat SEMI                                                              {: RESULT = new StatNode((WriteStatNode) writeStat); :}
     | AssignStat:assignStat SEMI                                                            {: RESULT = new StatNode((AssignStatNode) assignStat); :}
     | CallFun:callFun SEMI                                                                  {: RESULT = new StatNode((CallFunNode) callFun); :}
-    | RETURN Expr:expr SEMI                                                                 {: RESULT = new StatNode((ExprNode) expr); :}
+    | RETURN Expr:expr SEMI                                                                 {: RESULT = new StatNode(new ReturnNode((ExprNode) expr)); :}
 ;
 
 // TESTED ✅
@@ -158,9 +157,8 @@ WhileStat ::= WHILE Expr:expr LOOP VarDecList:varDecList StatList:statList END L
 ;
 
 // TESTED ✅
-// TRUE E FALSE NON PASSANO IL VALORE NEL JSON
-Expr ::= TRUE:val                                                               {: RESULT = new ExprNode("TRUE", new LeafBool(val)); :}
-    | FALSE:val                                                                 {: RESULT = new ExprNode("FALSE", new LeafBool(val)); :}
+Expr ::= TRUE:val                                                               {: RESULT = new ExprNode("BOOL_CONST", new LeafBool(val)); :}
+    | FALSE:val                                                                 {: RESULT = new ExprNode("BOOL_CONST", new LeafBool(val)); :}
     | INTEGER_CONST:val                                                         {: RESULT = new ExprNode("INTEGER_CONST", new LeafIntegerConst(val)); :}
     | REAL_CONST:val                                                            {: RESULT = new ExprNode("REAL_CONST", new LeafRealConst(val)); :}
     | STRING_CONST:val                                                          {: RESULT = new ExprNode("STRING_CONST", new LeafStringConst(val)); :}                                                

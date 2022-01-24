@@ -2,14 +2,26 @@ package tree.nodes;
 
 import java.util.ArrayList;
 
-public class MainNode {
+import javax.swing.tree.DefaultMutableTreeNode;
+
+import visitor.Syntax_Visitable;
+import visitor.Syntax_Int_Visitor;
+
+public class MainNode extends DefaultMutableTreeNode implements Syntax_Visitable {
     public String name = "MainNode";
     public ArrayList<VarDeclNode> varDeclList;
-    public ArrayList<StatNode> StatList;
+    public ArrayList<StatNode> statList;
 
 
-    public MainNode(ArrayList<VarDeclNode> varDeclList, ArrayList<StatNode> StatList) {
+    public MainNode(ArrayList<VarDeclNode> varDeclList, ArrayList<StatNode> statList) {
+        super("MainNode");
         this.varDeclList = varDeclList;
-        this.StatList = StatList;
+        this.statList = statList;
+    }
+
+
+    @Override
+    public DefaultMutableTreeNode accept(Syntax_Int_Visitor v) {
+        return v.visit(this);
     }
 }

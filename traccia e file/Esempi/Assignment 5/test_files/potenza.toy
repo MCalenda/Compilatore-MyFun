@@ -1,0 +1,21 @@
+proc exp(int x, y) int:
+    int z := 1;
+    int i := 1;
+
+    while i <= y do
+        z := z * x;
+        i := i + 1;
+    od;
+
+    -> z
+corp;
+
+proc main(int number1, number2)int:
+    int x, y, z;
+    x, y := number1, number2;
+
+    z := exp(x, y);
+    write(x, " ** ", y, " = " , z);
+
+    -> 0
+corp;

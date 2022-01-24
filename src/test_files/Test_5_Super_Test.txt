@@ -1,0 +1,69 @@
+integer x,y := 2,z;
+integer x,y := 2 + 8 - 10,z;
+integer x := 5 + 2 + 10 - 45;
+
+integer x;
+real x;
+string x;
+bool x;
+
+integer x := 5;
+real x := 2.2;
+string x := 'ciaone';
+bool x := false;
+
+var x := 2, y := 2.2, z := 'string';
+
+var x := true;
+var x := false;
+var x := 5;
+var x := 2.2;
+var x := 'ciaone';
+
+# Funzione per la moltiplicazione
+fun mol(integer a, real b, out bool b): real
+    return 5;
+end fun;
+
+fun mol_one(integer a, real b, out bool b)
+    return x;
+    return x + 5 - 12;
+end fun;
+
+fun mol_two()
+    return 'ciaone';
+end fun;
+
+main
+    real x := mol(a, b, b);
+    real x := mol(a, b + 2 + 8, b);
+    real x := mol_two();
+
+    mol(a, b, b);
+    mol(a, b + 2 + 8, @b);
+    mol_two();
+
+    if ((ans <> 1) or (ans != 1) and (ans < 1) or (ans <= 1) or (ans > 1) or not(ans >= 1)) then
+    end if;
+
+    if result > 100 then
+	else 	
+	end if;
+
+    while not(ans = 'si') loop
+	end loop;
+
+    % x;
+    % x , z, f;
+    % x 'questa è una read' & 'ciao';
+
+    ? 'ciao';
+    ?. 'ciao';
+    ?, 'ciao';
+    ?: 'ciao';
+
+    x := b;
+    x := b + 5 ^ 2;
+
+    x := (-((5 div 2) / 2.2 + 5 * 4 - (2 + 7)));
+end main;

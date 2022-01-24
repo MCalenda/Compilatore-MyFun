@@ -1,0 +1,30 @@
+proc dividi(int x, y) int:
+    int z := 0;
+    int i := x;
+
+    while i >= y do
+        i := i - y;
+        z := z + 1;
+    od;
+
+    -> z
+corp;
+
+proc main(int number1, number2) int:
+    int x;
+    int y;
+    int z;
+
+    x := number1;
+    y := number2;
+
+    z := dividi(x, y);
+
+    write(x);
+    write(" / ");
+    write(y);
+    write(" = ");
+    write(z);
+
+    -> 0
+corp;

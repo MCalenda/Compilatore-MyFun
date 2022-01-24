@@ -1,0 +1,29 @@
+proc fibonacci(int n) int:
+int toReturn := 0;
+
+if n = 0 then
+    toReturn := 0;
+elif n = 1 then
+    toReturn := 1;
+else
+    toReturn := fibonacci(n-1) + fibonacci(n-2);
+fi;
+
+-> toReturn
+corp;
+
+
+proc main(int number) int:
+    int n;
+    int i := 0;
+    n := number;
+
+    while i <= n do
+        write("numero i: ", i, ". Valore fibonacci: ", fibonacci(i), "\n");
+        i := i+1;
+    od;
+
+    write("\n");
+
+    -> 0
+corp;

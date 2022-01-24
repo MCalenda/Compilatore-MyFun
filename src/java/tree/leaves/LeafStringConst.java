@@ -7,4 +7,7 @@ public class LeafStringConst {
     public LeafStringConst(String value) {
         this.value = value;
     }
+    public String toString() {
+        return value.toString();
+    }
 }

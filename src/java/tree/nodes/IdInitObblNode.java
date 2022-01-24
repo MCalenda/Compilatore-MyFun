@@ -1,14 +1,24 @@
 package tree.nodes;
 
-import tree.leaves.LeafID;
+import javax.swing.tree.DefaultMutableTreeNode;
 
-public class IdInitObblNode {
+import tree.leaves.LeafID;
+import visitor.Syntax_Visitable;
+import visitor.Syntax_Int_Visitor;
+
+public class IdInitObblNode extends DefaultMutableTreeNode implements Syntax_Visitable {
     public String name = "IdInitObblNode";
     public LeafID leafID;
-    public Object value;
+    public ConstNode value;
 
-    public IdInitObblNode(LeafID leafID, Object value) {
+    public IdInitObblNode(LeafID leafID, ConstNode value) {
+        super("IdInitObblNode");
         this.leafID = leafID;
         this.value = value;
+    }
+
+    @Override
+    public DefaultMutableTreeNode accept(Syntax_Int_Visitor v) {
+        return v.visit(this);
     }
 }

@@ -1,0 +1,98 @@
+/*
+  ES.4) scrivere un programma Toy che
+        -visualizzi un menu in cui un utente può scegliere l' operazione aritmetica da svolgere
+        -richieda all'utente gli input (interi o double) necessari per svolgere l'operazione scelta
+        -esegua l'operazione, restituisca il risultato e chieda se si vuol continuare
+  ES.5) per testare Toy2C, oltre ad utilizzare il programma sviluppato nell'esercizio 4, si sviluppi e compili
+        -anche il programma Toy che svolga (a richiesta tramite menu)
+        -la somma di due numeri
+        -la moltiplicazione di due numeri
+        -la divisione intera fra due numeri positivi
+        -l’elevamento a potenza
+        -la successione di Fibonacci
+*/
+
+proc calc(int scelta; float a,b)float:
+    float result := 0.0;
+
+    if scelta = 1 then result := a + b;
+    elif scelta = 2 then result := a - b;
+    elif scelta = 3 then result := a * b;
+    elif scelta = 4 then
+        if b <> 0 then
+            result := a / b;
+        else
+            write("Impossibile\n");
+            result := 0.0;
+        fi;
+    fi;
+
+	-> result
+corp;
+
+proc fibonacci(int n) int:
+    int toReturn := 0;
+
+    if n = 0 then
+        toReturn := 0;
+    elif n = 1 then
+        toReturn := 1;
+    else
+        toReturn := fibonacci(n-1) + fibonacci(n-2);
+    fi;
+
+    -> toReturn
+corp;
+
+proc exp(int x, y) int:
+    int z := 1;
+    int i := 1;
+
+    while i <= y do
+        z := z * x;
+        i := i + 1;
+    od;
+
+    -> z
+corp;
+
+proc main()int :
+	float a := 0.0, b := 0.0;
+	int i := 0;
+	int scelta;
+
+	while
+	    write("MENU\nSeleziona una operazione:\n");
+        write("1) Somma\n");
+        write("2) Sottrazione\n");
+        write("3) Motiplicazione\n");
+        write("4) Divisione\n");
+        write("5) Elevamento a potenza\n");
+        write("6) Successione di Fibonacci\n");
+        write("\nScelta:");
+        readln(scelta);
+	-> scelta > 0 && scelta < 7 do
+	    if scelta > 0 && scelta < 5 then
+            write("Inserire il primo argomento:\n");
+            readln(a);
+            write("Inserire il secondo argomento:\n");
+            readln(b);
+            write("Risultato: ",calc(scelta,a,b),"\n\n");
+        elif scelta = 5 then
+            write("Inserire il primo argomento:\n");
+            readln(a);
+            write("Inserire il secondo argomento:\n");
+            readln(b);
+            write("Risultato: ",exp(a,b),"\n\n");
+        elif scelta = 6 then
+            write("Inserire il numero:\n");
+            readln(a);
+            while i <= a do
+                write("numero : ", i, ". Valore fibonacci: ", fibonacci(i), "\n");
+                i := i+1;
+            od;
+            write("\n");
+        fi;
+    od;
+	-> 0
+corp;

@@ -1,0 +1,30 @@
+proc moltiplicazione(int x, y) int:
+    int z := 0;
+    int i := 1;
+
+    while i <= y do
+        z := z + x;
+        i := i + 1;
+    od;
+
+    -> z
+corp;
+
+proc main(int number1, number2) int:
+    int x;
+    int y;
+    int z;
+
+    x := number1;
+    y := number2;
+
+    z := moltiplicazione(x, y);
+
+    write(x);
+    write(" * ");
+    write(y);
+    write(" = ");
+    write(z);
+
+    -> 0
+corp;

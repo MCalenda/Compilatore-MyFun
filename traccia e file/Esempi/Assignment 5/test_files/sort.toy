@@ -1,0 +1,68 @@
+proc swap(int a,b) int, int:
+    -> b, a
+corp;
+
+proc sort(int a, b, c, d) int, int, int, int:
+    if a < b then
+        a, b := swap (a, b);
+    fi;
+
+    if b < c then
+        b, c := swap (b, c);
+    fi;
+
+    if c < d then
+        c, d := swap (c, d);
+    fi;
+
+    /* `d` corretta. */
+    if a < b then
+        a, b := swap (a, b);
+    fi;
+
+    if b < c then
+        b, c := swap (b, c);
+    fi;
+
+    if c < d then
+        c, d := swap (c, d);
+    fi;
+
+    /* 'd' e 'c' corrette. */
+    if a < b then
+        a, b := swap (a, b);
+    fi;
+
+    if b < c then
+        b, c := swap (b, c);
+    fi;
+
+    if c < d then
+        c, d := swap (c, d);
+    fi;
+
+    /* 'd', 'c' e 'b' corrette. */
+    if a < b then
+        a, b := swap (a, b);
+    fi;
+
+    if b < c then
+        b, c := swap (b, c);
+    fi;
+
+    if c < d then
+        c, d := swap (c, d);
+    fi;
+
+    /* 'd', 'c', 'b', 'a' corrette: ordinamento completato */
+    -> d, c, b, a
+corp;
+
+proc main(int a, b, c, d) int:
+    write("I numeri inseriti sono: [", a, " ", b, " ", c, " ", d, "]\n");
+    write("Comincio l'ordinamento...\n");
+    a, b, c, d := sort(a, b, c, d);
+    write("Ordinamento completato.\n");
+    write("Result: [", a, " ", b, " ", c, " ", d, "]\n");
+    -> 0
+corp;

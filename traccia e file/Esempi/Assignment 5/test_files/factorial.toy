@@ -1,0 +1,33 @@
+/*
+    Questo è un commento
+*/
+
+int n := 0;
+    
+proc factorial(int n)int:
+    int result := 0;
+    float x := 1.0;
+
+    if n = 0 then
+	    result := 1;
+	elif n = 0 then
+	    result := 3;
+    else
+	    result := n * factorial(n - 1);
+    fi;
+
+    -> result
+corp;
+
+proc main(int x; string y; float j)int:
+    write(x,"\n",y,"\n",j,"\n");
+    while
+	write("Enter n, or >= 10 to exit: ");
+	readln(n); ->
+	n < 10
+    do
+	write("Factorial of ", n, " is ", factorial(n), "\n");
+    od;
+
+    ->0
+corp;

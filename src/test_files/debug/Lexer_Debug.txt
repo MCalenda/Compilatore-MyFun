@@ -1,0 +1,21 @@
+<IF>
+<THEN>
+<ELSE>
+<WHILE>
+<INTEGER>
+<ID, id_ciao>
+<EQ>
+<REAL_CONST, 2.4>
+<SEMI>
+<ID, id_arrivederci>
+<EQ>
+<INTEGER_CONST, 5>
+<ID, id_stringa>
+<EQ>
+<STRING_CONST, ciao come stai ? \t>
+<ID, id_stringa_complex>
+<EQ>
+<STRING_CONST, Questa
+è
+una
+id_stringa>

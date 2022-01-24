@@ -2,9 +2,13 @@ package tree.nodes;
 
 import java.util.ArrayList;
 
-import tree.leaves.LeafID;
+import javax.swing.tree.DefaultMutableTreeNode;
 
-public class FunNode {
+import tree.leaves.LeafID;
+import visitor.Syntax_Visitable;
+import visitor.Syntax_Int_Visitor;
+
+public class FunNode extends DefaultMutableTreeNode implements Syntax_Visitable {
     public String name = "FunNode";
     public LeafID leafID;
     public ArrayList<ParamDecNode> paramDecList;
@@ -14,6 +18,7 @@ public class FunNode {
 
     public FunNode(LeafID leafID, ArrayList<ParamDecNode> paramDecList, TypeNode type,
             ArrayList<VarDeclNode> varDecList, ArrayList<StatNode> statList) {
+        super("FunNode");
         this.leafID = leafID;
         this.paramDecList = paramDecList;
         this.type = type;
@@ -23,9 +28,15 @@ public class FunNode {
 
     public FunNode(LeafID leafID, ArrayList<ParamDecNode> paramDecList, ArrayList<VarDeclNode> varDecList,
             ArrayList<StatNode> statList) {
+        super("FunNode");
         this.leafID = leafID;
         this.paramDecList = paramDecList;
         this.varDecList = varDecList;
         this.statList = statList;
+    }
+
+    @Override
+    public DefaultMutableTreeNode accept(Syntax_Int_Visitor v) {
+        return v.visit(this);
     }
 }

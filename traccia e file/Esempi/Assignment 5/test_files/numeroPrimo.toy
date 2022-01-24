@@ -1,0 +1,35 @@
+proc primo(int x) int:
+    int z := 1;
+    int i := 2;
+    int j;
+
+    if x=1 then
+        z:=0;
+    fi;
+
+    while i<x && z=1 do
+        j := x / i;
+        j := x - j * i;
+
+        if j = 0 then
+            z := 0;
+        else
+            i := i + 1;
+        fi;
+    od;
+
+    -> z
+corp;
+
+proc main(int number1)int:
+    int x;
+    x := number1;
+
+    if primo(x) then
+        write(x, " è un numero primo\n");
+    else
+        write(x, " non è un numero primo\n");
+    fi;
+
+    -> 0
+corp;

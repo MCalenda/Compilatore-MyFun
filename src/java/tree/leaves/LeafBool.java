@@ -6,5 +6,9 @@ public class LeafBool {
 
     public LeafBool(Boolean value) {
         this.value = value;
-    } 
+    }
+    
+    public String toString(){
+        return value.toString();
+    }
 }

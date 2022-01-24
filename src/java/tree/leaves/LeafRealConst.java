@@ -7,4 +7,8 @@ public class LeafRealConst {
     public LeafRealConst(Double value) {
         this.value = value;
     }
+
+    public String toString() {
+        return value.toString();
+    }
 }

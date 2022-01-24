@@ -1,25 +1,38 @@
-import java_cup.runtime.Symbol;
-
 import java.io.FileReader;
-import java.io.IOException;
+import java.awt.Dimension;
+import java.awt.Font;
 
-import cup.sym;
+import javax.swing.JFrame;
+import javax.swing.JTree;
+
+import cup.parser;
 import flex.Lexer;
+import tree.nodes.ProgramNode;
+import visitor.Syntax_Visitor;
 
 class Tester {
-    public static void main(String[] args) throws IOException {
-        FileReader inFile = new FileReader(args[0]);
+    public static void main(String[] args) throws Exception {
+        Lexer lexer = new Lexer(new FileReader(args[0]));
+        parser parser = new parser(lexer);
 
-        Lexer lexer = new Lexer(inFile);
+        ProgramNode root = (ProgramNode) parser.parse().value;
+        
+        Syntax_Visitor syntaxVisitor = new Syntax_Visitor();
+        syntaxVisitor.visit(root);
 
-        Symbol token = lexer.next_token();
+        JFrame frame = new JFrame("Albero Sintattico");
 
-        while (token.sym != sym.EOF) {
+        JTree tree = new JTree(root);
+        final Font currentFont = tree.getFont();
+        final Font bigFont = new Font(currentFont.getName(), currentFont.getStyle(), currentFont.getSize() + 5);
+        tree.setFont(bigFont);
+        frame.add(tree);
 
-            System.out.println(
-                    "<" + sym.terminalNames[token.sym] + (token.value == null ? ">" : ", " + token.value + ">"));
+        frame.setPreferredSize(new Dimension(600,600));
+        frame.setMinimumSize(new Dimension(600,600));
 
-            token = lexer.next_token();
-        }
+        frame.pack();
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 }

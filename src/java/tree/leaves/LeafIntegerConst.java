@@ -7,4 +7,8 @@ public class LeafIntegerConst {
     public LeafIntegerConst(Integer value) {
         this.value = value;
     }
+
+    public String toString() {
+        return value.toString();
+    }
 }

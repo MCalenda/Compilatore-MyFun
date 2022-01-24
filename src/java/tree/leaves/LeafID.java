@@ -7,4 +7,8 @@ public class LeafID {
     public LeafID(String value) {
         this.value = value;
     }
+
+    public String toString(){
+        return value;
+    }
 }
