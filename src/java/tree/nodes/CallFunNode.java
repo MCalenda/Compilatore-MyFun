@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import tree.leaves.LeafID;
-import visitor.Syntax_Visitable;
+import visitor.Syntax_Int_Visitable;
 import visitor.Syntax_Int_Visitor;
 
-public class CallFunNode extends DefaultMutableTreeNode implements Syntax_Visitable {
+public class CallFunNode extends DefaultMutableTreeNode implements Syntax_Int_Visitable {
     public String name = "CallFunNode";
     public LeafID leafID;
     public ArrayList<ExprNode> exprList;

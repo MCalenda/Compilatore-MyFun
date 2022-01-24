@@ -2,11 +2,7 @@ package visitor;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import tree.leaves.LeafBool;
-import tree.leaves.LeafID;
-import tree.leaves.LeafIntegerConst;
-import tree.leaves.LeafRealConst;
-import tree.leaves.LeafStringConst;
+import tree.leaves.*;
 import tree.nodes.*;
 
 public class Syntax_Visitor implements Syntax_Int_Visitor {

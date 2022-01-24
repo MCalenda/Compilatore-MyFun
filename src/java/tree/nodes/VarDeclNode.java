@@ -3,10 +3,10 @@ package tree.nodes;
 import java.util.ArrayList;
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import visitor.Syntax_Visitable;
+import visitor.Syntax_Int_Visitable;
 import visitor.Syntax_Int_Visitor;
 
-public class VarDeclNode extends DefaultMutableTreeNode implements Syntax_Visitable{
+public class VarDeclNode extends DefaultMutableTreeNode implements Syntax_Int_Visitable{
     public String name = "VarDeclNode";
     public TypeNode type = null;
     public ArrayList<IdInitNode> idInitList = null;

@@ -10,7 +10,7 @@ import flex.Lexer;
 import tree.nodes.ProgramNode;
 import visitor.Syntax_Visitor;
 
-class Tester {
+class Parser_Tester {
     public static void main(String[] args) throws Exception {
         Lexer lexer = new Lexer(new FileReader(args[0]));
         parser parser = new parser(lexer);

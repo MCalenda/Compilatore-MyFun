@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import visitor.Syntax_Visitable;
+import visitor.Syntax_Int_Visitable;
 import visitor.Syntax_Int_Visitor;
 
-public class ProgramNode extends DefaultMutableTreeNode implements Syntax_Visitable {
+public class ProgramNode extends DefaultMutableTreeNode implements Syntax_Int_Visitable {
     public String name = "ProgramNode";
     public ArrayList<VarDeclNode> varDecList;
     public ArrayList<FunNode> funList;

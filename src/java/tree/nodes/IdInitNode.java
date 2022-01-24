@@ -3,10 +3,10 @@ package tree.nodes;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import tree.leaves.LeafID;
-import visitor.Syntax_Visitable;
+import visitor.Syntax_Int_Visitable;
 import visitor.Syntax_Int_Visitor;
 
-public class IdInitNode extends DefaultMutableTreeNode implements Syntax_Visitable {
+public class IdInitNode extends DefaultMutableTreeNode implements Syntax_Int_Visitable {
     public String name = "IdInitNode";
     public LeafID leafID = null;
     public ExprNode exprNode = null;

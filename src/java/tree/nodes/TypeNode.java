@@ -2,10 +2,10 @@ package tree.nodes;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import visitor.Syntax_Visitable;
+import visitor.Syntax_Int_Visitable;
 import visitor.Syntax_Int_Visitor;
 
-public class TypeNode extends DefaultMutableTreeNode implements Syntax_Visitable{
+public class TypeNode extends DefaultMutableTreeNode implements Syntax_Int_Visitable{
     public String name = "TypeNode";
     public String type;
 

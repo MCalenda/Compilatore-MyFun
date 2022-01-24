@@ -5,6 +5,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import tree.nodes.*;
 
 public interface Syntax_Int_Visitor {
+    
     public DefaultMutableTreeNode visit(ElseNode elseNode);
     public DefaultMutableTreeNode visit(FunNode funNode);
     public DefaultMutableTreeNode visit(VarDeclNode varDeclNode);
