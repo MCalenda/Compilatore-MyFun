@@ -1,5 +1,8 @@
+integer x := 5;
+
+
+
 main
 
-    x := (-((5 div 2) / 2.2 + 5 * 4 - (2 + 7)));
 
 end main;

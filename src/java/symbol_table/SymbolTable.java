@@ -32,6 +32,7 @@ public class SymbolTable extends HashMap<String, SymbolTableEntry> {
             super.put(id, new SymbolTableEntry(id, inputParams, outputParams));
     }
 
+    // restituisce una entry (cambiare nome)
     public SymbolTableEntry containsEntry(String id) throws Exception {
         SymbolTableEntry symbolTableEntry = null;
         if (super.containsKey(id)) {
@@ -53,7 +54,8 @@ public class SymbolTable extends HashMap<String, SymbolTableEntry> {
             throw new Exception("Semantic error: variable or function " + id + " not declared");
         }
     }
-
+    
+    // restituisce una entry (cambiare nome)
     public SymbolTableEntry containsFunctionEntry(String id) throws Exception {
         SymbolTableEntry symbolTableEntry = null;
         if (super.containsKey(id) && !super.get(id).isVariable()) {
@@ -67,9 +69,9 @@ public class SymbolTable extends HashMap<String, SymbolTableEntry> {
     }
 
     public static ValueType StringToType(String type) throws Exception {
-        if (type.equalsIgnoreCase("int")) return ValueType.integer;
+        if (type.equalsIgnoreCase("integer")) return ValueType.integer;
         if (type.equalsIgnoreCase("string")) return ValueType.string;
-        if (type.equalsIgnoreCase("float")) return ValueType.real;
+        if (type.equalsIgnoreCase("real")) return ValueType.real;
         if (type.equalsIgnoreCase("bool"))  return ValueType.bool;
         throw new Exception("Semantic error: type " + type + " does not exists");
     }

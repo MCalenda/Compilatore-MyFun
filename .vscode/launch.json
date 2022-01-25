@@ -59,6 +59,13 @@
             "request": "launch",
             "mainClass": "Parser_Tester",
             "args": "src/test_files/Test_4_Empty_Programm.txt"
+        },
+        {
+            "type": "java",
+            "name": "Launch Semantic Test 1",
+            "request": "launch",
+            "mainClass": "Semantic_Tester",
+            "args": "src/test_files/Test_4_Empty_Programm.txt"
         }
     ]
 }
