@@ -4,6 +4,8 @@ import tree.nodes.*;
 import tree.leaves.*;
 import symbol_table.*;
 
+// HIDDEN TERMINALS
+terminal _uminus;
 
 // TERMINALS
 terminal LOOP, OUT, VAR, OUTPAR, RETURN, COMMA, SEMI, NULL, NOT, OR, AND, GE, GT, LE, LT, NE,
@@ -19,16 +21,20 @@ nonterminal Program, VarDecList, FunList, Main, VarDecl, Type, IdListInit, IdLis
     Expr, Const, ParamDeclList, StatList, Fun, CallFun, ExprList, ParDecl, NonEmptyParamDeclList, Stat, IfStat,
     WhileStat, ReadStat, WriteStat, AssignStat, Else;
 
+
 // PRECEDENCES
-precedence left OR;
-precedence left AND;
-precedence right NOT;
-precedence nonassoc EQ, NE, LT, LE, GT, GE;
+
 precedence left STR_CONCAT;
 precedence left PLUS, MINUS;
 precedence left TIMES, DIV, DIVINT;
 precedence right POW;
+precedence left OR;
+precedence left AND;
+precedence right NOT;
+precedence nonassoc EQ, NE, LT, LE, GT, GE;
 precedence left LPAR, RPAR;
+precedence left _uminus;
+
 
 
 // Production
@@ -180,7 +186,7 @@ Expr ::= TRUE:val                                                               
     | Expr:val_one LE Expr:val_two                                              {: RESULT = new ExprNode("LE", (ExprNode) val_one, (ExprNode) val_two); :}
     | Expr:val_one EQ Expr:val_two                                              {: RESULT = new ExprNode("EQ", (ExprNode) val_one, (ExprNode) val_two); :}
     | Expr:val_one NE Expr:val_two                                              {: RESULT = new ExprNode("NE", (ExprNode) val_one, (ExprNode) val_two); :}
-    | MINUS Expr:expr                                                           {: RESULT = new ExprNode("MINUS", (ExprNode) expr); :}
+    | MINUS Expr:expr                                                           {: RESULT = new ExprNode("UMINUS", (ExprNode) expr); :} %prec _uminus
     | NOT Expr:expr                                                             {: RESULT = new ExprNode("NOT", (ExprNode) expr); :}
     | LPAR Expr:expr RPAR                                                       {: RESULT = expr; :}
 ;

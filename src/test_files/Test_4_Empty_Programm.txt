@@ -1,9 +1,7 @@
-integer y := 4;
 
 
 main
 
-integer y := z;
-
+real y := not 5.5;
 
 end main;
