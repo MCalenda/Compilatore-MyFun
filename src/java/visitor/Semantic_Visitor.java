@@ -72,11 +72,11 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
         if (idInitNode.exprNode != null) {
             idInitNode.exprNode.accept(this);
             // DEBUG PRINT
-            // System.out.println(idInitNode.type);
-            // System.out.println(idInitNode.exprNode.type);
+            //System.out.println(idInitNode.type);
+            //System.out.println(idInitNode.exprNode.type);
             if (!checkAssignmentType(idInitNode.type, idInitNode.exprNode.type)) {
-                System.err.println("Errore semantico: inizializzazione sbagliata per variabile " + idInitNode.leafID.value);
-                System.exit(1);
+                System.err.println("Errore semantico: inizializzazione sbagliata per variabile \"" + idInitNode.leafID.value +"\"");
+                //System.exit(1);
             }
         }
     }
@@ -152,7 +152,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
             }
             else if (exprNode.val_One instanceof LeafStringConst) {
                 ((LeafStringConst) exprNode.val_One).accept(this);
-                exprNode.type = ((LeafRealConst) exprNode.val_One).type;
+                exprNode.type = ((LeafStringConst) exprNode.val_One).type;
             }
             else if (exprNode.val_One instanceof LeafBool) {
                 ((LeafBool) exprNode.val_One).accept(this);
@@ -190,7 +190,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
                 }
             }
         */
-        
+
         }   
     }
 
@@ -287,7 +287,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
     }
 
     @Override
-    public void visit(LeafStringConst leafStringConst) {    
+    public void visit(LeafStringConst leafStringConst) {  
         leafStringConst.setType("string");
     }
     

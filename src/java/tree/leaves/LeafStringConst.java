@@ -30,7 +30,7 @@ public class LeafStringConst implements Semantic_Int_Visitable{
 
     @Override
     public void accept(Semantic_Int_Visitor v) {
-        // TODO Auto-generated method stub
+        v.visit(this);
         
     }
 }

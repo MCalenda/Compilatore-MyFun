@@ -1,10 +1,6 @@
-integer x := 2 ;
-
-
+integer x, y := 'ciao', z := 5;
 
 main
 
-string scorta := 'cia';
-
-
+string s := 5, y := true;
 end main;
