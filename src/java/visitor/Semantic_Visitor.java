@@ -62,8 +62,6 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
         }
     }
 
-
-
     @Override
     public void visit(IdInitNode idInitNode) {
         idInitNode.leafID.type = idInitNode.type;
@@ -133,33 +131,33 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
                 ((LeafID) exprNode.val_One).accept(this);
                 exprNode.type = ((LeafID) exprNode.val_One).type;
             }
-
+            else if (exprNode.op.equalsIgnoreCase("UMINUS")) {
+                ((ExprNode) exprNode.val_One).accept(this);
+                System.out.println("[DEBUG] " + exprNode.op + " " + (((ExprNode) exprNode.val_One).type) );
+                if (((ExprNode) exprNode.val_One).type == ValueType.integer || ((ExprNode) exprNode.val_One).type == ValueType.real)
+                    exprNode.type = (((ExprNode) exprNode.val_One).type);
+                else {
+                    System.err.println("[ERRORE SEMANTICO] tipi op UMINUS sbagliato");
+                    System.exit(1);
+                }
+            }
+            else if (exprNode.op.equalsIgnoreCase("NOT")) {
+                ((ExprNode) exprNode.val_One).accept(this);
+                System.out.println("[DEBUG] " + exprNode.op + " " + (((ExprNode) exprNode.val_One).type) );
+                if (((ExprNode) exprNode.val_One).type == ValueType.bool)
+                    exprNode.type = (((ExprNode) exprNode.val_One).type);
+                else {
+                    System.err.println("[ERRORE SEMANTICO] tipo op NOT sbagliato");
+                    System.exit(1);
+                }
+            }
             /*
             // CallProc
             else if (exprNode.val_One instanceof CallProcNode) {
                 ((CallProcNode) exprNode.value1).accept(this);
                 exprNode.setTypes(((CallProcNode) exprNode.value1).types);
             }
-            // Uminus
-            else if (exprNode.name.equalsIgnoreCase("UminusOp")) {
-                ((ExprNode) exprNode.value1).accept(this);
-                if (((ExprNode) exprNode.value1).types.get(0) == ValueType.Integer || ((ExprNode) exprNode.value1).types.get(0) == ValueType.Float)
-                    exprNode.setType(((ExprNode) exprNode.value1).types.get(0));
-                else {
-                    System.err.println("Semantic error: type mismatch for 'Uminus' operation. Required type: Integer or Float, provided: " + ((ExprNode) exprNode.value1).types.get(0));
-                    System.exit(0);
-                }
-            }
-            // NOT
-            else if (exprNode.name.equalsIgnoreCase("NotOp")) {
-                ((ExprNode) exprNode.value1).accept(this);
-                if (((ExprNode) exprNode.value1).types.get(0) == ValueType.Boolean)
-                    exprNode.setType(((ExprNode) exprNode.value1).types.get(0));
-                else {
-                    System.err.println("Semantic error: type mismatch for 'NOT' operation. Required type: Boolean, provided: " + ((ExprNode) exprNode.value1).types.get(0));
-                    System.exit(0);
-                }
-            }
+            
         */
 
         }   
