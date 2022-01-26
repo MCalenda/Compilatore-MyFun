@@ -29,42 +29,35 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
                 funNode.accept(this);
             }
         }
+        programNode.main.accept(this);
     }
 
     @Override
     public void visit(VarDeclNode varDeclNode) {
         varDeclNode.type.accept(this);
-
         if (varDeclNode.idInitList != null){
             for (IdInitNode idInitNode : varDeclNode.idInitList) {
                 try {
                     SymbolTable picked = stack.peek();
-                    if (picked.getFatherSymTab() != null){
-                        //controlla solo il padre, containsKey() verifica gia nella tabella attuale
-                        SymbolTableEntry symbolTableEntry = picked.getFatherSymTab().get(idInitNode.leafID.value);
-                        if (symbolTableEntry != null && symbolTableEntry.type == Type.function) {
-                            System.err.println("Semantic error: Cannot declare a variable with ID: " + idInitNode.leafID.value + ". There is a function with same ID.");
-                            System.exit(0);
-                        } else {
-                            picked.createEntry_variable(idInitNode.leafID.value, varDeclNode.type.type);
-                        }
-                    } else {
-                        picked.createEntry_variable(idInitNode.leafID.value, varDeclNode.type.type);
-                    }
-
+                    picked.createEntry_variable(idInitNode.leafID.value, varDeclNode.type.type);
                 } catch (Exception e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
                 idInitNode.accept(this);
                 idInitNode.setType(varDeclNode.type.type);
             }
-
+        } else if (varDeclNode.IdListInitObbl != null){
+            for (IdInitObblNode idInitObblNode : varDeclNode.IdListInitObbl) {
+                try {
+                    SymbolTable picked = stack.peek();
+                    // inferenza di tipo
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                idInitObblNode.accept(this);
+                idInitObblNode.setType(varDeclNode.type.type);
+            }
         }
-        SymbolTable picked = stack.peek();
-        System.out.println(picked.toString());
-        
-
     }
 
     @Override
@@ -84,7 +77,15 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
     @Override
     public void visit(MainNode mainNode) {
-        
+        SymbolTable symbolTable = new SymbolTable();
+        symbolTable.symbolTableName = "Main";
+        symbolTable.setFatherSymTab(stack.firstElement());
+        stack.push(symbolTable);
+        if (mainNode.varDeclList != null) {
+            for (VarDeclNode varDeclNode : mainNode.varDeclList) {
+                varDeclNode.accept(this);
+            }
+        }
     }
 
     @Override

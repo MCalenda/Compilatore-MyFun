@@ -6,33 +6,36 @@ import java.util.HashMap;
 public class SymbolTable extends HashMap<String, SymbolTableEntry> {
 
     public String symbolTableName;
-    public SymbolTable pointerToFather;
+    public SymbolTable fatherSymbolTable;
 
-    public void setFatherSymTab(SymbolTable symbolTable){
-        this.pointerToFather = symbolTable;
+    public void setFatherSymTab(SymbolTable fatherSymbolTable){
+        this.fatherSymbolTable = fatherSymbolTable;
     }
 
-    public boolean hasFatherSymTab(){ return pointerToFather != null; }
+    public boolean hasFatherSymTab(){
+        return fatherSymbolTable != null; 
+    }
 
     public SymbolTable getFatherSymTab(){
-        return pointerToFather;
+        return fatherSymbolTable;
     }
 
     public void createEntry_variable(String id, String type) throws Exception {
-        if (super.containsKey(id))
-            throw new Exception("Semantic error in " + symbolTableName + ": identifier '" + id + "' already declared in the actual scope");
-        else 
+        if (this.containsKey(id))
+            throw new Exception("Errore Semantico: variabile \"" + id + "\" già dichiarata");
+        else {
             super.put(id, new SymbolTableEntry(id, StringToType(type)));
+        }
     }
 
     public void createEntry_function(String id, ArrayList<ValueType> inputParams, ArrayList<ValueType> outputParams) throws Exception {
         if (super.containsKey(id))
-            throw new Exception("Semantic error in " + symbolTableName + ": identifier '" + id + "' already declared in the actual scope");
+            throw new Exception("Errore Semantico: funzione \"" + id + "\" già dichiarata");
         else
             super.put(id, new SymbolTableEntry(id, inputParams, outputParams));
     }
 
-    // restituisce una entry (cambiare nome)
+    /* restituisce una entry (cambiare nome)
     public SymbolTableEntry containsEntry(String id) throws Exception {
         SymbolTableEntry symbolTableEntry = null;
         if (super.containsKey(id)) {
@@ -44,6 +47,7 @@ public class SymbolTable extends HashMap<String, SymbolTableEntry> {
         }
         return symbolTableEntry;
     }
+    */
 
     public Boolean containsKey(String id) throws Exception {
         if (super.containsKey(id)) {
@@ -51,11 +55,11 @@ public class SymbolTable extends HashMap<String, SymbolTableEntry> {
         } else if (hasFatherSymTab()) {
             return getFatherSymTab().containsKey(id);
         } else {
-            throw new Exception("Semantic error: variable or function " + id + " not declared");
+            return false;
         }
     }
     
-    // restituisce una entry (cambiare nome)
+    /* restituisce una entry (cambiare nome)
     public SymbolTableEntry containsFunctionEntry(String id) throws Exception {
         SymbolTableEntry symbolTableEntry = null;
         if (super.containsKey(id) && !super.get(id).isVariable()) {
@@ -66,7 +70,7 @@ public class SymbolTable extends HashMap<String, SymbolTableEntry> {
             throw new Exception("Semantic error: proc " + id + " not defined");
         }
         return symbolTableEntry;
-    }
+    */
 
     public static ValueType StringToType(String type) throws Exception {
         if (type.equalsIgnoreCase("integer")) return ValueType.integer;

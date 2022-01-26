@@ -1,8 +1,11 @@
 integer x := 5;
+integer y := 5;
 
 
 
 main
+
+integer y := 5;
 
 
 end main;
