@@ -24,7 +24,7 @@ public class SymbolTable extends HashMap<String, SymbolTableEntry> {
         if (this.containsKey(id))
             throw new Exception("Errore Semantico: variabile \"" + id + "\" già dichiarata");
         else {
-            super.put(id, new SymbolTableEntry(id, StringToType(type)));
+            super.put(id, new SymbolTableEntry(id, StringToValueType(type)));
         }
     }
 
@@ -72,11 +72,11 @@ public class SymbolTable extends HashMap<String, SymbolTableEntry> {
         return symbolTableEntry;
     */
 
-    public static ValueType StringToType(String type) throws Exception {
+    public static ValueType StringToValueType(String type) throws Exception {
         if (type.equalsIgnoreCase("integer")) return ValueType.integer;
         if (type.equalsIgnoreCase("string")) return ValueType.string;
         if (type.equalsIgnoreCase("real")) return ValueType.real;
         if (type.equalsIgnoreCase("bool"))  return ValueType.bool;
-        throw new Exception("Semantic error: type " + type + " does not exists");
+        throw new Exception("Errore semantico: il tipo " + type + " non esiste");
     }
 }

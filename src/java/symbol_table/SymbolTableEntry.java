@@ -26,6 +26,7 @@ public class SymbolTableEntry {
         return this.type == Type.variable;
     }
 
+    /*
     @Override
     public String toString() {
         if (isVariable())
@@ -45,4 +46,5 @@ public class SymbolTableEntry {
             return "Entry of type Function :: " + id + "(" + inputs + ") -> " + outputs;
         }
     }
+    */
 }

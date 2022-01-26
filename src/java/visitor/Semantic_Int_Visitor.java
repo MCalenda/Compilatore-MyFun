@@ -1,5 +1,10 @@
 package visitor;
 
+import tree.leaves.LeafBool;
+import tree.leaves.LeafID;
+import tree.leaves.LeafIntegerConst;
+import tree.leaves.LeafRealConst;
+import tree.leaves.LeafStringConst;
 import tree.nodes.*;
 
 public interface Semantic_Int_Visitor {
@@ -23,5 +28,11 @@ public interface Semantic_Int_Visitor {
     public void visit(IdInitObblNode idInitObblNode);
     public void visit(ConstNode constNode);
     public void visit(ReturnNode resultNode);
+    public void vist(LeafID leafID);
+    public void visit(LeafIntegerConst leafIntegerConst);
+    public void vist(LeafRealConst leafRealConst);
+    public void visit(LeafStringConst leafStringConst);
+    public void vist(LeafBool leafBool);
+
 
 }

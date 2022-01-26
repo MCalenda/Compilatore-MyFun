@@ -18,6 +18,15 @@ public class IdInitNode extends DefaultMutableTreeNode implements Syntax_Int_Vis
     // Semantic check
     public ValueType type = null;
 
+    public void setType(String t) {
+        try {
+            this.type = SymbolTable.StringToValueType(t);
+        } catch (Exception e) {
+            System.exit(0);
+            e.printStackTrace();
+        }
+    }
+
     public IdInitNode(LeafID leafID) {
         super("IdInitNode");
         this.leafID = leafID;
@@ -27,15 +36,6 @@ public class IdInitNode extends DefaultMutableTreeNode implements Syntax_Int_Vis
         super("IdInitNode");
         this.leafID = leafID;
         this.exprNode = exprNode;
-    }
-
-    public void setType(String t) {
-        try {
-            this.type = SymbolTable.StringToType(t);
-        } catch (Exception e) {
-            System.exit(0);
-            e.printStackTrace();
-        }
     }
 
     @Override

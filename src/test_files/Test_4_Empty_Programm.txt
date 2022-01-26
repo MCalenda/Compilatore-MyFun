@@ -1,11 +1,10 @@
-integer x := 5;
-integer y := 5;
+integer x := 2 ;
 
 
 
 main
 
-integer y := 5;
+string scorta := 'cia';
 
 
 end main;
