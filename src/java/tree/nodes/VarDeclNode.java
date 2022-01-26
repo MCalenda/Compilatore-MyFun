@@ -7,14 +7,15 @@ import visitor.Semantic_Int_Visitable;
 import visitor.Semantic_Int_Visitor;
 import visitor.Syntax_Int_Visitable;
 import visitor.Syntax_Int_Visitor;
+import symbol_table.ValueType;
 
 public class VarDeclNode extends DefaultMutableTreeNode implements Syntax_Int_Visitable, Semantic_Int_Visitable{
     public String name = "VarDeclNode";
-    public TypeNode type = null;
+    public ValueType type = null;
     public ArrayList<IdInitNode> idInitList = null;
     public ArrayList<IdInitObblNode> IdListInitObbl = null;
 
-    public VarDeclNode(TypeNode type, ArrayList<IdInitNode> idInitList) {
+    public VarDeclNode(ValueType type, ArrayList<IdInitNode> idInitList) {
         super("VarDeclNode");
         this.type = type;
         this.idInitList = idInitList;

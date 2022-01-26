@@ -36,7 +36,7 @@ public class Syntax_Visitor implements Syntax_Int_Visitor {
     public DefaultMutableTreeNode visit(VarDeclNode varDeclNode) {
 
         if (varDeclNode.type != null) {
-            varDeclNode.add(varDeclNode.type.accept(this));
+            varDeclNode.add(new DefaultMutableTreeNode("@ " + varDeclNode.type));
 
             DefaultMutableTreeNode idInitList = new DefaultMutableTreeNode("idInitList");
             for (IdInitNode idInitNode : varDeclNode.idInitList) {
@@ -53,14 +53,6 @@ public class Syntax_Visitor implements Syntax_Int_Visitor {
         }
 
         return varDeclNode;
-    }
-
-    @Override
-    public DefaultMutableTreeNode visit(TypeNode typeNode) {
-
-        typeNode.add(new DefaultMutableTreeNode("@ " + typeNode.type));
-
-        return typeNode;
     }
 
     @Override
@@ -192,7 +184,7 @@ public class Syntax_Visitor implements Syntax_Int_Visitor {
         funNode.add(paramDeclList);
 
         if (funNode.type != null) {
-            funNode.add(funNode.type.accept(this));
+            funNode.add(new DefaultMutableTreeNode("@ " + funNode.type));
         }
 
         DefaultMutableTreeNode VarDeclList = new DefaultMutableTreeNode("VarDeclList");
@@ -272,7 +264,7 @@ public class Syntax_Visitor implements Syntax_Int_Visitor {
     @Override
     public DefaultMutableTreeNode visit(ParamDecNode paramDecNode) {
         paramDecNode.add((new DefaultMutableTreeNode("@ OUT: " + paramDecNode.out)));
-        paramDecNode.add(paramDecNode.type.accept(this));
+        paramDecNode.add(new DefaultMutableTreeNode("@ " + paramDecNode.type));
         paramDecNode.add((new DefaultMutableTreeNode("@ " + paramDecNode.leafID.value)));
 
         return paramDecNode;

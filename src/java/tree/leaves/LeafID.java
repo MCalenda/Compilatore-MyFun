@@ -31,6 +31,6 @@ public class LeafID implements Semantic_Int_Visitable{
 
     @Override
     public void accept(Semantic_Int_Visitor v) {
-        v.vist(this);
+        v.visit(this);
     }
 }

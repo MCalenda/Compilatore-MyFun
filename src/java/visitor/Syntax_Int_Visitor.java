@@ -9,7 +9,6 @@ public interface Syntax_Int_Visitor {
     public DefaultMutableTreeNode visit(ElseNode elseNode);
     public DefaultMutableTreeNode visit(FunNode funNode);
     public DefaultMutableTreeNode visit(VarDeclNode varDeclNode);
-    public DefaultMutableTreeNode visit(TypeNode typeNode);
     public DefaultMutableTreeNode visit(IdInitNode idInitNode);
     public DefaultMutableTreeNode visit(ExprNode exprNode);
     public DefaultMutableTreeNode visit(MainNode mainNode);

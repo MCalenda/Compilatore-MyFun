@@ -1,6 +1,9 @@
-integer x, y := 'ciao', z := 5;
+integer y := 4;
+
 
 main
 
-string s := 5, y := true;
+integer y := z;
+
+
 end main;

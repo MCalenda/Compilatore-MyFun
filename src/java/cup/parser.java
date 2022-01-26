@@ -8,6 +8,7 @@ package cup;
 import java.util.ArrayList;
 import tree.nodes.*;
 import tree.leaves.*;
+import symbol_table.*;
 import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
@@ -549,7 +550,7 @@ class CUP$parser$actions {
 		int idListInitleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
 		int idListInitright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Object idListInit = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		 RESULT= new VarDeclNode((TypeNode)type, (ArrayList<IdInitNode>)idListInit); 
+		 RESULT= new VarDeclNode((ValueType) type, (ArrayList<IdInitNode>)idListInit); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("VarDecl",4, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -594,7 +595,7 @@ class CUP$parser$actions {
           case 6: // Type ::= INTEGER 
             {
               Object RESULT =null;
-		 RESULT= new TypeNode("INTEGER"); 
+		 RESULT= SymbolTable.StringToValueType("Integer"); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("Type",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -603,7 +604,7 @@ class CUP$parser$actions {
           case 7: // Type ::= BOOL 
             {
               Object RESULT =null;
-		 RESULT= new TypeNode("BOOL"); 
+		 RESULT= SymbolTable.StringToValueType("Bool"); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("Type",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -612,7 +613,7 @@ class CUP$parser$actions {
           case 8: // Type ::= REAL 
             {
               Object RESULT =null;
-		 RESULT= new TypeNode("REAL"); 
+		 RESULT= SymbolTable.StringToValueType("Real"); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("Type",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -621,7 +622,7 @@ class CUP$parser$actions {
           case 9: // Type ::= STRING 
             {
               Object RESULT =null;
-		 RESULT= new TypeNode("STRING"); 
+		 RESULT= SymbolTable.StringToValueType("String"); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("Type",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -825,7 +826,7 @@ class CUP$parser$actions {
 		int statListleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).left;
 		int statListright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).right;
 		Object statList = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-3)).value;
-		 RESULT= new FunNode(new LeafID(id), (ArrayList<ParamDecNode>) paramDeclList, (TypeNode) type ,(ArrayList<VarDeclNode>) varDecList, (ArrayList<StatNode>) statList); 
+		 RESULT= new FunNode(new LeafID(id), (ArrayList<ParamDecNode>) paramDeclList, (ValueType) type ,(ArrayList<VarDeclNode>) varDecList, (ArrayList<StatNode>) statList); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("Fun",13, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-11)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -912,7 +913,7 @@ class CUP$parser$actions {
 		int idleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		String id = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 RESULT= new ParamDecNode(false, (TypeNode) type, new LeafID(id)); 
+		 RESULT= new ParamDecNode(false, (ValueType) type, new LeafID(id)); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ParDecl",16, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -927,7 +928,7 @@ class CUP$parser$actions {
 		int idleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		String id = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 RESULT= new ParamDecNode(true, (TypeNode) type, new LeafID(id)); 
+		 RESULT= new ParamDecNode(true, (ValueType) type, new LeafID(id)); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ParDecl",16, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;

@@ -2,6 +2,7 @@ import java.util.ArrayList;
 
 import tree.nodes.*;
 import tree.leaves.*;
+import symbol_table.*;
 
 
 // TERMINALS
@@ -37,7 +38,7 @@ Program ::= VarDecList:varDecList FunList:funList Main:main                     
 ;
 
 // TESTED ✅
-VarDecl ::= Type:type IdListInit:idListInit SEMI                                {: RESULT= new VarDeclNode((TypeNode)type, (ArrayList<IdInitNode>)idListInit); :}
+VarDecl ::= Type:type IdListInit:idListInit SEMI                                {: RESULT= new VarDeclNode((ValueType) type, (ArrayList<IdInitNode>)idListInit); :}
     | VAR IdListInitObbl:idListInitObbl SEMI                                    {: RESULT= new VarDeclNode((ArrayList<IdInitObblNode>) idListInitObbl); :}
 ;
 
@@ -47,10 +48,10 @@ VarDecList ::= /* empty */                                                      
 ;
 
 // TESTED ✅
-Type ::= INTEGER                                                                {: RESULT= new TypeNode("INTEGER"); :}
-    | BOOL                                                                      {: RESULT= new TypeNode("BOOL"); :}
-    | REAL                                                                      {: RESULT= new TypeNode("REAL"); :}
-    | STRING                                                                    {: RESULT= new TypeNode("STRING"); :}
+Type ::= INTEGER                                                                {: RESULT= SymbolTable.StringToValueType("Integer"); :}
+    | BOOL                                                                      {: RESULT= SymbolTable.StringToValueType("Bool"); :}
+    | REAL                                                                      {: RESULT= SymbolTable.StringToValueType("Real"); :}
+    | STRING                                                                    {: RESULT= SymbolTable.StringToValueType("String"); :}
 ;
 
 // TESTED ✅
@@ -79,7 +80,7 @@ Const ::= INTEGER_CONST:val                                                     
 ;
 
 // TESTED ✅
-Fun ::= FUN ID:id LPAR ParamDeclList:paramDeclList RPAR COLON Type:type VarDecList:varDecList StatList:statList END FUN SEMI      {: RESULT= new FunNode(new LeafID(id), (ArrayList<ParamDecNode>) paramDeclList, (TypeNode) type ,(ArrayList<VarDeclNode>) varDecList, (ArrayList<StatNode>) statList); :}
+Fun ::= FUN ID:id LPAR ParamDeclList:paramDeclList RPAR COLON Type:type VarDecList:varDecList StatList:statList END FUN SEMI      {: RESULT= new FunNode(new LeafID(id), (ArrayList<ParamDecNode>) paramDeclList, (ValueType) type ,(ArrayList<VarDeclNode>) varDecList, (ArrayList<StatNode>) statList); :}
     | FUN ID:id LPAR ParamDeclList:paramDeclList RPAR VarDecList:varDecList StatList:statList END FUN SEMI                        {: RESULT= new FunNode(new LeafID(id), (ArrayList<ParamDecNode>) paramDeclList,(ArrayList<VarDeclNode>) varDecList, (ArrayList<StatNode>) statList); :}
 ;
 
@@ -94,8 +95,8 @@ CallFun ::= ID:id LPAR ExprList:exprList RPAR                                   
 ;
 
 // TESTED ✅
-ParDecl ::= Type:type ID:id                                                     {: RESULT= new ParamDecNode(false, (TypeNode) type, new LeafID(id)); :}
-    | OUT Type:type ID:id                                                       {: RESULT= new ParamDecNode(true, (TypeNode) type, new LeafID(id)); :}
+ParDecl ::= Type:type ID:id                                                     {: RESULT= new ParamDecNode(false, (ValueType) type, new LeafID(id)); :}
+    | OUT Type:type ID:id                                                       {: RESULT= new ParamDecNode(true, (ValueType) type, new LeafID(id)); :}
 ;
 
 // TESTED ✅

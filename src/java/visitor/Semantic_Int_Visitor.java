@@ -12,7 +12,6 @@ public interface Semantic_Int_Visitor {
     public void visit(ElseNode elseNode);
     public void visit(FunNode funNode);
     public void visit(VarDeclNode varDeclNode);
-    public void visit(TypeNode typeNode);
     public void visit(IdInitNode idInitNode);
     public void visit(ExprNode exprNode);
     public void visit(MainNode mainNode);
@@ -28,11 +27,11 @@ public interface Semantic_Int_Visitor {
     public void visit(IdInitObblNode idInitObblNode);
     public void visit(ConstNode constNode);
     public void visit(ReturnNode resultNode);
-    public void vist(LeafID leafID);
+    public void visit(LeafID leafID);
     public void visit(LeafIntegerConst leafIntegerConst);
-    public void vist(LeafRealConst leafRealConst);
+    public void visit(LeafRealConst leafRealConst);
     public void visit(LeafStringConst leafStringConst);
-    public void vist(LeafBool leafBool);
+    public void visit(LeafBool leafBool);
 
 
 }

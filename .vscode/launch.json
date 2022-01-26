@@ -62,6 +62,13 @@
         },
         {
             "type": "java",
+            "name": "Launch Parser Test 5",
+            "request": "launch",
+            "mainClass": "Parser_Tester",
+            "args": "src/test_files/Test_5_Super_Test.txt"
+        },
+        {
+            "type": "java",
             "name": "Launch Semantic Test 1",
             "request": "launch",
             "mainClass": "Semantic_Tester",

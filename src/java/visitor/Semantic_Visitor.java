@@ -37,12 +37,12 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
             for (IdInitNode idInitNode : varDeclNode.idInitList) {
                 try {
                     SymbolTable picked = stack.peek();
-                    picked.createEntry_variable(idInitNode.leafID.value, varDeclNode.type.type);
+                    picked.createEntry_variable(idInitNode.leafID.value, varDeclNode.type);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    System.out.println(("[ERRORE SEMANTICO] variabile " + idInitNode.leafID.value + " già dichiarata"));
                     System.exit(1);
                 }
-                idInitNode.setType(varDeclNode.type.type);
+                idInitNode.type = varDeclNode.type;
                 idInitNode.accept(this);
             }
         } else if (varDeclNode.IdListInitObbl != null){
@@ -62,21 +62,18 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
         }
     }
 
-    @Override
-    public void visit(TypeNode typeNode) {
 
-    }
 
     @Override
     public void visit(IdInitNode idInitNode) {
+        idInitNode.leafID.type = idInitNode.type;
+        idInitNode.leafID.accept(this);
         if (idInitNode.exprNode != null) {
             idInitNode.exprNode.accept(this);
-            // DEBUG PRINT
-            //System.out.println(idInitNode.type);
-            //System.out.println(idInitNode.exprNode.type);
+            System.out.println("[DEBUG] " + idInitNode.leafID.value + ":" + idInitNode.type +  " assegno " + idInitNode.exprNode.type);
             if (!checkAssignmentType(idInitNode.type, idInitNode.exprNode.type)) {
-                System.err.println("Errore semantico: inizializzazione sbagliata per variabile \"" + idInitNode.leafID.value +"\"");
-                //System.exit(1);
+                System.err.println("[ERRORE SEMANTICO] inizializzazione sbagliata per variabile " + idInitNode.leafID.value);
+                System.exit(1);
             }
         }
     }
@@ -84,63 +81,37 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
     @Override
     public void visit(ExprNode exprNode) {
         if (exprNode.val_One != null && exprNode.val_Two != null) {
-            /*
-            // 2 exprs
             ((ExprNode) exprNode.val_One).accept(this);
             ((ExprNode) exprNode.val_Two).accept(this);
-
-            //Addizione, Sottrazione, Moltiplicazione, Divisione
-            if (
-                    exprNode.name.equalsIgnoreCase("PLUS") ||
-                    exprNode.name.equalsIgnoreCase("MINUS") ||
-                    exprNode.name.equalsIgnoreCase("TIMES") ||
-                    exprNode.name.equalsIgnoreCase("DIV")
-            ) {
-                // Se takenType == null -> Errore per tipi non compatibili
-                ValueType takenType = getType_Operations(
-                    ((ExprNode) exprNode.val_One).types.get(0),
-                    (ExprNode) exprNode.val_Two).types.get(0)
-                );
-
-                if (takenType == null) {
-                    System.err.println("Semantic error: type not compatible with operation (" + exprNode.name + "). First type: " + ((ExprNode) exprNode.value1).types.get(0) + ", second type: " + ((ExprNode) exprNode.value2).types.get(0));
-                    System.exit(0);
-                } else exprNode.setType(takenType);
-
+            System.out.println("[DEBUG] " + (((ExprNode) exprNode.val_One).type) + " " + exprNode.op + " " + (((ExprNode) exprNode.val_Two).type));
+            if (exprNode.op.equalsIgnoreCase("PLUS") ||
+                exprNode.op.equalsIgnoreCase("MINUS") ||
+                exprNode.op.equalsIgnoreCase("TIMES") ||
+                exprNode.op.equalsIgnoreCase("DIV")) {
+                ValueType resultType = getType_Operations(
+                    ((ExprNode) exprNode.val_One).type,
+                    ((ExprNode) exprNode.val_Two).type);
+                if (resultType == null) {
+                    System.err.println("[ERRORE SEMANTICO] tipi op PLUS/MINUS/TIMES/DIV sbagliato");
+                    System.exit(1);
+                } else exprNode.type = resultType;
+            } else if (exprNode.op.equalsIgnoreCase("AND") || exprNode.op.equalsIgnoreCase("OR")) {
+                ValueType resultType = getType_AndOr(
+                    ((ExprNode) exprNode.val_One).type,
+                    ((ExprNode) exprNode.val_Two).type);
+                if (resultType == null) {
+                    System.err.println("[ERRORE SEMANTICO] tipi op AND/OR sbagliato");
+                    System.exit(1);
+                } else exprNode.type = resultType;
+            } else {
+                ValueType resultType = getType_Boolean(
+                    ((ExprNode) exprNode.val_One).type,
+                    ((ExprNode) exprNode.val_Two).type);
+                if (resultType == null) {
+                    System.err.println("[ERRORE SEMANTICO] tipi op LT/GT/ecc. sbagliato");
+                    System.exit(1);
+                } else exprNode.type = resultType;
             }
-            /*
-            //AND, OR
-            else if (exprNode.name.equalsIgnoreCase("AndOp") || exprNode.name.equalsIgnoreCase("OrOp")) {
-                // Se takenType == null -> Errore per tipi non compatibili
-                ValueType takenType = getType_AndOr(
-                        ((ExprNode) exprNode.value1).types.get(0),
-                        ((ExprNode) exprNode.value2).types.get(0)
-                );
-
-                if (takenType == null) {
-                    System.err.println("Semantic error: type not compatible with operation (" + exprNode.name + "). Required: [Boolean, Boolean], provided: [" + ((ExprNode) exprNode.value1).types.get(0) + ", " + ((ExprNode) exprNode.value2).types.get(0) + "]");
-                    System.exit(0);
-                } else exprNode.setType(takenType);
-
-            }
-            //LT, GT, LE...
-            else {
-                if (((ExprNode) exprNode.value1).types.size() > 1 || ((ExprNode) exprNode.value2).types.size() > 1) {
-                    System.err.println("Semantic error: callProc returns multiple values in logical operation (" + exprNode.name + ")");
-                    System.exit(0);
-                }
-                // Se takenType == null -> Errore per tipi non compatibili
-                ValueType takenType = getType_Boolean(
-                        ((ExprNode) exprNode.value1).types.get(0),
-                        ((ExprNode) exprNode.value2).types.get(0)
-                );
-
-                if (takenType == null) {
-                    System.err.println("Semantic error: type not compatible with logical operation (" + exprNode.name + "). First type: " + ((ExprNode) exprNode.value1).types.get(0) + ", second type: " + ((ExprNode) exprNode.value2).types.get(0));
-                    System.exit(0);
-                } else exprNode.setType(takenType);
-            }
-            */
         } else if (exprNode.val_One != null) {
             if (exprNode.val_One instanceof LeafIntegerConst) {
                 ((LeafIntegerConst) exprNode.val_One).accept(this);
@@ -277,12 +248,12 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
     }
     
     @Override
-    public void vist(LeafRealConst leafRealConst) {
+    public void visit(LeafRealConst leafRealConst) {
         leafRealConst.setType("real");
     }
     
     @Override
-    public void vist(LeafBool leafBool) {
+    public void visit(LeafBool leafBool) {
         leafBool.setType("bool");
     }
 
@@ -292,18 +263,22 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
     }
     
     @Override
-    public void vist(LeafID leafID) {
-        
+    public void visit(LeafID leafID) {
+        SymbolTable symbolTable = stack.peek();
+        try {
+            SymbolTableEntry symbolTableEntry = symbolTable.containsEntry(leafID.value);
+            leafID.type = symbolTableEntry.valueType;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
-
-
 
     public static boolean checkAssignmentType(ValueType variable, ValueType assign) {
         if (variable == ValueType.integer && assign == ValueType.integer)
             return true;
         if (variable == ValueType.real && assign == ValueType.real)
             return true;
-        //qui specificare se accettare assegnamenti di variabili int come real e viceversa
         if (variable == ValueType.bool && assign == ValueType.bool)
             return true;
         if (variable == ValueType.string && assign == ValueType.string)
@@ -322,6 +297,8 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
         if (type1 == ValueType.integer && type2 == ValueType.integer)
             return ValueType.integer;
         if (type1 == ValueType.integer && type2 == ValueType.real)
+            return ValueType.real;
+        if (type1 == ValueType.real && type2 == ValueType.integer)
             return ValueType.real;
         if (type1 == ValueType.real && type2 == ValueType.integer)
             return ValueType.real;

@@ -20,22 +20,21 @@ public class SymbolTable extends HashMap<String, SymbolTableEntry> {
         return fatherSymbolTable;
     }
 
-    public void createEntry_variable(String id, String type) throws Exception {
+    public void createEntry_variable(String id, ValueType type) throws Exception {
         if (this.containsKey(id))
-            throw new Exception("Errore Semantico: variabile \"" + id + "\" già dichiarata");
+            throw new Exception("[ERRORE SEMANTICO] variabile " + id + " già dichiarata");
         else {
-            super.put(id, new SymbolTableEntry(id, StringToValueType(type)));
+            super.put(id, new SymbolTableEntry(id, type));
         }
     }
 
     public void createEntry_function(String id, ArrayList<ValueType> inputParams, ArrayList<ValueType> outputParams) throws Exception {
         if (super.containsKey(id))
-            throw new Exception("Errore Semantico: funzione \"" + id + "\" già dichiarata");
+            throw new Exception("[ERRORE SEMANTICO] funzione " + id + " già dichiarata");
         else
             super.put(id, new SymbolTableEntry(id, inputParams, outputParams));
     }
 
-    /* restituisce una entry (cambiare nome)
     public SymbolTableEntry containsEntry(String id) throws Exception {
         SymbolTableEntry symbolTableEntry = null;
         if (super.containsKey(id)) {
@@ -43,13 +42,12 @@ public class SymbolTable extends HashMap<String, SymbolTableEntry> {
         } else if (hasFatherSymTab()) {
             symbolTableEntry = getFatherSymTab().containsEntry(id);
         } else {
-            throw new Exception("Semantic error: variable " + id + " not declared");
+            throw new Exception("[ERRORE SEMANTICO] variabile " + id + " non dichiarata");
         }
         return symbolTableEntry;
     }
-    */
 
-    public Boolean containsKey(String id) throws Exception {
+    public Boolean containsKey(String id) {
         if (super.containsKey(id)) {
             return true;
         } else if (hasFatherSymTab()) {
