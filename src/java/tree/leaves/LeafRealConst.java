@@ -1,6 +1,5 @@
 package tree.leaves;
 
-import symbol_table.SymbolTable;
 import symbol_table.ValueType;
 import visitor.Semantic_Int_Visitable;
 import visitor.Semantic_Int_Visitor;
@@ -11,15 +10,6 @@ public class LeafRealConst implements Semantic_Int_Visitable{
     
     // Controllo semantico
     public ValueType type = null;
-
-    public void setType(String t) {
-        try {
-            this.type = SymbolTable.StringToValueType(t);
-        } catch (Exception e) {
-            System.exit(0);
-            e.printStackTrace();
-        }
-    }
 
     public LeafRealConst(Double value) {
         this.value = value;

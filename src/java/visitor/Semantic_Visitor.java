@@ -155,10 +155,10 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
                     System.err.println("[SEMANTIC ERROR] tipo op NOT sbagliato");
                     System.exit(1);
                 }
-            } 
+            }
             // else if (exprNode.val_One instanceof CallFunNode) {
-            //     ((CallFunNode) exprNode.val_One).accept(this);
-            //     exprNode.setTypes(((CallFunNode) exprNode.val_One).types);
+            // ((CallFunNode) exprNode.val_One).accept(this);
+            // exprNode.setTypes(((CallFunNode) exprNode.val_One).types);
             // }
         }
     }
@@ -201,34 +201,40 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
     @Override
     public void visit(CallFunNode callFunNode) {
-        SymbolTableEntry functionDef = null;
+        // SymbolTableEntry functionDef = null;
 
-        // Controllo se il nome della funzione è nel Type Environment
-        SymbolTable symbolTable = stack.peek();
-        try{
-            if (symbolTable.containsKey(callFunNode.leafID.value)){
-                functionDef = symbolTable.containsFunctionEntry(callFunNode.leafID.value);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(0);
-        }
+        // // Controllo se il nome della funzione è nel Type Environment
+        // SymbolTable symbolTable = stack.peek();
+        // try{
+        // if (symbolTable.containsKey(callFunNode.leafID.value)){
+        // functionDef = symbolTable.containsFunctionEntry(callFunNode.leafID.value);
+        // }
+        // } catch (Exception e) {
+        // throw new Exception("[SEMANTIC ERROR] funzione non dichiarata");
+        // System.exit(0);
+        // }
 
-        // Controllo dei parametri della funzione
-        if (callFunNode.exprList != null) {
-            if (functionDef.inputParams.size() != callFunNode.exprList.size()) {
-                System.err.println("[SEMANTIC ERROR] errore chiamata funzione" + callFunNode.leafID.value + " numero di parametri inseriti sbagliato");
-                System.exit(0);
-            } else {
-                for (int i = 0; i < callFunNode.inputParams.size(); i++) {
-                    callFunNode.exprList.get(i).accept(this);
-                    if (getType_Boolean(callFunNode.exprList.get(i).type, functionDef.inputParams.get(i)) == null) {
-                        System.err.println("[SEMANTIC ERROR] type mismatch for call proc " + callFunNode.leafID.value + ". Required: " + functionDef.inputParams + ", provided: '" + callFunNode.exprList.get(i).types.get(0) + "' in position " + i);
-                        System.exit(0);
-                    }
-                }
-            }
-        }
+        // // Controllo dei parametri della funzione
+        // if (callFunNode.exprList != null) {
+        // if (functionDef.inputParams.size() != callFunNode.exprList.size()) {
+        // System.err.println("[SEMANTIC ERROR] errore chiamata funzione" +
+        // callFunNode.leafID.value + " numero di parametri inseriti sbagliato");
+        // System.exit(0);
+        // } else {
+        // for (int i = 0; i < callFunNode.inputParams.size(); i++) {
+        // callFunNode.exprList.get(i).accept(this);
+
+        // if (getType_Boolean(callFunNode.exprList.get(i).type,
+        // functionDef.inputParams.get(i)) == null) {
+        // System.err.println("[SEMANTIC ERROR] type mismatch for call proc " +
+        // callFunNode.leafID.value + ". Required: " + functionDef.inputParams + ",
+        // provided: '" + callFunNode.exprList.get(i).types.get(0) + "' in position " +
+        // i);
+        // System.exit(0);
+        // }
+        // }
+        // }
+        // }
     }
 
     @Override
@@ -266,13 +272,13 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
     @Override
     public void visit(ConstNode constNode) {
         if (constNode.value instanceof LeafIntegerConst) {
-            constNode.setType("integer");
+            constNode.type = ValueType.integer;
         } else if (constNode.value instanceof LeafRealConst) {
-            constNode.setType("real");
+            constNode.type = ValueType.real;
         } else if (constNode.value instanceof LeafBool) {
-            constNode.setType("bool");
+            constNode.type = ValueType.bool;
         } else if (constNode.value instanceof LeafStringConst) {
-            constNode.setType("string");
+            constNode.type = ValueType.string;
         }
     }
 
@@ -280,26 +286,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
     public void visit(ReturnNode resultNode) {
     }
 
-    @Override
-    public void visit(LeafIntegerConst leafIntegerConst) {
-        leafIntegerConst.setType("integer");
-    }
-
-    @Override
-    public void visit(LeafRealConst leafRealConst) {
-        leafRealConst.setType("real");
-    }
-
-    @Override
-    public void visit(LeafBool leafBool) {
-        leafBool.setType("bool");
-    }
-
-    @Override
-    public void visit(LeafStringConst leafStringConst) {
-        leafStringConst.setType("string");
-    }
-
+    // Visite delle foglie
     @Override
     public void visit(LeafID leafID) {
         SymbolTable symbolTable = stack.peek();
@@ -311,7 +298,24 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
             System.exit(1);
         }
     }
-
+    @Override
+    public void visit(LeafIntegerConst leafIntegerConst) {
+        leafIntegerConst.type = ValueType.integer;
+    }
+    @Override
+    public void visit(LeafRealConst leafRealConst) {
+        leafRealConst.type = ValueType.real;
+    }
+    @Override
+    public void visit(LeafBool leafBool) {
+        leafBool.type = ValueType.bool;
+    }
+    @Override
+    public void visit(LeafStringConst leafStringConst) {
+        leafStringConst.type = ValueType.string;
+    }
+    
+    // Metodi per il type checking
     public static boolean checkAssignmentType(ValueType variable, ValueType assign) {
         if (variable == ValueType.integer && assign == ValueType.integer)
             return true;
@@ -324,13 +328,6 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
         else
             return false;
     }
-
-    public static ValueType getType_AndOr(ValueType type1, ValueType type2) {
-        if (type1 == ValueType.bool && type2 == ValueType.bool)
-            return ValueType.bool;
-        return null;
-    }
-
     public static ValueType getType_Operations(ValueType type1, ValueType type2) {
         if (type1 == ValueType.integer && type2 == ValueType.integer)
             return ValueType.integer;
@@ -338,25 +335,28 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
             return ValueType.real;
         if (type1 == ValueType.real && type2 == ValueType.integer)
             return ValueType.real;
-        if (type1 == ValueType.real && type2 == ValueType.integer)
-            return ValueType.real;
         if (type1 == ValueType.real && type2 == ValueType.real)
             return ValueType.real;
         return null;
     }
-
-    public static ValueType getType_Boolean(ValueType type1, ValueType type2) {
+    public static ValueType getType_StrConc(ValueType type1, ValueType type2) {
+        if (type1 == ValueType.string && type2 == ValueType.string)
+            return ValueType.string;
+        return null;
+    }
+    public static ValueType getType_AndOr(ValueType type1, ValueType type2) {
         if (type1 == ValueType.bool && type2 == ValueType.bool)
             return ValueType.bool;
+        return null;
+    }
+    public static ValueType getType_Boolean(ValueType type1, ValueType type2) {
         if (type1 == ValueType.integer && type2 == ValueType.integer)
+            return ValueType.bool;
+        if (type1 == ValueType.real && type2 == ValueType.real)
             return ValueType.bool;
         if (type1 == ValueType.integer && type2 == ValueType.real)
             return ValueType.bool;
         if (type1 == ValueType.real && type2 == ValueType.integer)
-            return ValueType.bool;
-        if (type1 == ValueType.real && type2 == ValueType.real)
-            return ValueType.bool;
-        if (type1 == ValueType.string && type2 == ValueType.string)
             return ValueType.bool;
         return null;
     }

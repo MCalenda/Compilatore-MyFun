@@ -1,9 +1,5 @@
-real a := 5.0;
-
+bool x := true > true;
 
 main
-
-var a := 'ciao';
-integer y := a;
 
 end main;

@@ -36,7 +36,7 @@ public class SymbolTable extends HashMap<String, SymbolTableEntry> {
         }
     }
 
-    // Verifica se l'ID è contenuto ed è una variabile
+    // Ritorna la variabile con ID
     public SymbolTableEntry containsEntry(String id) throws Exception {
         SymbolTableEntry symbolTableEntry = null;
         if (super.containsKey(id)) {
@@ -49,7 +49,7 @@ public class SymbolTable extends HashMap<String, SymbolTableEntry> {
         return symbolTableEntry;
     }
 
-    // Verifica se l'ID è contenuto ed è una funzione
+    // Ritorna la funzione con ID
     public SymbolTableEntry containsFunctionEntry(String id) throws Exception {
         SymbolTableEntry symbolTableEntry = null;
         if (super.containsKey(id) && !super.get(id).isVariable()) {
