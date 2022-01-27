@@ -1,9 +1,4 @@
 import java.io.FileReader;
-import java.awt.Dimension;
-import java.awt.Font;
-
-import javax.swing.JFrame;
-import javax.swing.JTree;
 
 import cup.parser;
 import flex.Lexer;

@@ -8,45 +8,24 @@ public class SymbolTable extends HashMap<String, SymbolTableEntry> {
     public String symbolTableName;
     public SymbolTable fatherSymbolTable;
 
-    public void setFatherSymTab(SymbolTable fatherSymbolTable){
-        this.fatherSymbolTable = fatherSymbolTable;
-    }
-
-    public boolean hasFatherSymTab(){
-        return fatherSymbolTable != null; 
-    }
-
-    public SymbolTable getFatherSymTab(){
-        return fatherSymbolTable;
-    }
-
+    // Aggiunge una variabile all'interno della tabella
     public void createEntry_variable(String id, ValueType type) throws Exception {
         if (super.containsKey(id))
-            throw new Exception("[ERRORE SEMANTICO] variabile " + id + " già dichiarata");
+            throw new Exception("[SEMANTIC ERROR] variabile " + id + " già dichiarata");
         else {
             super.put(id, new SymbolTableEntry(id, type));
         }
     }
 
+    // Aggiunge una funzione all'interno della tabella
     public void createEntry_function(String id, ArrayList<ValueType> inputParams, ArrayList<ValueType> outputParams) throws Exception {
         if (super.containsKey(id))
-            throw new Exception("[ERRORE SEMANTICO] funzione " + id + " già dichiarata");
+            throw new Exception("[SEMANTIC ERROR] funzione " + id + " già dichiarata");
         else
             super.put(id, new SymbolTableEntry(id, inputParams, outputParams));
     }
 
-    public SymbolTableEntry containsEntry(String id) throws Exception {
-        SymbolTableEntry symbolTableEntry = null;
-        if (super.containsKey(id)) {
-            symbolTableEntry = super.get(id);
-        } else if (hasFatherSymTab()) {
-            symbolTableEntry = getFatherSymTab().containsEntry(id);
-        } else {
-            throw new Exception("[ERRORE SEMANTICO] variabile " + id + " non dichiarata");
-        }
-        return symbolTableEntry;
-    }
-
+    // Verifica se l'ID è semplicemente contenuto
     public Boolean containsKey(String id) {
         if (super.containsKey(id)) {
             return true;
@@ -56,8 +35,21 @@ public class SymbolTable extends HashMap<String, SymbolTableEntry> {
             return false;
         }
     }
-    
-    /* restituisce una entry (cambiare nome)
+
+    // Verifica se l'ID è contenuto ed è una variabile
+    public SymbolTableEntry containsEntry(String id) throws Exception {
+        SymbolTableEntry symbolTableEntry = null;
+        if (super.containsKey(id)) {
+            symbolTableEntry = super.get(id);
+        } else if (hasFatherSymTab()) {
+            symbolTableEntry = getFatherSymTab().containsEntry(id);
+        } else {
+            throw new Exception("[SEMANTIC ERROR] variabile " + id + " non dichiarata");
+        }
+        return symbolTableEntry;
+    }
+
+    // Verifica se l'ID è contenuto ed è una funzione
     public SymbolTableEntry containsFunctionEntry(String id) throws Exception {
         SymbolTableEntry symbolTableEntry = null;
         if (super.containsKey(id) && !super.get(id).isVariable()) {
@@ -65,16 +57,32 @@ public class SymbolTable extends HashMap<String, SymbolTableEntry> {
         } else if (hasFatherSymTab()) {
             symbolTableEntry = getFatherSymTab().containsFunctionEntry(id);
         } else {
-            throw new Exception("Semantic error: proc " + id + " not defined");
+            throw new Exception("[SEMANTIC ERROR] funzione " + id + " non dichiarata");
         }
         return symbolTableEntry;
-    */
+    }
+
+    public void setFatherSymTab(SymbolTable fatherSymbolTable) {
+        this.fatherSymbolTable = fatherSymbolTable;
+    }
+
+    public SymbolTable getFatherSymTab() {
+        return fatherSymbolTable;
+    }
+
+    public boolean hasFatherSymTab() {
+        return fatherSymbolTable != null;
+    }
 
     public static ValueType StringToValueType(String type) throws Exception {
-        if (type.equalsIgnoreCase("integer")) return ValueType.integer;
-        if (type.equalsIgnoreCase("string")) return ValueType.string;
-        if (type.equalsIgnoreCase("real")) return ValueType.real;
-        if (type.equalsIgnoreCase("bool"))  return ValueType.bool;
-        throw new Exception("Errore semantico: il tipo " + type + " non esiste");
+        if (type.equalsIgnoreCase("integer"))
+            return ValueType.integer;
+        if (type.equalsIgnoreCase("string"))
+            return ValueType.string;
+        if (type.equalsIgnoreCase("real"))
+            return ValueType.real;
+        if (type.equalsIgnoreCase("bool"))
+            return ValueType.bool;
+        throw new Exception("SEMANTIC ERROR: il tipo " + type + " non esiste");
     }
 }

@@ -100,7 +100,8 @@ public class SemanticVisitor implements ISemanticVisitor {
             if (procNode.paramDeclList != null) {
                 for (ParDeclNode parDeclNode : procNode.paramDeclList) {
                     ValueType valueType = SymbolTable.StringToType(parDeclNode.typeNode.type);
-                    for (int i = 0; i < parDeclNode.identifiers.size(); i++) in.add(valueType);
+                    for (int i = 0; i < parDeclNode.identifiers.size(); i++)
+                        in.add(valueType);
                 }
             }
 
@@ -145,7 +146,8 @@ public class SemanticVisitor implements ISemanticVisitor {
         procNode.procBody.accept(this);
 
         // Semantic check
-        // Controllo se il numero di tipi di ritorno della proc è minore di 1 (Inutile? Lo fa già l'analisi sintattica)
+        // Controllo se il numero di tipi di ritorno della proc è minore di 1 (Inutile?
+        // Lo fa già l'analisi sintattica)
         if (procNode.resultTypeList.size() < 1) {
             System.err.println("Semantic error: wrong declaration of result types");
             System.exit(0);
@@ -251,30 +253,30 @@ public class SemanticVisitor implements ISemanticVisitor {
     public void visit(StatListNode nodeList) {
         for (StatNode statNode : nodeList.statList) {
             switch (statNode.getClass().getSimpleName()) {
-                case "IfStatNode":
-                    IfStatNode ifStat = (IfStatNode) statNode;
-                    ifStat.accept(this);
-                    break;
-                case "WhileStatNode":
-                    WhileStatNode whileStatNode = (WhileStatNode) statNode;
-                    whileStatNode.accept(this);
-                    break;
-                case "ReadLnStatNode":
-                    ReadLnStatNode readStatNode = (ReadLnStatNode) statNode;
-                    readStatNode.accept(this);
-                    break;
-                case "WriteStatNode":
-                    WriteStatNode writeStatNode = (WriteStatNode) statNode;
-                    writeStatNode.accept(this);
-                    break;
-                case "AssignStatNode":
-                    AssignStatNode assignStatNode = (AssignStatNode) statNode;
-                    assignStatNode.accept(this);
-                    break;
-                case "CallProcNode":
-                    CallProcNode callProcNode = (CallProcNode) statNode;
-                    callProcNode.accept(this);
-                    break;
+            case "IfStatNode":
+                IfStatNode ifStat = (IfStatNode) statNode;
+                ifStat.accept(this);
+                break;
+            case "WhileStatNode":
+                WhileStatNode whileStatNode = (WhileStatNode) statNode;
+                whileStatNode.accept(this);
+                break;
+            case "ReadLnStatNode":
+                ReadLnStatNode readStatNode = (ReadLnStatNode) statNode;
+                readStatNode.accept(this);
+                break;
+            case "WriteStatNode":
+                WriteStatNode writeStatNode = (WriteStatNode) statNode;
+                writeStatNode.accept(this);
+                break;
+            case "AssignStatNode":
+                AssignStatNode assignStatNode = (AssignStatNode) statNode;
+                assignStatNode.accept(this);
+                break;
+            case "CallProcNode":
+                CallProcNode callProcNode = (CallProcNode) statNode;
+                callProcNode.accept(this);
+                break;
             }
         }
     }
@@ -346,9 +348,9 @@ public class SemanticVisitor implements ISemanticVisitor {
         for (ExprNode exprNode : node.exprList) {
             exprNode.accept(this);
             // Aggiungo i valueType di exprNode all'array temporaneo
-            for (ValueType valueType : exprNode.types) valueTypesTMP.add(valueType);
+            for (ValueType valueType : exprNode.types)
+                valueTypesTMP.add(valueType);
         }
-
 
         if (valueTypesTMP.size() != node.idList.size()) {
             System.err.println("Semantic Error: ID does not match with assign values in assign stat");
@@ -357,9 +359,8 @@ public class SemanticVisitor implements ISemanticVisitor {
 
         for (int i = 0; i < valueTypesTMP.size(); i++) {
             if (!checkAssignmentType(node.idList.get(i).type, valueTypesTMP.get(i))) {
-                //if (valueTypesTMP.get(i) != node.idList.get(i).type) {
-                System.err.println("Semantic Error: ID type does not match" +
-                        " with Assign Value type in assign stat for id: " + node.idList.get(i).value);
+                // if (valueTypesTMP.get(i) != node.idList.get(i).type) {
+                System.err.println("Semantic Error: ID type does not match" + " with Assign Value type in assign stat for id: " + node.idList.get(i).value);
                 System.exit(0);
             }
         }
@@ -388,7 +389,8 @@ public class SemanticVisitor implements ISemanticVisitor {
             } else {
                 for (int i = 0; i < symbolTableEntry.inputParams.size(); i++) {
                     node.exprList.get(i).accept(this);
-                    //if (node.exprList.get(i).types.get(0) != symbolTableEntry.inputParams.get(i)) {
+                    // if (node.exprList.get(i).types.get(0) != symbolTableEntry.inputParams.get(i))
+                    // {
                     if (getType_Boolean(node.exprList.get(i).types.get(0), symbolTableEntry.inputParams.get(i)) == null) {
                         System.err.println("Semantic error: type mismatch for call proc " + node.leafID.value + ". Required: " + symbolTableEntry.inputParams + ", provided: '" + node.exprList.get(i).types.get(0) + "' in position " + i);
                         System.exit(0);
@@ -426,55 +428,44 @@ public class SemanticVisitor implements ISemanticVisitor {
             ((ExprNode) exprNode.value1).accept(this);
             ((ExprNode) exprNode.value2).accept(this);
 
-            //Addizione, Sottrazione, Moltiplicazione, Divisione
-            if (
-                    exprNode.name.equalsIgnoreCase("AddOp") ||
-                            exprNode.name.equalsIgnoreCase("DiffOp") ||
-                            exprNode.name.equalsIgnoreCase("MulOp") ||
-                            exprNode.name.equalsIgnoreCase("DivOp")
-            ) {
+            // Addizione, Sottrazione, Moltiplicazione, Divisione
+            if (exprNode.name.equalsIgnoreCase("AddOp") || exprNode.name.equalsIgnoreCase("DiffOp") || exprNode.name.equalsIgnoreCase("MulOp") || exprNode.name.equalsIgnoreCase("DivOp")) {
                 // Se takenType == null -> Errore per tipi non compatibili
-                ValueType takenType = getType_Operations(
-                        ((ExprNode) exprNode.value1).types.get(0),
-                        ((ExprNode) exprNode.value2).types.get(0)
-                );
+                ValueType takenType = getType_Operations(((ExprNode) exprNode.value1).types.get(0), ((ExprNode) exprNode.value2).types.get(0));
 
                 if (takenType == null) {
                     System.err.println("Semantic error: type not compatible with operation (" + exprNode.name + "). First type: " + ((ExprNode) exprNode.value1).types.get(0) + ", second type: " + ((ExprNode) exprNode.value2).types.get(0));
                     System.exit(0);
-                } else exprNode.setType(takenType);
+                } else
+                    exprNode.setType(takenType);
 
             }
-            //AND, OR
+            // AND, OR
             else if (exprNode.name.equalsIgnoreCase("AndOp") || exprNode.name.equalsIgnoreCase("OrOp")) {
                 // Se takenType == null -> Errore per tipi non compatibili
-                ValueType takenType = getType_AndOr(
-                        ((ExprNode) exprNode.value1).types.get(0),
-                        ((ExprNode) exprNode.value2).types.get(0)
-                );
+                ValueType takenType = getType_AndOr(((ExprNode) exprNode.value1).types.get(0), ((ExprNode) exprNode.value2).types.get(0));
 
                 if (takenType == null) {
                     System.err.println("Semantic error: type not compatible with operation (" + exprNode.name + "). Required: [Boolean, Boolean], provided: [" + ((ExprNode) exprNode.value1).types.get(0) + ", " + ((ExprNode) exprNode.value2).types.get(0) + "]");
                     System.exit(0);
-                } else exprNode.setType(takenType);
+                } else
+                    exprNode.setType(takenType);
 
             }
-            //LT, GT, LE...
+            // LT, GT, LE...
             else {
                 if (((ExprNode) exprNode.value1).types.size() > 1 || ((ExprNode) exprNode.value2).types.size() > 1) {
                     System.err.println("Semantic error: callProc returns multiple values in logical operation (" + exprNode.name + ")");
                     System.exit(0);
                 }
                 // Se takenType == null -> Errore per tipi non compatibili
-                ValueType takenType = getType_Boolean(
-                        ((ExprNode) exprNode.value1).types.get(0),
-                        ((ExprNode) exprNode.value2).types.get(0)
-                );
+                ValueType takenType = getType_Boolean(((ExprNode) exprNode.value1).types.get(0), ((ExprNode) exprNode.value2).types.get(0));
 
                 if (takenType == null) {
                     System.err.println("Semantic error: type not compatible with logical operation (" + exprNode.name + "). First type: " + ((ExprNode) exprNode.value1).types.get(0) + ", second type: " + ((ExprNode) exprNode.value2).types.get(0));
                     System.exit(0);
-                } else exprNode.setType(takenType);
+                } else
+                    exprNode.setType(takenType);
             }
 
         } else if (exprNode.value1 != null) {
@@ -562,7 +553,6 @@ public class SemanticVisitor implements ISemanticVisitor {
             e.printStackTrace();
             System.exit(0);
         }
-
 
     }
 

@@ -2,11 +2,12 @@ package visitor;
 
 import symbol_table.SymbolTable;
 import symbol_table.SymbolTableEntry;
-import symbol_table.Type;
 import symbol_table.ValueType;
 import tree.leaves.*;
 import tree.nodes.*;
 import java.util.Stack;
+
+import java_cup.symbol;
 
 public class Semantic_Visitor implements Semantic_Int_Visitor {
 
@@ -38,9 +39,10 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
                     SymbolTable picked = stack.peek();
                     picked.createEntry_variable(idInitNode.leafID.value, varDeclNode.type);
                 } catch (Exception e) {
-                    System.out.println(("[ERRORE SEMANTICO] variabile " + idInitNode.leafID.value + " già dichiarata"));
+                    System.out.println(("[SEMANTIC ERROR] variabile " + idInitNode.leafID.value + " già dichiarata"));
                     System.exit(1);
                 }
+                // Passo il tipo dell'inizializzazione ad ogni elemento della lista di ID
                 idInitNode.type = varDeclNode.type;
                 idInitNode.accept(this);
             }
@@ -52,7 +54,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
                     SymbolTable picked = stack.peek();
                     picked.createEntry_variable(idInitObblNode.leafID.value, idInitObblNode.type);
                 } catch (Exception e) {
-                    System.out.println(("[ERRORE SEMANTICO] variabile " + idInitObblNode.leafID.value + " già dichiarata"));
+                    System.out.println(("[SEMANTIC ERROR] variabile " + idInitObblNode.leafID.value + " già dichiarata"));
                     System.exit(1);
                 }
                 idInitObblNode.accept(this);
@@ -62,15 +64,16 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
     @Override
     public void visit(IdInitNode idInitNode) {
+        // Passo il tipo dell'inizializzazione alla foglia
         idInitNode.leafID.type = idInitNode.type;
         idInitNode.leafID.accept(this);
+
+        // Nel caso ci sia un operazione di assegnamento
         if (idInitNode.exprNode != null) {
             idInitNode.exprNode.accept(this);
-            System.out.println("[DEBUG] " + idInitNode.leafID.value + ":" + idInitNode.type + " assegno "
-                    + idInitNode.exprNode.type);
+            System.out.println("[DEBUG] " + idInitNode.leafID.value + ":" + idInitNode.type + " assegno " + idInitNode.exprNode.type);
             if (!checkAssignmentType(idInitNode.type, idInitNode.exprNode.type)) {
-                System.err.println(
-                        "[ERRORE SEMANTICO] inizializzazione sbagliata per variabile " + idInitNode.leafID.value);
+                System.err.println("[SEMANTIC ERROR] inizializzazione sbagliata per variabile " + idInitNode.leafID.value);
                 System.exit(1);
             }
         }
@@ -78,43 +81,45 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
     @Override
     public void visit(ExprNode exprNode) {
+        // Se è un espressione con doppio argomento
         if (exprNode.val_One != null && exprNode.val_Two != null) {
             ((ExprNode) exprNode.val_One).accept(this);
             ((ExprNode) exprNode.val_Two).accept(this);
-            System.out.println("[DEBUG] " + (((ExprNode) exprNode.val_One).type) + " " + exprNode.op + " "
-                    + (((ExprNode) exprNode.val_Two).type));
-            if (exprNode.op.equalsIgnoreCase("PLUS") ||
-                    exprNode.op.equalsIgnoreCase("MINUS") ||
-                    exprNode.op.equalsIgnoreCase("TIMES") ||
-                    exprNode.op.equalsIgnoreCase("DIV")) {
-                ValueType resultType = getType_Operations(
-                        ((ExprNode) exprNode.val_One).type,
-                        ((ExprNode) exprNode.val_Two).type);
+
+            System.out.println("[DEBUG] " + (((ExprNode) exprNode.val_One).type) + " " + exprNode.op + " " + (((ExprNode) exprNode.val_Two).type));
+
+            // Se è un operazione matematica
+            if (exprNode.op.equalsIgnoreCase("PLUS") || exprNode.op.equalsIgnoreCase("MINUS") || exprNode.op.equalsIgnoreCase("TIMES") || exprNode.op.equalsIgnoreCase("DIV")) {
+                ValueType resultType = getType_Operations(((ExprNode) exprNode.val_One).type, ((ExprNode) exprNode.val_Two).type);
                 if (resultType == null) {
-                    System.err.println("[ERRORE SEMANTICO] tipi op PLUS/MINUS/TIMES/DIV sbagliato");
+                    System.err.println("[SEMANTIC ERROR] tipi op PLUS/MINUS/TIMES/DIV sbagliato");
                     System.exit(1);
                 } else
                     exprNode.type = resultType;
+
+                // Se è un AND o un OR
             } else if (exprNode.op.equalsIgnoreCase("AND") || exprNode.op.equalsIgnoreCase("OR")) {
-                ValueType resultType = getType_AndOr(
-                        ((ExprNode) exprNode.val_One).type,
-                        ((ExprNode) exprNode.val_Two).type);
+                ValueType resultType = getType_AndOr(((ExprNode) exprNode.val_One).type, ((ExprNode) exprNode.val_Two).type);
                 if (resultType == null) {
-                    System.err.println("[ERRORE SEMANTICO] tipi op AND/OR sbagliato");
+                    System.err.println("[SEMANTIC ERROR] tipi op AND/OR sbagliato");
                     System.exit(1);
                 } else
                     exprNode.type = resultType;
+
+                // Se è una qualsiasi altra operazione Booleana (<, <=, >, >=, =, !=)
             } else {
-                ValueType resultType = getType_Boolean(
-                        ((ExprNode) exprNode.val_One).type,
-                        ((ExprNode) exprNode.val_Two).type);
+                ValueType resultType = getType_Boolean(((ExprNode) exprNode.val_One).type, ((ExprNode) exprNode.val_Two).type);
                 if (resultType == null) {
-                    System.err.println("[ERRORE SEMANTICO] tipi op LT/GT/ecc. sbagliato");
+                    System.err.println("[SEMANTIC ERROR] tipi op LT/GT/ecc. sbagliato");
                     System.exit(1);
                 } else
                     exprNode.type = resultType;
             }
+
+            // Se è un espressione con argomento singolo
         } else if (exprNode.val_One != null) {
+
+            // Se è un assegnamento di qualche costante o ID
             if (exprNode.val_One instanceof LeafIntegerConst) {
                 ((LeafIntegerConst) exprNode.val_One).accept(this);
                 exprNode.type = ((LeafIntegerConst) exprNode.val_One).type;
@@ -130,14 +135,15 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
             } else if (exprNode.val_One instanceof LeafID) {
                 ((LeafID) exprNode.val_One).accept(this);
                 exprNode.type = ((LeafID) exprNode.val_One).type;
+
+                // Se è un operazione unaria come UMINUS o NOT
             } else if (exprNode.op.equalsIgnoreCase("UMINUS")) {
                 ((ExprNode) exprNode.val_One).accept(this);
                 System.out.println("[DEBUG] " + exprNode.op + " " + (((ExprNode) exprNode.val_One).type));
-                if (((ExprNode) exprNode.val_One).type == ValueType.integer
-                    || ((ExprNode) exprNode.val_One).type == ValueType.real)
+                if (((ExprNode) exprNode.val_One).type == ValueType.integer || ((ExprNode) exprNode.val_One).type == ValueType.real)
                     exprNode.type = (((ExprNode) exprNode.val_One).type);
                 else {
-                    System.err.println("[ERRORE SEMANTICO] tipi op UMINUS sbagliato");
+                    System.err.println("[SEMANTIC ERROR] tipi op UMINUS sbagliato");
                     System.exit(1);
                 }
             } else if (exprNode.op.equalsIgnoreCase("NOT")) {
@@ -146,19 +152,14 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
                 if (((ExprNode) exprNode.val_One).type == ValueType.bool)
                     exprNode.type = (((ExprNode) exprNode.val_One).type);
                 else {
-                    System.err.println("[ERRORE SEMANTICO] tipo op NOT sbagliato");
+                    System.err.println("[SEMANTIC ERROR] tipo op NOT sbagliato");
                     System.exit(1);
                 }
-            }
-            /*
-             * // CallProc
-             * else if (exprNode.val_One instanceof CallProcNode) {
-             * ((CallProcNode) exprNode.value1).accept(this);
-             * exprNode.setTypes(((CallProcNode) exprNode.value1).types);
-             * }
-             * 
-             */
-
+            } 
+            // else if (exprNode.val_One instanceof CallFunNode) {
+            //     ((CallFunNode) exprNode.val_One).accept(this);
+            //     exprNode.setTypes(((CallFunNode) exprNode.val_One).types);
+            // }
         }
     }
 
@@ -166,8 +167,11 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
     public void visit(MainNode mainNode) {
         SymbolTable symbolTable = new SymbolTable();
         symbolTable.symbolTableName = "Main";
+        // Setta come padre la tabella di ROOT
         symbolTable.setFatherSymTab(stack.firstElement());
         stack.push(symbolTable);
+
+        // Se il main a delle inizializzazioni
         if (mainNode.varDeclList != null) {
             for (VarDeclNode varDeclNode : mainNode.varDeclList) {
                 varDeclNode.accept(this);
@@ -197,7 +201,34 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
     @Override
     public void visit(CallFunNode callFunNode) {
+        SymbolTableEntry functionDef = null;
 
+        // Controllo se il nome della funzione è nel Type Environment
+        SymbolTable symbolTable = stack.peek();
+        try{
+            if (symbolTable.containsKey(callFunNode.leafID.value)){
+                functionDef = symbolTable.containsFunctionEntry(callFunNode.leafID.value);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(0);
+        }
+
+        // Controllo dei parametri della funzione
+        if (callFunNode.exprList != null) {
+            if (functionDef.inputParams.size() != callFunNode.exprList.size()) {
+                System.err.println("[SEMANTIC ERROR] errore chiamata funzione" + callFunNode.leafID.value + " numero di parametri inseriti sbagliato");
+                System.exit(0);
+            } else {
+                for (int i = 0; i < callFunNode.inputParams.size(); i++) {
+                    callFunNode.exprList.get(i).accept(this);
+                    if (getType_Boolean(callFunNode.exprList.get(i).type, functionDef.inputParams.get(i)) == null) {
+                        System.err.println("[SEMANTIC ERROR] type mismatch for call proc " + callFunNode.leafID.value + ". Required: " + functionDef.inputParams + ", provided: '" + callFunNode.exprList.get(i).types.get(0) + "' in position " + i);
+                        System.exit(0);
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -329,5 +360,4 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
             return ValueType.bool;
         return null;
     }
-
 }

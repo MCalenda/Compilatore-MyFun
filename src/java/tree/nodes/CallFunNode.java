@@ -4,15 +4,20 @@ import java.util.ArrayList;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import symbol_table.ValueType;
 import tree.leaves.LeafID;
+import visitor.Semantic_Int_Visitable;
+import visitor.Semantic_Int_Visitor;
 import visitor.Syntax_Int_Visitable;
 import visitor.Syntax_Int_Visitor;
 
-public class CallFunNode extends DefaultMutableTreeNode implements Syntax_Int_Visitable {
+public class CallFunNode extends DefaultMutableTreeNode implements Syntax_Int_Visitable, Semantic_Int_Visitable {
     public String name = "CallFunNode";
     public LeafID leafID;
     public ArrayList<ExprNode> exprList;
 
+    public ArrayList<ValueType> inputParams;
+    public ArrayList<ValueType> outputParams;
 
     public CallFunNode(LeafID leafID, ArrayList<ExprNode> exprList) {
         super("CallFunNode");
@@ -30,5 +35,11 @@ public class CallFunNode extends DefaultMutableTreeNode implements Syntax_Int_Vi
     @Override
     public DefaultMutableTreeNode accept(Syntax_Int_Visitor v) {
         return v.visit(this);
+    }
+
+
+    @Override
+    public void accept(Semantic_Int_Visitor v) {
+        v.visit(this); 
     }
 }
