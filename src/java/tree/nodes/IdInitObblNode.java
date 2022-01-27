@@ -2,6 +2,7 @@ package tree.nodes;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import symbol_table.SymbolTable;
 import symbol_table.ValueType;
 import tree.leaves.LeafID;
 import visitor.Semantic_Int_Visitable;
@@ -24,7 +25,12 @@ public class IdInitObblNode extends DefaultMutableTreeNode implements Syntax_Int
     }
 
     public void setType(String t) {
-        //inferenza di tipo 
+        try {
+            this.type = SymbolTable.StringToValueType(t);
+        } catch (Exception e) {
+            System.exit(0);
+            e.printStackTrace();
+        }
     }
 
     @Override

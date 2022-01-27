@@ -21,7 +21,7 @@ public class SymbolTable extends HashMap<String, SymbolTableEntry> {
     }
 
     public void createEntry_variable(String id, ValueType type) throws Exception {
-        if (this.containsKey(id))
+        if (super.containsKey(id))
             throw new Exception("[ERRORE SEMANTICO] variabile " + id + " già dichiarata");
         else {
             super.put(id, new SymbolTableEntry(id, type));

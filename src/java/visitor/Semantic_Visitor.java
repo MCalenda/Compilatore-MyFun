@@ -45,21 +45,18 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
                 idInitNode.accept(this);
             }
         } else if (varDeclNode.IdListInitObbl != null) {
-            /*
-             * VAR necessita inferenza di tipo
-             * for (IdInitObblNode idInitObblNode : varDeclNode.IdListInitObbl) {
-             * try {
-             * SymbolTable picked = stack.peek();
-             * //inferenza di tipo
-             * picked.createEntry_variable(idInitObblNode.leafID.value,
-             * varDeclNode.type.type);
-             * } catch (Exception e) {
-             * e.printStackTrace();
-             * }
-             * idInitObblNode.accept(this);
-             * idInitObblNode.setType(varDeclNode.type.type);
-             * }
-             */
+            for (IdInitObblNode idInitObblNode : varDeclNode.IdListInitObbl) {
+                try {
+                    idInitObblNode.value.accept(this);
+                    idInitObblNode.type = idInitObblNode.value.type;
+                    SymbolTable picked = stack.peek();
+                    picked.createEntry_variable(idInitObblNode.leafID.value, idInitObblNode.type);
+                } catch (Exception e) {
+                    System.out.println(("[ERRORE SEMANTICO] variabile " + idInitObblNode.leafID.value + " già dichiarata"));
+                    System.exit(1);
+                }
+                idInitObblNode.accept(this);
+            }
         }
     }
 
@@ -133,20 +130,19 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
             } else if (exprNode.val_One instanceof LeafID) {
                 ((LeafID) exprNode.val_One).accept(this);
                 exprNode.type = ((LeafID) exprNode.val_One).type;
-            }
-            else if (exprNode.op.equalsIgnoreCase("UMINUS")) {
+            } else if (exprNode.op.equalsIgnoreCase("UMINUS")) {
                 ((ExprNode) exprNode.val_One).accept(this);
-                System.out.println("[DEBUG] " + exprNode.op + " " + (((ExprNode) exprNode.val_One).type) );
-                if (((ExprNode) exprNode.val_One).type == ValueType.integer || ((ExprNode) exprNode.val_One).type == ValueType.real)
+                System.out.println("[DEBUG] " + exprNode.op + " " + (((ExprNode) exprNode.val_One).type));
+                if (((ExprNode) exprNode.val_One).type == ValueType.integer
+                    || ((ExprNode) exprNode.val_One).type == ValueType.real)
                     exprNode.type = (((ExprNode) exprNode.val_One).type);
                 else {
                     System.err.println("[ERRORE SEMANTICO] tipi op UMINUS sbagliato");
                     System.exit(1);
                 }
-            }
-            else if (exprNode.op.equalsIgnoreCase("NOT")) {
+            } else if (exprNode.op.equalsIgnoreCase("NOT")) {
                 ((ExprNode) exprNode.val_One).accept(this);
-                System.out.println("[DEBUG] " + exprNode.op + " " + (((ExprNode) exprNode.val_One).type) );
+                System.out.println("[DEBUG] " + exprNode.op + " " + (((ExprNode) exprNode.val_One).type));
                 if (((ExprNode) exprNode.val_One).type == ValueType.bool)
                     exprNode.type = (((ExprNode) exprNode.val_One).type);
                 else {
@@ -155,13 +151,13 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
                 }
             }
             /*
-            // CallProc
-            else if (exprNode.val_One instanceof CallProcNode) {
-                ((CallProcNode) exprNode.value1).accept(this);
-                exprNode.setTypes(((CallProcNode) exprNode.value1).types);
-            }
-            
-        */
+             * // CallProc
+             * else if (exprNode.val_One instanceof CallProcNode) {
+             * ((CallProcNode) exprNode.value1).accept(this);
+             * exprNode.setTypes(((CallProcNode) exprNode.value1).types);
+             * }
+             * 
+             */
 
         }
     }
@@ -231,12 +227,22 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
     @Override
     public void visit(IdInitObblNode idInitObblNode) {
-
+        idInitObblNode.leafID.type = idInitObblNode.type;
+        idInitObblNode.leafID.accept(this);
+        System.out.println("[DEBUG] " + idInitObblNode.leafID.value + ":var assegno " + idInitObblNode.value.type);
     }
 
     @Override
     public void visit(ConstNode constNode) {
-
+        if (constNode.value instanceof LeafIntegerConst) {
+            constNode.setType("integer");
+        } else if (constNode.value instanceof LeafRealConst) {
+            constNode.setType("real");
+        } else if (constNode.value instanceof LeafBool) {
+            constNode.setType("bool");
+        } else if (constNode.value instanceof LeafStringConst) {
+            constNode.setType("string");
+        }
     }
 
     @Override

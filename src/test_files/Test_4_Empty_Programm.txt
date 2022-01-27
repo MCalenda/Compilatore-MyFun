@@ -1,7 +1,9 @@
+real a := 5.0;
 
 
 main
 
-real y := not 5.5;
+var a := 'ciao';
+integer y := a;
 
 end main;
