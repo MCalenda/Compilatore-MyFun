@@ -50,7 +50,7 @@ VarDecl ::= Type:type IdListInit:idListInit SEMI                                
 
 // TESTED ✅
 VarDecList ::= /* empty */                                                      {: RESULT= new ArrayList<VarDeclNode>(); :}
-    | VarDecl:varDecl VarDecList:varDecList                                     {: ((ArrayList<VarDeclNode>)varDecList).add((VarDeclNode) varDecl); RESULT = varDecList; :}
+    | VarDecl:varDecl VarDecList:varDecList                                     {: ((ArrayList<VarDeclNode>)varDecList).add(0, (VarDeclNode) varDecl); RESULT = varDecList; :}
 ;
 
 // TESTED ✅
@@ -61,20 +61,20 @@ Type ::= INTEGER                                                                
 ;
 
 // TESTED ✅
-IdList ::= ID:id                                                                {: ArrayList<LeafID> tmp_list = new ArrayList<LeafID>(); tmp_list.add(new LeafID(id)); RESULT = tmp_list; :}
-    | IdList:idList COMMA ID:id                                                 {: ((ArrayList<LeafID>) idList).add(new LeafID(id)); RESULT = idList; :}
+IdList ::= ID:id                                                                {: ArrayList<LeafID> tmp_list = new ArrayList<LeafID>(); tmp_list.add(0, new LeafID(id)); RESULT = tmp_list; :}
+    | IdList:idList COMMA ID:id                                                 {: ((ArrayList<LeafID>) idList).add(0, new LeafID(id)); RESULT = idList; :}
 ;
 
 // TESTED ✅
-IdListInit ::= ID:id                                                            {: ArrayList<IdInitNode> tmp_list = new ArrayList<IdInitNode>(); tmp_list.add(new IdInitNode(new LeafID(id))); RESULT = tmp_list; :}
-    | IdListInit:idListInit COMMA ID:id                                         {: ((ArrayList<IdInitNode>) idListInit).add(new IdInitNode(new LeafID(id))); RESULT = idListInit; :}
-    | ID:id ASSIGN Expr:expr                                                    {: ArrayList<IdInitNode> tmp_list = new ArrayList<IdInitNode>(); tmp_list.add(new IdInitNode(new LeafID(id), (ExprNode) expr)); RESULT = tmp_list; :}
-    | IdListInit:idListInit COMMA ID:id ASSIGN Expr:expr                        {: ((ArrayList<IdInitNode>) idListInit).add(new IdInitNode(new LeafID(id), (ExprNode) expr)); RESULT = idListInit; :}
+IdListInit ::= ID:id                                                            {: ArrayList<IdInitNode> tmp_list = new ArrayList<IdInitNode>(); tmp_list.add(0, new IdInitNode(new LeafID(id))); RESULT = tmp_list; :}
+    | IdListInit:idListInit COMMA ID:id                                         {: ((ArrayList<IdInitNode>) idListInit).add(0, new IdInitNode(new LeafID(id))); RESULT = idListInit; :}
+    | ID:id ASSIGN Expr:expr                                                    {: ArrayList<IdInitNode> tmp_list = new ArrayList<IdInitNode>(); tmp_list.add(0, new IdInitNode(new LeafID(id), (ExprNode) expr)); RESULT = tmp_list; :}
+    | IdListInit:idListInit COMMA ID:id ASSIGN Expr:expr                        {: ((ArrayList<IdInitNode>) idListInit).add(0, new IdInitNode(new LeafID(id), (ExprNode) expr)); RESULT = idListInit; :}
 ;
 
 // TESTED ✅
-IdListInitObbl ::= ID:id ASSIGN Const:constant                                  {: ArrayList<IdInitObblNode> tmp_list = new ArrayList<IdInitObblNode>(); tmp_list.add(new IdInitObblNode(new LeafID(id), (ConstNode) constant)); RESULT = tmp_list; :}
-    | IdListInitObbl:idListInitObbl COMMA ID:id ASSIGN Const:constant           {: ((ArrayList<IdInitObblNode>) idListInitObbl).add(new IdInitObblNode(new LeafID(id), (ConstNode) constant)); RESULT = idListInitObbl; :}
+IdListInitObbl ::= ID:id ASSIGN Const:constant                                  {: ArrayList<IdInitObblNode> tmp_list = new ArrayList<IdInitObblNode>(); tmp_list.add(0, new IdInitObblNode(new LeafID(id), (ConstNode) constant)); RESULT = tmp_list; :}
+    | IdListInitObbl:idListInitObbl COMMA ID:id ASSIGN Const:constant           {: ((ArrayList<IdInitObblNode>) idListInitObbl).add(0, new IdInitObblNode(new LeafID(id), (ConstNode) constant)); RESULT = idListInitObbl; :}
 ;
 
 // TESTED ✅
@@ -92,7 +92,7 @@ Fun ::= FUN ID:id LPAR ParamDeclList:paramDeclList RPAR COLON Type:type VarDecLi
 
 // TESTED ✅
 FunList ::= /* empty */                                                         {: RESULT= new ArrayList<FunNode>(); :}
-    | Fun:fun FunList:funList                                                   {: ((ArrayList<FunNode>)funList).add((FunNode) fun); RESULT = funList; :}
+    | Fun:fun FunList:funList                                                   {: ((ArrayList<FunNode>)funList).add(0, (FunNode) fun); RESULT = funList; :}
 ;
 
 // TESTED ✅
@@ -111,8 +111,8 @@ ParamDeclList ::= /* empty */                                                   
 ;
 
 // TESTED ✅
-NonEmptyParamDeclList ::= ParDecl:parDecl                                       {: ArrayList<ParamDecNode> tmp_list = new ArrayList<ParamDecNode>(); tmp_list.add((ParamDecNode) parDecl); RESULT = tmp_list; :}
-    | NonEmptyParamDeclList:nonEmptyParamDeclList COMMA ParDecl:parDecl         {: ((ArrayList<ParamDecNode>) nonEmptyParamDeclList).add((ParamDecNode) parDecl); RESULT = nonEmptyParamDeclList; :}
+NonEmptyParamDeclList ::= ParDecl:parDecl                                       {: ArrayList<ParamDecNode> tmp_list = new ArrayList<ParamDecNode>(); tmp_list.add(0, (ParamDecNode) parDecl); RESULT = tmp_list; :}
+    | NonEmptyParamDeclList:nonEmptyParamDeclList COMMA ParDecl:parDecl         {: ((ArrayList<ParamDecNode>) nonEmptyParamDeclList).add(0, (ParamDecNode) parDecl); RESULT = nonEmptyParamDeclList; :}
 ;
 
 // TESTED ✅
@@ -130,7 +130,7 @@ Stat ::= IfStat:ifStat SEMI                                                     
 ;
 
 // TESTED ✅
-StatList ::= Stat:stat StatList:statList                                                    {: ((ArrayList<StatNode>)statList).add((StatNode) stat); RESULT = statList; :}
+StatList ::= Stat:stat StatList:statList                                                    {: ((ArrayList<StatNode>)statList).add(0, (StatNode) stat); RESULT = statList; :}
     | /* empty */                                                                           {: RESULT = new ArrayList<StatNode>(); :}
 ;
 
@@ -192,8 +192,8 @@ Expr ::= TRUE:val                                                               
 ;
 
 // TESTED ✅
-ExprList ::= Expr:expr                                                          {: ArrayList<ExprNode> tmp_list = new ArrayList<ExprNode>(); tmp_list.add((ExprNode) expr); RESULT = tmp_list; :}
-    | Expr:expr COMMA ExprList:exprList                                         {: ((ArrayList<ExprNode>) exprList).add((ExprNode) expr); RESULT = exprList; :}
-    | OUTPAR ID:id                                                              {: ArrayList<ExprNode> tmp_list = new ArrayList<ExprNode>(); tmp_list.add(new ExprNode("OUTPAR", new LeafID(id))); RESULT = tmp_list; :}
-    | OUTPAR ID:id COMMA ExprList:exprList                                      {: ((ArrayList<ExprNode>) exprList).add(new ExprNode("OUTPAR", new LeafID(id))); RESULT = exprList; :}
+ExprList ::= Expr:expr                                                          {: ArrayList<ExprNode> tmp_list = new ArrayList<ExprNode>(); tmp_list.add(0, (ExprNode) expr); RESULT = tmp_list; :}
+    | Expr:expr COMMA ExprList:exprList                                         {: ((ArrayList<ExprNode>) exprList).add(0, (ExprNode) expr); RESULT = exprList; :}
+    | OUTPAR ID:id                                                              {: ArrayList<ExprNode> tmp_list = new ArrayList<ExprNode>(); tmp_list.add(0, new ExprNode("OUTPAR", new LeafID(id))); RESULT = tmp_list; :}
+    | OUTPAR ID:id COMMA ExprList:exprList                                      {: ((ArrayList<ExprNode>) exprList).add(0, new ExprNode("OUTPAR", new LeafID(id))); RESULT = exprList; :}
 ;
