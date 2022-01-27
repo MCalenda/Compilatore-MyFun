@@ -15,9 +15,10 @@ public class CallFunNode extends DefaultMutableTreeNode implements Syntax_Int_Vi
     public String name = "CallFunNode";
     public LeafID leafID;
     public ArrayList<ExprNode> exprList;
+    
+    // Controllo semantico
+    public ArrayList<ValueType> types = new ArrayList<>();
 
-    public ArrayList<ValueType> inputParams;
-    public ArrayList<ValueType> outputParams;
 
     public CallFunNode(LeafID leafID, ArrayList<ExprNode> exprList) {
         super("CallFunNode");
@@ -25,18 +26,15 @@ public class CallFunNode extends DefaultMutableTreeNode implements Syntax_Int_Vi
         this.exprList = exprList;
     }
 
-
     public CallFunNode(LeafID leafID) {
         super("CallFunNode");
         this.leafID = leafID;
     }
 
-
     @Override
     public DefaultMutableTreeNode accept(Syntax_Int_Visitor v) {
         return v.visit(this);
     }
-
 
     @Override
     public void accept(Semantic_Int_Visitor v) {

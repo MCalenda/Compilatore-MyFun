@@ -15,18 +15,8 @@ public class ExprNode extends DefaultMutableTreeNode implements Syntax_Int_Visit
     public Object val_One;
     public Object val_Two;
 
-    // Semantic check
+    // Controllo semantico
     public ValueType type = null;
-
-    public void setType(String t) {
-        try {
-            this.type = SymbolTable.StringToValueType(t);
-        } catch (Exception e) {
-            System.exit(0);
-            e.printStackTrace();
-        }
-    }
-
 
     public ExprNode(String op, Object val_One) {
         super("ExprNode");

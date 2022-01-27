@@ -1,5 +1,11 @@
-bool x := true > true;
+fun test(out integer x, bool g):
+    if (g) {
+        x := 5;
+    }
+end fun;
 
 main
-
+    integer x;
+    bool g := true;
+    test(@x, g);
 end main;

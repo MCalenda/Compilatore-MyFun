@@ -15,7 +15,7 @@ public class IdInitObblNode extends DefaultMutableTreeNode implements Syntax_Int
     public LeafID leafID;
     public ConstNode value;
 
-    // Semantic check
+    // Controllo semantico
     public ValueType type = null;
 
     public IdInitObblNode(LeafID leafID, ConstNode value) {

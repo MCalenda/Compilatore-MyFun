@@ -12,7 +12,7 @@ public class ConstNode extends DefaultMutableTreeNode implements Syntax_Int_Visi
     public String name = "ConstNode";
     public Object value;
 
-    // Semantic check
+    // Controllo semantico
     public ValueType type = null;
 
     public ConstNode(Object val_One) {

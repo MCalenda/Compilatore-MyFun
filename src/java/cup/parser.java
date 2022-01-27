@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import tree.nodes.*;
 import tree.leaves.*;
 import symbol_table.*;
+import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
   */
@@ -484,7 +485,7 @@ public class parser extends java_cup.runtime.lr_parser {
 
 
 /** Cup generated class to encapsulate user supplied action code.*/
-@SuppressWarnings({"unchecked", "unused"})
+@SuppressWarnings({"rawtypes", "unchecked", "unused"})
 class CUP$parser$actions {
   private final parser parser;
 
@@ -675,7 +676,7 @@ class CUP$parser$actions {
 		int idleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		String id = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 ((ArrayList<IdInitNode>) idListInit).add(0, new IdInitNode(new LeafID(id))); RESULT = idListInit; 
+		 ((ArrayList<IdInitNode>) idListInit).add(new IdInitNode(new LeafID(id))); RESULT = idListInit; 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("IdListInit",6, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -708,7 +709,7 @@ class CUP$parser$actions {
 		int exprleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int exprright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object expr = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 ((ArrayList<IdInitNode>) idListInit).add(0, new IdInitNode(new LeafID(id), (ExprNode) expr)); RESULT = idListInit; 
+		 ((ArrayList<IdInitNode>) idListInit).add(new IdInitNode(new LeafID(id), (ExprNode) expr)); RESULT = idListInit; 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("IdListInit",6, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -741,7 +742,7 @@ class CUP$parser$actions {
 		int constantleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int constantright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object constant = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 ((ArrayList<IdInitObblNode>) idListInitObbl).add(0, new IdInitObblNode(new LeafID(id), (ConstNode) constant)); RESULT = idListInitObbl; 
+		 ((ArrayList<IdInitObblNode>) idListInitObbl).add(new IdInitObblNode(new LeafID(id), (ConstNode) constant)); RESULT = idListInitObbl; 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("IdListInitObbl",7, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -975,7 +976,7 @@ class CUP$parser$actions {
 		int parDeclleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int parDeclright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object parDecl = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 ((ArrayList<ParamDecNode>) nonEmptyParamDeclList).add(0, (ParamDecNode) parDecl); RESULT = nonEmptyParamDeclList; 
+		 ((ArrayList<ParamDecNode>) nonEmptyParamDeclList).add((ParamDecNode) parDecl); RESULT = nonEmptyParamDeclList; 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("NonEmptyParamDeclList",17, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1623,7 +1624,7 @@ class CUP$parser$actions {
 		int exprListleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int exprListright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object exprList = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 ((ArrayList<ExprNode>) exprList).add(0, (ExprNode) expr); RESULT = exprList; 
+		 ((ArrayList<ExprNode>) exprList).add((ExprNode) expr); RESULT = exprList; 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ExprList",15, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1650,7 +1651,7 @@ class CUP$parser$actions {
 		int exprListleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int exprListright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object exprList = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 ((ArrayList<ExprNode>) exprList).add(0, new ExprNode("OUTPAR", new LeafID(id))); RESULT = exprList; 
+		 ((ArrayList<ExprNode>) exprList).add(new ExprNode("OUTPAR", new LeafID(id))); RESULT = exprList; 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ExprList",15, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;

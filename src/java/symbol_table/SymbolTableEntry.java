@@ -7,7 +7,7 @@ public class SymbolTableEntry {
     public ValueType valueType;
     public Type type;
     public ArrayList<ValueType> inputParams;
-    public ArrayList<ValueType> outputParams;
+    public ValueType output;
 
     public SymbolTableEntry(String id, ValueType valueType) {
         this.type = Type.variable;
@@ -15,11 +15,11 @@ public class SymbolTableEntry {
         this.valueType = valueType;
     }
 
-    public SymbolTableEntry(String id, ArrayList<ValueType> inputParams, ArrayList<ValueType> outputParams) {
+    public SymbolTableEntry(String id, ArrayList<ValueType> inputParams, ValueType output) {
         this.type = Type.function;
         this.id = id;
         this.inputParams = inputParams;
-        this.outputParams = outputParams;
+        this.output = output;
     }
 
     public boolean isVariable() {

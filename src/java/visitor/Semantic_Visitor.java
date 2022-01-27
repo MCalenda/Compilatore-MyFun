@@ -5,6 +5,8 @@ import symbol_table.SymbolTableEntry;
 import symbol_table.ValueType;
 import tree.leaves.*;
 import tree.nodes.*;
+
+import java.util.ArrayList;
 import java.util.Stack;
 
 import java_cup.symbol;
@@ -64,8 +66,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
     @Override
     public void visit(IdInitNode idInitNode) {
-        // Passo il tipo dell'inizializzazione alla foglia
-        idInitNode.leafID.type = idInitNode.type;
+        // Aggiorno il tipo di leafID
         idInitNode.leafID.accept(this);
 
         // Nel caso ci sia un operazione di assegnamento
@@ -76,6 +77,8 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
                 System.err.println("[SEMANTIC ERROR] inizializzazione sbagliata per variabile " + idInitNode.leafID.value);
                 System.exit(1);
             }
+        } else {
+            System.out.println("[DEBUG] " + idInitNode.leafID.value + ":" + idInitNode.type + " dichiarato");
         }
     }
 
@@ -136,7 +139,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
                 ((LeafID) exprNode.val_One).accept(this);
                 exprNode.type = ((LeafID) exprNode.val_One).type;
 
-                // Se è un operazione unaria come UMINUS o NOT
+            // Se è un operazione unaria come UMINUS o NOT
             } else if (exprNode.op.equalsIgnoreCase("UMINUS")) {
                 ((ExprNode) exprNode.val_One).accept(this);
                 System.out.println("[DEBUG] " + exprNode.op + " " + (((ExprNode) exprNode.val_One).type));
@@ -155,11 +158,12 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
                     System.err.println("[SEMANTIC ERROR] tipo op NOT sbagliato");
                     System.exit(1);
                 }
+            //Call fun
+            } else if (exprNode.val_One instanceof CallFunNode) {
+                ((CallFunNode) exprNode.val_One).accept(this);
+                //una funzione puo restituire piu tipi
+                //exprNode.type = ((CallFunNode) exprNode.val_One).type;
             }
-            // else if (exprNode.val_One instanceof CallFunNode) {
-            // ((CallFunNode) exprNode.val_One).accept(this);
-            // exprNode.setTypes(((CallFunNode) exprNode.val_One).types);
-            // }
         }
     }
 
@@ -167,14 +171,19 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
     public void visit(MainNode mainNode) {
         SymbolTable symbolTable = new SymbolTable();
         symbolTable.symbolTableName = "Main";
-        // Setta come padre la tabella di ROOT
+        // Setta come padre Global
         symbolTable.setFatherSymTab(stack.firstElement());
         stack.push(symbolTable);
 
-        // Se il main a delle inizializzazioni
+        // Se il main ha delle inizializzazioni
         if (mainNode.varDeclList != null) {
             for (VarDeclNode varDeclNode : mainNode.varDeclList) {
                 varDeclNode.accept(this);
+            }
+        }
+        if (mainNode.statList != null) {
+            for (StatNode statNode : mainNode.statList) {
+                statNode.accept(this);
             }
         }
     }
@@ -191,6 +200,80 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
     @Override
     public void visit(FunNode funNode) {
+        try {
+            ArrayList<ValueType> in;
+            ValueType out = funNode.type;
+            in = new ArrayList<>();
+
+            if (funNode.paramDecList != null) {
+                for (ParamDecNode parDecNode : funNode.paramDecList) {
+                    ValueType valueType = parDecNode.type;
+                    in.add(valueType);
+                }
+            }
+            stack.firstElement().createEntry_function(funNode.leafID.value, in, out);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(0);
+        }
+        /*
+        // Se non c'è posso continuare
+        SymbolTable symbolTable = new SymbolTable();
+        symbolTable.symbolTableName = "Function " + procNode.id.value + " scope";
+        symbolTable.setFatherSymTab(stack.firstElement());
+        stack.push(symbolTable);
+
+        // ArrayList<ParDeclNode>
+        if (procNode.paramDeclList != null) {
+            for (ParDeclNode pdn : procNode.paramDeclList)
+                pdn.accept(this);
+        }
+
+        // ProcBody
+        procNode.procBody.accept(this);
+
+        // Semantic check
+        // Controllo se il numero di tipi di ritorno della proc è minore di 1 (Inutile?
+        // Lo fa già l'analisi sintattica)
+        if (procNode.resultTypeList.size() < 1) {
+            System.err.println("Semantic error: wrong declaration of result types");
+            System.exit(0);
+        } else {
+            for (int i = 0; i < procNode.resultTypeList.size(); i++) {
+                ResultTypeNode resultTypeNode = procNode.resultTypeList.get(i);
+
+                // Check se un tipo di ritorno è void
+                if (resultTypeNode.isVoid) {
+                    if (procNode.procBody.returnExprs.size() != 0) {
+                        System.err.println("Semantic error: function " + procNode.id.value + " must be void only or some other type.");
+                        System.exit(0);
+                    }
+                }
+                // : if (resultTypeNode.isVoid)
+                else {
+                    if (procNode.procBody.returnExprs.size() != procNode.resultTypeList.size()) {
+                        System.err.println("Semantic error: the number of returned values in proc " + procNode.id.value + " is different from the one defined. Required: " + procNode.resultTypeList.size() + ", provided: " + procNode.procBody.returnExprs.size());
+                        System.exit(0);
+                    } else {
+                        ExprNode exprNode = procNode.procBody.returnExprs.get(i);
+                        try {
+                            if (!checkAssignmentType(SymbolTable.StringToType(resultTypeNode.typeNode.type), exprNode.types.get(0))) {
+                                System.err.println("Semantic error: the return type of " + exprNode.value1 + " in proc " + procNode.id.value + " is different from the one requested. Required: " + resultTypeNode.typeNode.type + ", provided: " + exprNode.types.get(0));
+                                System.exit(0);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            System.exit(0);
+                        }
+                    }
+                }
+                // :else
+            }
+            // :for
+        }
+
+        stack.pop();
+        */
 
     }
 
@@ -254,7 +337,13 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
     @Override
     public void visit(ParamDecNode paramDecNode) {
-
+        try {            
+            SymbolTable picked = stack.peek();
+            picked.createEntry_variable(paramDecNode.leafID.value, paramDecNode.type);
+        } catch (Exception e) {
+            System.out.println(("[SEMANTIC ERROR] parametro " + paramDecNode.leafID.value + " già dichiarato"));
+            System.exit(1);
+        }
     }
 
     @Override

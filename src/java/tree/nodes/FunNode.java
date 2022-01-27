@@ -15,9 +15,12 @@ public class FunNode extends DefaultMutableTreeNode implements Syntax_Int_Visita
     public String name = "FunNode";
     public LeafID leafID;
     public ArrayList<ParamDecNode> paramDecList;
-    public ValueType type;
     public ArrayList<VarDeclNode> varDecList;
     public ArrayList<StatNode> statList;
+
+    // Controllo semantico
+    public ValueType type = null;
+
 
     public FunNode(LeafID leafID, ArrayList<ParamDecNode> paramDecList, ValueType type,
             ArrayList<VarDeclNode> varDecList, ArrayList<StatNode> statList) {
@@ -43,6 +46,7 @@ public class FunNode extends DefaultMutableTreeNode implements Syntax_Int_Visita
         return v.visit(this);
     }
 
+    @Override
     public void accept(Semantic_Int_Visitor v) {
         v.visit(this);
     }

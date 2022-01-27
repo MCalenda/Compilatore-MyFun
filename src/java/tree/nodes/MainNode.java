@@ -14,13 +14,11 @@ public class MainNode extends DefaultMutableTreeNode implements Syntax_Int_Visit
     public ArrayList<VarDeclNode> varDeclList;
     public ArrayList<StatNode> statList;
 
-
     public MainNode(ArrayList<VarDeclNode> varDeclList, ArrayList<StatNode> statList) {
         super("MainNode");
         this.varDeclList = varDeclList;
         this.statList = statList;
     }
-
 
     @Override
     public DefaultMutableTreeNode accept(Syntax_Int_Visitor v) {

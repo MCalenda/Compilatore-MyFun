@@ -11,9 +11,12 @@ import symbol_table.ValueType;
 
 public class VarDeclNode extends DefaultMutableTreeNode implements Syntax_Int_Visitable, Semantic_Int_Visitable{
     public String name = "VarDeclNode";
-    public ValueType type = null;
     public ArrayList<IdInitNode> idInitList = null;
     public ArrayList<IdInitObblNode> IdListInitObbl = null;
+
+    // Controllo semantico
+    public ValueType type = null;
+
 
     public VarDeclNode(ValueType type, ArrayList<IdInitNode> idInitList) {
         super("VarDeclNode");

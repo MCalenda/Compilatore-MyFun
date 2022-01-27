@@ -18,11 +18,11 @@ public class SymbolTable extends HashMap<String, SymbolTableEntry> {
     }
 
     // Aggiunge una funzione all'interno della tabella
-    public void createEntry_function(String id, ArrayList<ValueType> inputParams, ArrayList<ValueType> outputParams) throws Exception {
+    public void createEntry_function(String id, ArrayList<ValueType> inputParams, ValueType output) throws Exception {
         if (super.containsKey(id))
             throw new Exception("[SEMANTIC ERROR] funzione " + id + " già dichiarata");
         else
-            super.put(id, new SymbolTableEntry(id, inputParams, outputParams));
+            super.put(id, new SymbolTableEntry(id, inputParams, output));
     }
 
     // Verifica se l'ID è semplicemente contenuto

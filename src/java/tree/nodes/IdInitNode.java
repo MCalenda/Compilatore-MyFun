@@ -15,17 +15,8 @@ public class IdInitNode extends DefaultMutableTreeNode implements Syntax_Int_Vis
     public LeafID leafID = null;
     public ExprNode exprNode = null;
 
-    // Semantic check
+    // Controllo semantico
     public ValueType type = null;
-
-    public void setType(String t) {
-        try {
-            this.type = SymbolTable.StringToValueType(t);
-        } catch (Exception e) {
-            System.exit(0);
-            e.printStackTrace();
-        }
-    }
 
     public IdInitNode(LeafID leafID) {
         super("IdInitNode");
