@@ -1,10 +1,12 @@
 package tree.leaves;
 
 import symbol_table.ValueType;
+import visitor.CodeGen_Int_Visitable;
+import visitor.CodeGen_Int_Visitor;
 import visitor.Semantic_Int_Visitable;
 import visitor.Semantic_Int_Visitor;
 
-public class LeafRealConst implements Semantic_Int_Visitable{
+public class LeafRealConst implements Semantic_Int_Visitable, CodeGen_Int_Visitable{
     public String name = "LeafRealConst";
     public Double value;
     
@@ -22,5 +24,10 @@ public class LeafRealConst implements Semantic_Int_Visitable{
     @Override
     public void accept(Semantic_Int_Visitor v) {
         v.visit(this);   
+    }
+
+    @Override
+    public void accept(CodeGen_Int_Visitor v) {
+        v.visit(this);
     }
 }

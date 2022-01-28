@@ -6,42 +6,35 @@
             "name": "Launch Test 1",
             "request": "launch",
             "mainClass": "Tester",
-            "args": "src/test_files/Test_1_Misto.txt"
+            "args": "src/test_files/Test_1_Misto.MyFun"
         },
         {
             "type": "java",
             "name": "Launch Test 2",
             "request": "launch",
             "mainClass": "Tester",
-            "args": "src/test_files/Test_2_Sample_Programm.txt"
+            "args": "src/test_files/Test_2_Sample_Programm.MyFun"
         },
         {
             "type": "java",
             "name": "Launch Test 3",
             "request": "launch",
             "mainClass": "Tester",
-            "args": "src/test_files/Test_3_My_Programm.txt"
+            "args": "src/test_files/Test_3_My_Programm.MyFun"
         },
         {
             "type": "java",
             "name": "Launch Test 4",
             "request": "launch",
             "mainClass": "Tester",
-            "args": "src/test_files/Test_4_Empty_Programm.txt"
+            "args": "src/test_files/Test_4_Empty_Programm.MyFun"
         },
         {
             "type": "java",
             "name": "Launch Test 5",
             "request": "launch",
             "mainClass": "Tester",
-            "args": "src/test_files/Test_5_Super_Test.txt"
-        },
-        {
-            "type": "java",
-            "name": "Launch Test 6",
-            "request": "launch",
-            "mainClass": "Semantic_Tester",
-            "args": "src/test_files/Test_4_Empty_Programm.txt"
+            "args": "src/test_files/Test_5_Super_Test.MyFun"
         }
     ]
 }

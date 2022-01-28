@@ -4,12 +4,14 @@ import java.util.ArrayList;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import visitor.CodeGen_Int_Visitable;
+import visitor.CodeGen_Int_Visitor;
 import visitor.Semantic_Int_Visitable;
 import visitor.Semantic_Int_Visitor;
 import visitor.Syntax_Int_Visitable;
 import visitor.Syntax_Int_Visitor;
 
-public class MainNode extends DefaultMutableTreeNode implements Syntax_Int_Visitable, Semantic_Int_Visitable {
+public class MainNode extends DefaultMutableTreeNode implements Syntax_Int_Visitable, Semantic_Int_Visitable, CodeGen_Int_Visitable {
     public String name = "MainNode";
     public ArrayList<VarDeclNode> varDeclList;
     public ArrayList<StatNode> statList;
@@ -26,6 +28,11 @@ public class MainNode extends DefaultMutableTreeNode implements Syntax_Int_Visit
     }
     @Override
     public void accept(Semantic_Int_Visitor v) {
+        v.visit(this);
+    }
+
+    @Override
+    public void accept(CodeGen_Int_Visitor v) {
         v.visit(this);
     }
 }

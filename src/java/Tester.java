@@ -14,6 +14,7 @@ import cup.sym;
 import flex.Lexer;
 import java_cup.runtime.Symbol;
 import tree.nodes.ProgramNode;
+import visitor.CodeGen_Visitor;
 import visitor.Semantic_Visitor;
 import visitor.Syntax_Visitor;
 
@@ -25,15 +26,17 @@ class Tester {
         parser parser = new parser(lexer);
 
         ProgramNode root;
+        Semantic_Visitor semanticVisitor = new Semantic_Visitor();
 
         System.out.println("Quale operazione vuoi eseguire ?");
         System.out.println("1: Analisi Sintattica (Salvataggio dei Token in un file)");
         System.out.println("2: Analisi Lessicale (Stampa dell'albero di Parsing)");
         System.out.println("3: Analisi Semantica (Stampa dei messaggi di Debug)");
+        System.out.println("4: Generazione del codice C.");
         System.out.print("Effettuare una scelta: ");
         try (Scanner scanner = new Scanner(System.in)) {
             // int scelta = scanner.nextInt();
-            int scelta = 3;
+            int scelta = 4;
 
             System.out.println();
 
@@ -90,8 +93,18 @@ class Tester {
                 System.out.println("Visualizzo fasi di Debug !!!");
                 System.out.println();
 
-                Semantic_Visitor semanticVisitor = new Semantic_Visitor();
                 semanticVisitor.visit(root);
+                break;
+
+            case 4:
+                root = (ProgramNode) parser.parse().value;
+
+                System.out.println();
+
+                semanticVisitor.visit(root);
+
+                CodeGen_Visitor codeGen_Visitor = new CodeGen_Visitor(args[0]);
+                codeGen_Visitor.visit(root);
                 break;
 
             default:
