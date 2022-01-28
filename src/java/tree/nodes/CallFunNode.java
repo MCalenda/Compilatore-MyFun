@@ -16,6 +16,9 @@ public class CallFunNode extends DefaultMutableTreeNode implements Syntax_Int_Vi
     public LeafID leafID;
     public ArrayList<ExprNode> exprList;
 
+    // Controllo semantico
+    public ValueType type = null;
+
     public CallFunNode(LeafID leafID, ArrayList<ExprNode> exprList) {
         super("CallFunNode");
         this.leafID = leafID;

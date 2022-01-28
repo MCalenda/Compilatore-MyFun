@@ -1,5 +1,8 @@
-integer d := 5 * 4;
+fun prova(): integer
+end fun;
 
 main
+
+bool x := prova();
 
 end main;

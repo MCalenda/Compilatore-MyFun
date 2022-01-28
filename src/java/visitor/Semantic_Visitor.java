@@ -169,8 +169,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
                 // Call fun
             } else if (exprNode.val_One instanceof CallFunNode) {
                 ((CallFunNode) exprNode.val_One).accept(this);
-                // una funzione puo restituire piu tipi
-                // exprNode.type = ((CallFunNode) exprNode.val_One).type;
+                exprNode.type = ((CallFunNode) exprNode.val_One).type;
             }
         }
     }
@@ -223,19 +222,18 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
     @Override
     public void visit(FunNode funNode) {
-        try {
-            ArrayList<ValueType> params = new ArrayList<>();
-            if (funNode.paramDecList != null) {
+        ArrayList<ValueType> params = new ArrayList<>();
+        if (funNode.paramDecList != null){
+            try {
                 for (ParamDecNode parDecNode : funNode.paramDecList) {
                     params.add(parDecNode.type);
                 }
+                stack.firstElement().createEntry_function(funNode.leafID.value, funNode.type, params);
+            } catch (Exception e) {
+                System.err.println("Semantic Error");
+                System.exit(1);
             }
-            stack.firstElement().createEntry_function(funNode.leafID.value, funNode.type, params);
-        } catch (Exception e) {
-            System.err.println("Semantic Error");
-            System.exit(1);
         }
-
         SymbolTable symbolTable = new SymbolTable();
         symbolTable.symbolTableName = funNode.leafID.value;
         symbolTable.setFatherSymTab(stack.firstElement());
@@ -261,7 +259,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
     @Override
     public void visit(CallFunNode callFunNode) {
         SymbolTableEntry functionDef = null;
-        
+
         // Controllo se il nome della funzione è nel Type Environment
         try {
             SymbolTable symbolTable = stack.peek();
@@ -272,7 +270,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
         }
 
         // Controllo dei parametri della funzione
-        if (functionDef.params != null) {
+        if (functionDef.params.size() != 0) {
             if (functionDef.params.size() != callFunNode.exprList.size()) {
                 System.err.println("[SEMANTIC ERROR] 1");
                 System.exit(0);
@@ -286,6 +284,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
                 }
             }
         }
+        callFunNode.type = functionDef.valueType;
     }
 
     @Override
