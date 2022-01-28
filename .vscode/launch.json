@@ -1,78 +1,40 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
             "type": "java",
-            "name": "Launch Lexer Test 1",
+            "name": "Launch Test 1",
             "request": "launch",
-            "mainClass": "Lexer_Tester",
+            "mainClass": "Tester",
             "args": "src/test_files/Test_1_Misto.txt"
         },
         {
             "type": "java",
-            "name": "Launch Lexer Test 2",
+            "name": "Launch Test 2",
             "request": "launch",
-            "mainClass": "Lexer_Tester",
+            "mainClass": "Tester",
             "args": "src/test_files/Test_2_Sample_Programm.txt"
         },
         {
             "type": "java",
-            "name": "Launch Lexer Test 3",
+            "name": "Launch Test 3",
             "request": "launch",
-            "mainClass": "Lexer_Tester",
+            "mainClass": "Tester",
             "args": "src/test_files/Test_3_My_Programm.txt"
         },
         {
             "type": "java",
-            "name": "Launch Lexer Test 4",
+            "name": "Launch Test 4",
             "request": "launch",
-            "mainClass": "Lexer_Tester",
+            "mainClass": "Tester",
             "args": "src/test_files/Test_4_Empty_Programm.txt"
         },
         {
             "type": "java",
-            "name": "Launch Parser Test 1",
+            "name": "Launch Test 5",
             "request": "launch",
-            "mainClass": "Parser_Tester",
-            "args": "src/test_files/Test_1_Misto.txt"
-        },
-        {
-            "type": "java",
-            "name": "Launch Parser Test 2",
-            "request": "launch",
-            "mainClass": "Parser_Tester",
-            "args": "src/test_files/Test_2_Sample_Programm.txt"
-        },
-        {
-            "type": "java",
-            "name": "Launch Parser Test 3",
-            "request": "launch",
-            "mainClass": "Parser_Tester",
-            "args": "src/test_files/Test_3_My_Programm.txt"
-        },
-        {
-            "type": "java",
-            "name": "Launch Parser Test 4",
-            "request": "launch",
-            "mainClass": "Parser_Tester",
-            "args": "src/test_files/Test_4_Empty_Programm.txt"
-        },
-        {
-            "type": "java",
-            "name": "Launch Parser Test 5",
-            "request": "launch",
-            "mainClass": "Parser_Tester",
+            "mainClass": "Tester",
             "args": "src/test_files/Test_5_Super_Test.txt"
-        },
-        {
-            "type": "java",
-            "name": "Launch Semantic Test 1",
-            "request": "launch",
-            "mainClass": "Semantic_Tester",
-            "args": "src/test_files/Test_4_Empty_Programm.txt"
         }
     ]
 }
