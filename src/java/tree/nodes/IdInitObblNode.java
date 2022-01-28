@@ -5,12 +5,14 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import symbol_table.SymbolTable;
 import symbol_table.ValueType;
 import tree.leaves.LeafID;
+import visitor.CodeGen_Int_Visitable;
+import visitor.CodeGen_Int_Visitor;
 import visitor.Semantic_Int_Visitable;
 import visitor.Semantic_Int_Visitor;
 import visitor.Syntax_Int_Visitable;
 import visitor.Syntax_Int_Visitor;
 
-public class IdInitObblNode extends DefaultMutableTreeNode implements Syntax_Int_Visitable, Semantic_Int_Visitable{
+public class IdInitObblNode extends DefaultMutableTreeNode implements Syntax_Int_Visitable, Semantic_Int_Visitable, CodeGen_Int_Visitable{
     public String name = "IdInitObblNode";
     public LeafID leafID;
     public ConstNode value;
@@ -41,5 +43,10 @@ public class IdInitObblNode extends DefaultMutableTreeNode implements Syntax_Int
     @Override
     public void accept(Semantic_Int_Visitor v) {
         v.visit(this);        
+    }
+
+    @Override
+    public void accept(CodeGen_Int_Visitor v) {
+        v.visit(this);  
     }
 }

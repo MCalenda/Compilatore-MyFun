@@ -1,7 +1,0 @@
-fun test (out integer x, bool g):integer
-end fun;
-
-main
-    prova();
-
-end main;
