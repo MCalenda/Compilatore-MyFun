@@ -199,9 +199,21 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
     @Override
     public void visit(StatNode statNode) {
-        
-        
-
+        if (statNode.ifStatNode != null) {
+            statNode.ifStatNode.accept(this);
+        } else if (statNode.whileStatNode != null) {
+            statNode.whileStatNode.accept(this);
+        } else if (statNode.readStatNode != null) {
+            statNode.readStatNode.accept(this);
+        } else if (statNode.writeStatNode != null) {
+            statNode.writeStatNode.accept(this);
+        } else if (statNode.assignStatNode != null) {
+            statNode.assignStatNode.accept(this);
+        } else if (statNode.callFunNode != null) {
+            statNode.callFunNode.accept(this);
+        } else if (statNode.returnNode != null) {
+            statNode.returnNode.accept(this);
+        }     
     }
 
     @Override
@@ -248,38 +260,32 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
     @Override
     public void visit(CallFunNode callFunNode) {
+        SymbolTableEntry functionDef = null;
+        
         // Controllo se il nome della funzione è nel Type Environment
         try {
             SymbolTable symbolTable = stack.peek();
-            if (symbolTable.containsKey(callFunNode.leafID.value)) {
-                SymbolTableEntry functionDef = symbolTable.containsFunctionEntry(callFunNode.leafID.value);
-            }
+            functionDef = symbolTable.containsFunctionEntry(callFunNode.leafID.value);
         } catch (Exception e) {
             System.err.println("Errore semantico");
             System.exit(0);
         }
 
-        // // Controllo dei parametri della funzione
-        // if (callFunNode.exprList != null) {
-        // if (functionDef.inputParams.size() != callFunNode.exprList.size()) {
-        // System.err.println("[SEMANTIC ERROR] errore chiamata funzione" +
-        // callFunNode.leafID.value + " numero di parametri inseriti sbagliato");
-        // System.exit(0);
-        // } else {
-        // for (int i = 0; i < callFunNode.inputParams.size(); i++) {
-        // callFunNode.exprList.get(i).accept(this);
-
-        // if (getType_Boolean(callFunNode.exprList.get(i).type,
-        // functionDef.inputParams.get(i)) == null) {
-        // System.err.println("[SEMANTIC ERROR] type mismatch for call proc " +
-        // callFunNode.leafID.value + ". Required: " + functionDef.inputParams + ",
-        // provided: '" + callFunNode.exprList.get(i).types.get(0) + "' in position " +
-        // i);
-        // System.exit(0);
-        // }
-        // }
-        // }
-        // }
+        // Controllo dei parametri della funzione
+        if (functionDef.params != null) {
+            if (functionDef.params.size() != callFunNode.exprList.size()) {
+                System.err.println("[SEMANTIC ERROR] 1");
+                System.exit(0);
+            } else {
+                for (int i = 0; i < callFunNode.exprList.size(); i++) {
+                    callFunNode.exprList.get(i).accept(this);
+                    if (callFunNode.exprList.get(i).type != functionDef.params.get(i)) {
+                        System.err.println("[SEMANTIC ERROR] 2");
+                        System.exit(0);
+                    }
+                }
+            }
+        }
     }
 
     @Override

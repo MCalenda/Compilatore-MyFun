@@ -15,7 +15,7 @@ public class StatNode extends DefaultMutableTreeNode implements Syntax_Int_Visit
     public WriteStatNode writeStatNode = null;
     public AssignStatNode assignStatNode = null;
     public CallFunNode callFunNode = null;
-    public ReturnNode resultNode = null;
+    public ReturnNode returnNode = null;
 
     public StatNode(IfStatNode ifStatNode) {
         super("StatNode");
@@ -47,9 +47,9 @@ public class StatNode extends DefaultMutableTreeNode implements Syntax_Int_Visit
         this.callFunNode = callFunNode;
     }
 
-    public StatNode(ReturnNode resultNode) {
+    public StatNode(ReturnNode returnNode) {
         super("StatNode");
-        this.resultNode = resultNode;
+        this.returnNode = returnNode;
     }
 
     @Override

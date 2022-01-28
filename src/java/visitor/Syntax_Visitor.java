@@ -139,8 +139,8 @@ public class Syntax_Visitor implements Syntax_Int_Visitor {
             statNode.add(statNode.assignStatNode.accept(this));
         } else if (statNode.callFunNode != null) {
             statNode.add(statNode.callFunNode.accept(this));
-        } else if (statNode.resultNode != null) {
-            statNode.add(statNode.resultNode.accept(this));
+        } else if (statNode.returnNode != null) {
+            statNode.add(statNode.returnNode.accept(this));
         }
         return statNode;
 
