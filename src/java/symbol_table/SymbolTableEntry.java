@@ -4,10 +4,15 @@ import java.util.ArrayList;
 
 public class SymbolTableEntry {
     public String id;
+
+    // tipo della variabile o tipo di ritorno della funzione
     public ValueType valueType;
+
+    // variabile o funzione
     public Type type;
-    public ArrayList<ValueType> inputParams;
-    public ValueType output;
+
+    // parametri della funzione
+    public ArrayList<ValueType> params = null;
 
     public SymbolTableEntry(String id, ValueType valueType) {
         this.type = Type.variable;
@@ -15,36 +20,28 @@ public class SymbolTableEntry {
         this.valueType = valueType;
     }
 
-    public SymbolTableEntry(String id, ArrayList<ValueType> inputParams, ValueType output) {
+    public SymbolTableEntry(String id, ValueType valueType, ArrayList<ValueType> params) {
         this.type = Type.function;
         this.id = id;
-        this.inputParams = inputParams;
-        this.output = output;
+        this.valueType = valueType;
+        this.params = params;
     }
 
     public boolean isVariable() {
         return this.type == Type.variable;
     }
 
-    /*
+    public boolean isFunction() {
+        return this.type == Type.function;
+    }
+
+
     @Override
     public String toString() {
         if (isVariable())
-            return "Entry of type Variable :: " + id + " | " + valueType;
+            return "type::" + this.type + " valueType::" + this.valueType ;
         else  {
-            String inputs = "";
-            for (int i = 0; i < inputParams.size(); i++)
-                if (i == inputParams.size()-1)
-                    inputs += (inputParams.get(i));
-                else inputs += (inputParams.get(i) + ", ");
-            String outputs = "";
-            for (int i = 0; i < outputParams.size(); i++) {
-                if (i == outputParams.size() - 1)
-                    outputs += (outputParams.get(i));
-                else outputs += (outputParams.get(i) + ", ");
-            }
-            return "Entry of type Function :: " + id + "(" + inputs + ") -> " + outputs;
+            return "type::" + this.type + " returnType::" + this.valueType ;
         }
     }
-    */
 }

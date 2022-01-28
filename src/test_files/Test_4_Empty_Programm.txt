@@ -1,11 +1,7 @@
-fun test(out integer x, bool g):
-    if (g) {
-        x := 5;
-    }
+fun test (out integer x, bool g):integer
 end fun;
 
 main
-    integer x;
-    bool g := true;
-    test(@x, g);
+    prova();
+
 end main;

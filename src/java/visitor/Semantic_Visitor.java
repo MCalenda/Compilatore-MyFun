@@ -9,7 +9,8 @@ import tree.nodes.*;
 import java.util.ArrayList;
 import java.util.Stack;
 
-import java_cup.symbol;
+import cup.sym;
+import java_cup.shift_action;
 
 public class Semantic_Visitor implements Semantic_Int_Visitor {
 
@@ -31,6 +32,13 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
             }
         }
         programNode.main.accept(this);
+        for (SymbolTable s : stack){
+            System.out.println("Tabella " + s.symbolTableName);
+            for (String key: s.keySet()) {
+                System.out.println(key + ": " + s.get(key).toString());
+            }
+            System.out.println("--------------");
+        }
     }
 
     @Override
@@ -186,10 +194,13 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
                 statNode.accept(this);
             }
         }
+        stack.pop();
     }
 
     @Override
     public void visit(StatNode statNode) {
+        
+        
 
     }
 
@@ -201,80 +212,33 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
     @Override
     public void visit(FunNode funNode) {
         try {
-            ArrayList<ValueType> in;
-            ValueType out = funNode.type;
-            in = new ArrayList<>();
-
+            ArrayList<ValueType> params = new ArrayList<>();
             if (funNode.paramDecList != null) {
                 for (ParamDecNode parDecNode : funNode.paramDecList) {
-                    ValueType valueType = parDecNode.type;
-                    in.add(valueType);
+                    params.add(parDecNode.type);
                 }
             }
-            stack.firstElement().createEntry_function(funNode.leafID.value, in, out);
+            stack.firstElement().createEntry_function(funNode.leafID.value, funNode.type, params);
         } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(0);
+            System.err.println("Semantic Error");
+            System.exit(1);
         }
-        /*
-        // Se non c'è posso continuare
+
         SymbolTable symbolTable = new SymbolTable();
-        symbolTable.symbolTableName = "Function " + procNode.id.value + " scope";
+        symbolTable.symbolTableName = funNode.leafID.value;
         symbolTable.setFatherSymTab(stack.firstElement());
         stack.push(symbolTable);
 
-        // ArrayList<ParDeclNode>
-        if (procNode.paramDeclList != null) {
-            for (ParDeclNode pdn : procNode.paramDeclList)
-                pdn.accept(this);
+        if (funNode.paramDecList != null) {
+            for (ParamDecNode parDecNode : funNode.paramDecList)
+                parDecNode.accept(this);
         }
 
-        // ProcBody
-        procNode.procBody.accept(this);
-
-        // Semantic check
-        // Controllo se il numero di tipi di ritorno della proc è minore di 1 (Inutile?
-        // Lo fa già l'analisi sintattica)
-        if (procNode.resultTypeList.size() < 1) {
-            System.err.println("Semantic error: wrong declaration of result types");
-            System.exit(0);
-        } else {
-            for (int i = 0; i < procNode.resultTypeList.size(); i++) {
-                ResultTypeNode resultTypeNode = procNode.resultTypeList.get(i);
-
-                // Check se un tipo di ritorno è void
-                if (resultTypeNode.isVoid) {
-                    if (procNode.procBody.returnExprs.size() != 0) {
-                        System.err.println("Semantic error: function " + procNode.id.value + " must be void only or some other type.");
-                        System.exit(0);
-                    }
-                }
-                // : if (resultTypeNode.isVoid)
-                else {
-                    if (procNode.procBody.returnExprs.size() != procNode.resultTypeList.size()) {
-                        System.err.println("Semantic error: the number of returned values in proc " + procNode.id.value + " is different from the one defined. Required: " + procNode.resultTypeList.size() + ", provided: " + procNode.procBody.returnExprs.size());
-                        System.exit(0);
-                    } else {
-                        ExprNode exprNode = procNode.procBody.returnExprs.get(i);
-                        try {
-                            if (!checkAssignmentType(SymbolTable.StringToType(resultTypeNode.typeNode.type), exprNode.types.get(0))) {
-                                System.err.println("Semantic error: the return type of " + exprNode.value1 + " in proc " + procNode.id.value + " is different from the one requested. Required: " + resultTypeNode.typeNode.type + ", provided: " + exprNode.types.get(0));
-                                System.exit(0);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            System.exit(0);
-                        }
-                    }
-                }
-                // :else
-            }
-            // :for
+        if (funNode.statList != null) {
+            for (StatNode statNode : funNode.statList)
+                statNode.accept(this);
         }
-
         stack.pop();
-        */
-
     }
 
     @Override
@@ -284,18 +248,16 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
     @Override
     public void visit(CallFunNode callFunNode) {
-        // SymbolTableEntry functionDef = null;
-
-        // // Controllo se il nome della funzione è nel Type Environment
-        // SymbolTable symbolTable = stack.peek();
-        // try{
-        // if (symbolTable.containsKey(callFunNode.leafID.value)){
-        // functionDef = symbolTable.containsFunctionEntry(callFunNode.leafID.value);
-        // }
-        // } catch (Exception e) {
-        // throw new Exception("[SEMANTIC ERROR] funzione non dichiarata");
-        // System.exit(0);
-        // }
+        // Controllo se il nome della funzione è nel Type Environment
+        try {
+            SymbolTable symbolTable = stack.peek();
+            if (symbolTable.containsKey(callFunNode.leafID.value)) {
+                SymbolTableEntry functionDef = symbolTable.containsFunctionEntry(callFunNode.leafID.value);
+            }
+        } catch (Exception e) {
+            System.err.println("Errore semantico");
+            System.exit(0);
+        }
 
         // // Controllo dei parametri della funzione
         // if (callFunNode.exprList != null) {
