@@ -1,8 +1,10 @@
-fun prova(): integer
+real a := 2.5;
+fun prova(integer ciao):integer
+    real x := a;
+
 end fun;
 
 main
-
-bool x := prova();
+    integer a := 5 + x;
 
 end main;

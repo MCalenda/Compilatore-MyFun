@@ -4,7 +4,7 @@
 #include <string.h>
 
 // Dichiarazione delle variabili locali
-int d = ;
+double a = 2.5;
 
 // Dichiarazione delle variabili funzioni
 

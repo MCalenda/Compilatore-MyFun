@@ -13,6 +13,7 @@ public class SymbolTableEntry {
 
     // parametri della funzione
     public ArrayList<ValueType> params = null;
+    public ArrayList<Boolean> isOut = null;
 
     public SymbolTableEntry(String id, ValueType valueType) {
         this.type = Type.variable;
@@ -20,11 +21,12 @@ public class SymbolTableEntry {
         this.valueType = valueType;
     }
 
-    public SymbolTableEntry(String id, ValueType valueType, ArrayList<ValueType> params) {
+    public SymbolTableEntry(String id, ValueType valueType, ArrayList<ValueType> params, ArrayList<Boolean> isOut) {
         this.type = Type.function;
         this.id = id;
         this.valueType = valueType;
         this.params = params;
+        this.isOut = isOut;
     }
 
     public boolean isVariable() {

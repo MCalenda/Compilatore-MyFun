@@ -130,8 +130,8 @@ Stat ::= IfStat:ifStat SEMI                                                     
 ;
 
 // TESTED ✅
-StatList ::= Stat:stat StatList:statList                                                    {: ((ArrayList<StatNode>)statList).add(0, (StatNode) stat); RESULT = statList; :}
-    | /* empty */                                                                           {: RESULT = new ArrayList<StatNode>(); :}
+StatList ::=  /* empty */                                                                   {: RESULT= new ArrayList<StatNode>();:} 
+    | Stat:stat StatList:statList                                                           {: ((ArrayList<StatNode>)statList).add(0, (StatNode) stat); RESULT = statList; :}
 ;
 
 // TESTED ✅

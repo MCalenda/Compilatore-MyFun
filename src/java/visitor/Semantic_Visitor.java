@@ -32,13 +32,18 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
             }
         }
         programNode.main.accept(this);
+
+
+        System.out.println("!-------DEBUG-------!");
         for (SymbolTable s : stack){
             System.out.println("Tabella " + s.symbolTableName);
             for (String key: s.keySet()) {
                 System.out.println(key + ": " + s.get(key).toString());
             }
-            System.out.println("--------------");
+            System.out.println();
         }
+        System.out.println("!-------DEBUG-------!");
+
     }
 
     @Override
@@ -223,12 +228,15 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
     @Override
     public void visit(FunNode funNode) {
         ArrayList<ValueType> params = new ArrayList<>();
+        ArrayList<Boolean> isOut = new ArrayList<>();
         if (funNode.paramDecList != null){
             try {
                 for (ParamDecNode parDecNode : funNode.paramDecList) {
                     params.add(parDecNode.type);
+                    if (parDecNode.out) isOut.add(true);
+                    else isOut.add(false);
                 }
-                stack.firstElement().createEntry_function(funNode.leafID.value, funNode.type, params);
+                stack.firstElement().createEntry_function(funNode.leafID.value, funNode.type, params, isOut);
             } catch (Exception e) {
                 System.err.println("Semantic Error");
                 System.exit(1);
@@ -238,12 +246,14 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
         symbolTable.symbolTableName = funNode.leafID.value;
         symbolTable.setFatherSymTab(stack.firstElement());
         stack.push(symbolTable);
-
         if (funNode.paramDecList != null) {
             for (ParamDecNode parDecNode : funNode.paramDecList)
                 parDecNode.accept(this);
         }
-
+        if (funNode.varDecList != null) {
+            for (VarDeclNode varDeclNode : funNode.varDecList)
+                varDeclNode.accept(this);
+        }
         if (funNode.statList != null) {
             for (StatNode statNode : funNode.statList)
                 statNode.accept(this);
@@ -253,7 +263,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
     @Override
     public void visit(AssignStatNode assignStatNode) {
-
+        System.out.println("coap");
     }
 
     @Override
@@ -266,21 +276,22 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
             functionDef = symbolTable.containsFunctionEntry(callFunNode.leafID.value);
         } catch (Exception e) {
             System.err.println("Errore semantico");
-            System.exit(0);
+            System.exit(1);
         }
-
         // Controllo dei parametri della funzione
-        if (functionDef.params.size() != 0) {
-            if (functionDef.params.size() != callFunNode.exprList.size()) {
-                System.err.println("[SEMANTIC ERROR] 1");
-                System.exit(0);
-            } else {
-                for (int i = 0; i < callFunNode.exprList.size(); i++) {
-                    callFunNode.exprList.get(i).accept(this);
-                    if (callFunNode.exprList.get(i).type != functionDef.params.get(i)) {
-                        System.err.println("[SEMANTIC ERROR] 2");
-                        System.exit(0);
-                    }
+        if (functionDef.params.size() != callFunNode.exprList.size()) {
+            System.err.println("[SEMANTIC ERROR] 1");
+            System.exit(0);
+        } else {
+            for (int i = 0; i < callFunNode.exprList.size(); i++) {
+                callFunNode.exprList.get(i).accept(this);
+                if (callFunNode.exprList.get(i).type != functionDef.params.get(i)) {
+                    System.err.println("[SEMANTIC ERROR] 2");
+                    System.exit(1);
+                }
+                if (!((callFunNode.exprList.get(i).op == "OUTPAR") && functionDef.isOut.get(i))) {
+                    System.err.println("[SEMANTIC ERROR] 3");
+                    System.exit(1);
                 }
             }
         }

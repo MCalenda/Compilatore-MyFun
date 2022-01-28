@@ -28,6 +28,7 @@ public class CallFunNode extends DefaultMutableTreeNode implements Syntax_Int_Vi
     public CallFunNode(LeafID leafID) {
         super("CallFunNode");
         this.leafID = leafID;
+        this.exprList = new ArrayList<ExprNode>();
     }
 
     @Override
