@@ -2,7 +2,6 @@ package tree.nodes;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import symbol_table.SymbolTable;
 import symbol_table.ValueType;
 import tree.leaves.LeafID;
 import visitor.Semantic_Int_Visitable;

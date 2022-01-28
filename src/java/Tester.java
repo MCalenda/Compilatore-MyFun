@@ -32,7 +32,8 @@ class Tester {
         System.out.println("3: Analisi Semantica (Stampa dei messaggi di Debug)");
         System.out.print("Effettuare una scelta: ");
         try (Scanner scanner = new Scanner(System.in)) {
-            int scelta = scanner.nextInt();
+            // int scelta = scanner.nextInt();
+            int scelta = 3;
 
             System.out.println();
 

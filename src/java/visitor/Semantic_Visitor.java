@@ -9,8 +9,6 @@ import tree.nodes.*;
 import java.util.ArrayList;
 import java.util.Stack;
 
-import java_cup.symbol;
-
 public class Semantic_Visitor implements Semantic_Int_Visitor {
 
     public Stack<SymbolTable> stack = new Stack<>();
@@ -139,7 +137,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
                 ((LeafID) exprNode.val_One).accept(this);
                 exprNode.type = ((LeafID) exprNode.val_One).type;
 
-            // Se è un operazione unaria come UMINUS o NOT
+                // Se è un operazione unaria come UMINUS o NOT
             } else if (exprNode.op.equalsIgnoreCase("UMINUS")) {
                 ((ExprNode) exprNode.val_One).accept(this);
                 System.out.println("[DEBUG] " + exprNode.op + " " + (((ExprNode) exprNode.val_One).type));
@@ -158,11 +156,11 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
                     System.err.println("[SEMANTIC ERROR] tipo op NOT sbagliato");
                     System.exit(1);
                 }
-            //Call fun
+                // Call fun
             } else if (exprNode.val_One instanceof CallFunNode) {
                 ((CallFunNode) exprNode.val_One).accept(this);
-                //una funzione puo restituire piu tipi
-                //exprNode.type = ((CallFunNode) exprNode.val_One).type;
+                // una funzione puo restituire piu tipi
+                // exprNode.type = ((CallFunNode) exprNode.val_One).type;
             }
         }
     }
@@ -217,63 +215,44 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
             System.exit(0);
         }
         /*
-        // Se non c'è posso continuare
-        SymbolTable symbolTable = new SymbolTable();
-        symbolTable.symbolTableName = "Function " + procNode.id.value + " scope";
-        symbolTable.setFatherSymTab(stack.firstElement());
-        stack.push(symbolTable);
-
-        // ArrayList<ParDeclNode>
-        if (procNode.paramDeclList != null) {
-            for (ParDeclNode pdn : procNode.paramDeclList)
-                pdn.accept(this);
-        }
-
-        // ProcBody
-        procNode.procBody.accept(this);
-
-        // Semantic check
-        // Controllo se il numero di tipi di ritorno della proc è minore di 1 (Inutile?
-        // Lo fa già l'analisi sintattica)
-        if (procNode.resultTypeList.size() < 1) {
-            System.err.println("Semantic error: wrong declaration of result types");
-            System.exit(0);
-        } else {
-            for (int i = 0; i < procNode.resultTypeList.size(); i++) {
-                ResultTypeNode resultTypeNode = procNode.resultTypeList.get(i);
-
-                // Check se un tipo di ritorno è void
-                if (resultTypeNode.isVoid) {
-                    if (procNode.procBody.returnExprs.size() != 0) {
-                        System.err.println("Semantic error: function " + procNode.id.value + " must be void only or some other type.");
-                        System.exit(0);
-                    }
-                }
-                // : if (resultTypeNode.isVoid)
-                else {
-                    if (procNode.procBody.returnExprs.size() != procNode.resultTypeList.size()) {
-                        System.err.println("Semantic error: the number of returned values in proc " + procNode.id.value + " is different from the one defined. Required: " + procNode.resultTypeList.size() + ", provided: " + procNode.procBody.returnExprs.size());
-                        System.exit(0);
-                    } else {
-                        ExprNode exprNode = procNode.procBody.returnExprs.get(i);
-                        try {
-                            if (!checkAssignmentType(SymbolTable.StringToType(resultTypeNode.typeNode.type), exprNode.types.get(0))) {
-                                System.err.println("Semantic error: the return type of " + exprNode.value1 + " in proc " + procNode.id.value + " is different from the one requested. Required: " + resultTypeNode.typeNode.type + ", provided: " + exprNode.types.get(0));
-                                System.exit(0);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            System.exit(0);
-                        }
-                    }
-                }
-                // :else
-            }
-            // :for
-        }
-
-        stack.pop();
-        */
+         * // Se non c'è posso continuare SymbolTable symbolTable = new SymbolTable();
+         * symbolTable.symbolTableName = "Function " + procNode.id.value + " scope";
+         * symbolTable.setFatherSymTab(stack.firstElement()); stack.push(symbolTable);
+         * 
+         * // ArrayList<ParDeclNode> if (procNode.paramDeclList != null) { for
+         * (ParDeclNode pdn : procNode.paramDeclList) pdn.accept(this); }
+         * 
+         * // ProcBody procNode.procBody.accept(this);
+         * 
+         * // Semantic check // Controllo se il numero di tipi di ritorno della proc è
+         * minore di 1 (Inutile? // Lo fa già l'analisi sintattica) if
+         * (procNode.resultTypeList.size() < 1) {
+         * System.err.println("Semantic error: wrong declaration of result types");
+         * System.exit(0); } else { for (int i = 0; i < procNode.resultTypeList.size();
+         * i++) { ResultTypeNode resultTypeNode = procNode.resultTypeList.get(i);
+         * 
+         * // Check se un tipo di ritorno è void if (resultTypeNode.isVoid) { if
+         * (procNode.procBody.returnExprs.size() != 0) {
+         * System.err.println("Semantic error: function " + procNode.id.value +
+         * " must be void only or some other type."); System.exit(0); } } // : if
+         * (resultTypeNode.isVoid) else { if (procNode.procBody.returnExprs.size() !=
+         * procNode.resultTypeList.size()) {
+         * System.err.println("Semantic error: the number of returned values in proc " +
+         * procNode.id.value + " is different from the one defined. Required: " +
+         * procNode.resultTypeList.size() + ", provided: " +
+         * procNode.procBody.returnExprs.size()); System.exit(0); } else { ExprNode
+         * exprNode = procNode.procBody.returnExprs.get(i); try { if
+         * (!checkAssignmentType(SymbolTable.StringToType(resultTypeNode.typeNode.type),
+         * exprNode.types.get(0))) {
+         * System.err.println("Semantic error: the return type of " + exprNode.value1 +
+         * " in proc " + procNode.id.value +
+         * " is different from the one requested. Required: " +
+         * resultTypeNode.typeNode.type + ", provided: " + exprNode.types.get(0));
+         * System.exit(0); } } catch (Exception e) { e.printStackTrace();
+         * System.exit(0); } } } // :else } // :for }
+         * 
+         * stack.pop();
+         */
 
     }
 
@@ -337,7 +316,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
     @Override
     public void visit(ParamDecNode paramDecNode) {
-        try {            
+        try {
             SymbolTable picked = stack.peek();
             picked.createEntry_variable(paramDecNode.leafID.value, paramDecNode.type);
         } catch (Exception e) {
@@ -387,23 +366,27 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
             System.exit(1);
         }
     }
+
     @Override
     public void visit(LeafIntegerConst leafIntegerConst) {
         leafIntegerConst.type = ValueType.integer;
     }
+
     @Override
     public void visit(LeafRealConst leafRealConst) {
         leafRealConst.type = ValueType.real;
     }
+
     @Override
     public void visit(LeafBool leafBool) {
         leafBool.type = ValueType.bool;
     }
+
     @Override
     public void visit(LeafStringConst leafStringConst) {
         leafStringConst.type = ValueType.string;
     }
-    
+
     // Metodi per il type checking
     public static boolean checkAssignmentType(ValueType variable, ValueType assign) {
         if (variable == ValueType.integer && assign == ValueType.integer)
@@ -417,6 +400,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
         else
             return false;
     }
+
     public static ValueType getType_Operations(ValueType type1, ValueType type2) {
         if (type1 == ValueType.integer && type2 == ValueType.integer)
             return ValueType.integer;
@@ -428,16 +412,19 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
             return ValueType.real;
         return null;
     }
+
     public static ValueType getType_StrConc(ValueType type1, ValueType type2) {
         if (type1 == ValueType.string && type2 == ValueType.string)
             return ValueType.string;
         return null;
     }
+
     public static ValueType getType_AndOr(ValueType type1, ValueType type2) {
         if (type1 == ValueType.bool && type2 == ValueType.bool)
             return ValueType.bool;
         return null;
     }
+
     public static ValueType getType_Boolean(ValueType type1, ValueType type2) {
         if (type1 == ValueType.integer && type2 == ValueType.integer)
             return ValueType.bool;
