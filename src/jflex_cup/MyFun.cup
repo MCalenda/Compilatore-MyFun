@@ -86,8 +86,8 @@ Const ::= INTEGER_CONST:val                                                     
 ;
 
 // TESTED ✅
-Fun ::= FUN ID:id LPAR ParamDeclList:paramDeclList RPAR COLON Type:type VarDecList:varDecList StatList:statList END FUN SEMI      {: RESULT= new FunNode(new LeafID(id), (ArrayList<ParamDecNode>) paramDeclList, (ValueType) type ,(ArrayList<VarDeclNode>) varDecList, (ArrayList<StatNode>) statList); :}
-    | FUN ID:id LPAR ParamDeclList:paramDeclList RPAR VarDecList:varDecList StatList:statList END FUN SEMI                        {: RESULT= new FunNode(new LeafID(id), (ArrayList<ParamDecNode>) paramDeclList,(ArrayList<VarDeclNode>) varDecList, (ArrayList<StatNode>) statList); :}
+Fun ::= FUN ID:id LPAR ParamDeclList:paramDeclList RPAR COLON Type:type VarDecList:varDecList StatList:statList END FUN SEMI      {: RESULT= new FunNode(new LeafID(id), (ArrayList<ParamDecNode>) paramDeclList, (ValueType) type, (ArrayList<VarDeclNode>) varDecList, (ArrayList<StatNode>) statList); :}
+    | FUN ID:id LPAR ParamDeclList:paramDeclList RPAR VarDecList:varDecList StatList:statList END FUN SEMI                        {: RESULT= new FunNode(new LeafID(id), (ArrayList<ParamDecNode>) paramDeclList, (ArrayList<VarDeclNode>) varDecList, (ArrayList<StatNode>) statList); :}
 ;
 
 // TESTED ✅

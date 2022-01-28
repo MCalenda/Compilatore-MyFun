@@ -35,6 +35,13 @@
             "request": "launch",
             "mainClass": "Tester",
             "args": "src/test_files/Test_5_Super_Test.txt"
+        },
+        {
+            "type": "java",
+            "name": "Launch Test 6",
+            "request": "launch",
+            "mainClass": "Semantic_Tester",
+            "args": "src/test_files/Test_4_Empty_Programm.txt"
         }
     ]
 }
