@@ -54,10 +54,10 @@ VarDecList ::= /* empty */                                                      
 ;
 
 // TESTED ✅
-Type ::= INTEGER                                                                {: RESULT= SymbolTable.StringToValueType("Integer"); :}
-    | BOOL                                                                      {: RESULT= SymbolTable.StringToValueType("Bool"); :}
-    | REAL                                                                      {: RESULT= SymbolTable.StringToValueType("Real"); :}
-    | STRING                                                                    {: RESULT= SymbolTable.StringToValueType("String"); :}
+Type ::= INTEGER                                                                {: RESULT= ValueType.integer; :}
+    | BOOL                                                                      {: RESULT= ValueType.bool; :}
+    | REAL                                                                      {: RESULT= ValueType.real; :}
+    | STRING                                                                    {: RESULT= ValueType.string; :}
 ;
 
 // TESTED ✅

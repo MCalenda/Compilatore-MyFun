@@ -9,56 +9,39 @@ public class SymbolTable extends HashMap<String, SymbolTableEntry> {
     public SymbolTable fatherSymbolTable;
 
     // Aggiunge una variabile all'interno della tabella
-    public void createEntry_variable(String id, ValueType type) throws Exception {
-        if (super.containsKey(id))
-            throw new Exception("[SEMANTIC ERROR] variabile " + id + " già dichiarata");
-        else {
-            super.put(id, new SymbolTableEntry(id, type));
-        }
+    public boolean createEntry_variable(String id, ValueType type) {
+        if (super.containsKey(id)) return false;
+        else super.put(id, new SymbolTableEntry(id, type));
+        return true;
     }
 
     // Aggiunge una funzione all'interno della tabella
-    public void createEntry_function(String id, ValueType type, ArrayList<ValueType> params, ArrayList<Boolean> isOut) throws Exception {
-        if (super.containsKey(id))
-            throw new Exception("[SEMANTIC ERROR] funzione " + id + " già dichiarata");
-        else
-            super.put(id, new SymbolTableEntry(id, type, params, isOut));
+    public boolean createEntry_function(String id, ValueType type, ArrayList<ValueType> params, ArrayList<Boolean> isOut) {
+        if (super.containsKey(id)) return false;
+        else super.put(id, new SymbolTableEntry(id, type, params, isOut));
+        return true;
     }
 
     // Verifica se l'ID è contenuto
     public Boolean containsKey(String id) {
-        if (super.containsKey(id)) {
-            return true;
-        } else if (hasFatherSymTab()) {
-            return getFatherSymTab().containsKey(id);
-        } else {
-            return false;
-        }
+        if (super.containsKey(id)) return true;
+        else if (hasFatherSymTab())  return getFatherSymTab().containsKey(id);
+        else return false;
     }
 
     // Ritorna la variabile con ID
-    public SymbolTableEntry containsEntry(String id) throws Exception {
+    public SymbolTableEntry containsEntry(String id) {
         SymbolTableEntry symbolTableEntry = null;
-        if (super.containsKey(id)) {
-            symbolTableEntry = super.get(id);
-        } else if (hasFatherSymTab()) {
-            symbolTableEntry = getFatherSymTab().containsEntry(id);
-        } else {
-            throw new Exception("[SEMANTIC ERROR] variabile " + id + " non dichiarata");
-        }
+        if (super.containsKey(id)) symbolTableEntry = super.get(id);
+        else if (hasFatherSymTab()) symbolTableEntry = getFatherSymTab().containsEntry(id);
         return symbolTableEntry;
     }
 
     // Ritorna la funzione con ID
-    public SymbolTableEntry containsFunctionEntry(String id) throws Exception {
+    public SymbolTableEntry containsFunctionEntry(String id) {
         SymbolTableEntry symbolTableEntry = null;
-        if (super.containsKey(id) && !super.get(id).isVariable()) {
-            symbolTableEntry = super.get(id);
-        } else if (hasFatherSymTab()) {
-            symbolTableEntry = getFatherSymTab().containsFunctionEntry(id);
-        } else {
-            throw new Exception("[SEMANTIC ERROR] funzione " + id + " non dichiarata");
-        }
+        if (super.containsKey(id) && !super.get(id).isVariable()) symbolTableEntry = super.get(id);
+        else if (hasFatherSymTab()) symbolTableEntry = getFatherSymTab().containsFunctionEntry(id);
         return symbolTableEntry;
     }
 
@@ -72,17 +55,5 @@ public class SymbolTable extends HashMap<String, SymbolTableEntry> {
 
     public boolean hasFatherSymTab() {
         return fatherSymbolTable != null;
-    }
-
-    public static ValueType StringToValueType(String type) throws Exception {
-        if (type.equalsIgnoreCase("integer"))
-            return ValueType.integer;
-        if (type.equalsIgnoreCase("string"))
-            return ValueType.string;
-        if (type.equalsIgnoreCase("real"))
-            return ValueType.real;
-        if (type.equalsIgnoreCase("bool"))
-            return ValueType.bool;
-        throw new Exception("SEMANTIC ERROR: il tipo " + type + " non esiste");
     }
 }

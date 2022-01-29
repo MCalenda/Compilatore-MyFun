@@ -26,15 +26,6 @@ public class IdInitObblNode extends DefaultMutableTreeNode implements Syntax_Int
         this.value = value;
     }
 
-    public void setType(String t) {
-        try {
-            this.type = SymbolTable.StringToValueType(t);
-        } catch (Exception e) {
-            System.exit(0);
-            e.printStackTrace();
-        }
-    }
-
     @Override
     public DefaultMutableTreeNode accept(Syntax_Int_Visitor v) {
         return v.visit(this);

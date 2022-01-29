@@ -26,7 +26,7 @@ public interface Semantic_Int_Visitor {
     public void visit(ProgramNode programNode);
     public void visit(IdInitObblNode idInitObblNode);
     public void visit(ConstNode constNode);
-    public void visit(ReturnNode resultNode);
+    public void visit(ReturnNode returnNode);
     public void visit(LeafID leafID);
     public void visit(LeafIntegerConst leafIntegerConst);
     public void visit(LeafRealConst leafRealConst);

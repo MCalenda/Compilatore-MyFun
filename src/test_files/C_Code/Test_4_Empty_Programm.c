@@ -4,10 +4,10 @@
 #include <string.h>
 
 // Dichiarazione delle variabili locali
-int x = 5 / 2;
+int x = 5;
 
 // Dichiarazione delle funzioni
-double sommac(int a, double b, char *size) {	printf("ciao" + "\n");}
+
 
 // Funzione Main
 void main() {}

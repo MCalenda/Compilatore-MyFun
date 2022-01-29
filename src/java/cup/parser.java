@@ -595,7 +595,7 @@ class CUP$parser$actions {
           case 6: // Type ::= INTEGER 
             {
               Object RESULT =null;
-		 RESULT= SymbolTable.StringToValueType("Integer"); 
+		 RESULT= ValueType.integer; 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("Type",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -604,7 +604,7 @@ class CUP$parser$actions {
           case 7: // Type ::= BOOL 
             {
               Object RESULT =null;
-		 RESULT= SymbolTable.StringToValueType("Bool"); 
+		 RESULT= ValueType.bool; 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("Type",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -613,7 +613,7 @@ class CUP$parser$actions {
           case 8: // Type ::= REAL 
             {
               Object RESULT =null;
-		 RESULT= SymbolTable.StringToValueType("Real"); 
+		 RESULT= ValueType.real; 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("Type",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -622,7 +622,7 @@ class CUP$parser$actions {
           case 9: // Type ::= STRING 
             {
               Object RESULT =null;
-		 RESULT= SymbolTable.StringToValueType("String"); 
+		 RESULT= ValueType.string; 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("Type",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;

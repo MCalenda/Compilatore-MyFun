@@ -1,10 +1,11 @@
-integer x := 5 div 2;
+fun prova2():integer
+return 'ciao';
+end fun;
 
-fun sommac(integer a, real b, out string size): real
-    ?. 'ciao';
-
+fun prova():bool
+return prova2;
 end fun;
 
 main
-
+x := prova();
 end main;
