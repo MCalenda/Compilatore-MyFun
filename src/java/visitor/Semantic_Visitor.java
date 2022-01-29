@@ -321,7 +321,9 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
                     System.err.println("[ERRORE SEMANTICO] i parametri della funzione " + callFunNode.leafID.value + " non corrispondono con la dichiarazione atteso: " + functionDef.params);
                     System.exit(1);
                 }
-                if (!((callFunNode.exprList.get(i).op == "OUTPAR") && functionDef.isOut.get(i))) {
+                boolean isOut = false;
+                if (callFunNode.exprList.get(i).op == "OUTPAR") isOut = true;
+                if (isOut != functionDef.isOut.get(i)) {
                     System.err.println("[ERRORE SEMANTICO] i parametri della funzione " + callFunNode.leafID.value + " non corrispondono con la dichiarazione atteso: " + functionDef.params);
                     System.exit(1);
                 }
