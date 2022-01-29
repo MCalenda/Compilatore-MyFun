@@ -1,11 +1,7 @@
-fun prova2():integer
-return 'ciao';
-end fun;
-
-fun prova():bool
-return prova2;
+fun prova():integer
+    return 2;
 end fun;
 
 main
-x := prova();
+integer y := prova();
 end main;
