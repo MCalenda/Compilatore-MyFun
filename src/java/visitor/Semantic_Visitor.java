@@ -33,11 +33,10 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
         }
         programNode.main.accept(this);
 
-
         System.out.println("!-------DEBUG-------!");
-        for (SymbolTable s : stack){
+        for (SymbolTable s : stack) {
             System.out.println("Tabella " + s.symbolTableName);
-            for (String key: s.keySet()) {
+            for (String key : s.keySet()) {
                 System.out.println(key + ": " + s.get(key).toString());
             }
             System.out.println();
@@ -217,7 +216,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
             statNode.callFunNode.accept(this);
         } else if (statNode.returnNode != null) {
             statNode.returnNode.accept(this);
-        }     
+        }
     }
 
     @Override
@@ -229,12 +228,15 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
     public void visit(FunNode funNode) {
         ArrayList<ValueType> params = new ArrayList<>();
         ArrayList<Boolean> isOut = new ArrayList<>();
-        if (funNode.paramDecList != null){
+
+        if (funNode.paramDecList != null) {
             try {
                 for (ParamDecNode parDecNode : funNode.paramDecList) {
                     params.add(parDecNode.type);
-                    if (parDecNode.out) isOut.add(true);
-                    else isOut.add(false);
+                    if (parDecNode.out)
+                        isOut.add(true);
+                    else
+                        isOut.add(false);
                 }
                 stack.firstElement().createEntry_function(funNode.leafID.value, funNode.type, params, isOut);
             } catch (Exception e) {
@@ -242,10 +244,12 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
                 System.exit(1);
             }
         }
+
         SymbolTable symbolTable = new SymbolTable();
         symbolTable.symbolTableName = funNode.leafID.value;
         symbolTable.setFatherSymTab(stack.firstElement());
         stack.push(symbolTable);
+        
         if (funNode.paramDecList != null) {
             for (ParamDecNode parDecNode : funNode.paramDecList)
                 parDecNode.accept(this);

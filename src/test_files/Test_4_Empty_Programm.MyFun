@@ -1,10 +1,10 @@
-real a := 2.5;
-fun prova(integer ciao):integer
-    real x := a;
+integer x := 5 div 2;
+
+fun sommac(integer a, real b, out string size): real
+    ?. 'ciao';
 
 end fun;
 
 main
-    integer a := 5 + x;
 
 end main;

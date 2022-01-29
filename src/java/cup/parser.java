@@ -1084,7 +1084,7 @@ class CUP$parser$actions {
           case 43: // StatList ::= 
             {
               Object RESULT =null;
-		 RESULT= null; 
+		 RESULT= new ArrayList<StatNode>();
               CUP$parser$result = parser.getSymbolFactory().newSymbol("StatList",12, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1099,7 +1099,7 @@ class CUP$parser$actions {
 		int statListleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int statListright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object statList = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 ((ArrayList<StatNode>)statList).add(0, (StatNode) stat); RESULT = statList; 
+		 ((ArrayList<StatNode>)statList).add((StatNode) stat); RESULT = statList; 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("StatList",12, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;

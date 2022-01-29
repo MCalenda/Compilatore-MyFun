@@ -4,12 +4,14 @@ import java.util.ArrayList;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import visitor.CodeGen_Int_Visitable;
+import visitor.CodeGen_Int_Visitor;
 import visitor.Semantic_Int_Visitable;
 import visitor.Semantic_Int_Visitor;
 import visitor.Syntax_Int_Visitable;
 import visitor.Syntax_Int_Visitor;
 
-public class WhileStatNode extends DefaultMutableTreeNode implements Syntax_Int_Visitable, Semantic_Int_Visitable {
+public class WhileStatNode extends DefaultMutableTreeNode implements Syntax_Int_Visitable, Semantic_Int_Visitable, CodeGen_Int_Visitable {
     public String name = "WhileStatNode";
     public ExprNode expr;
     public ArrayList<VarDeclNode> varDeclList;
@@ -32,4 +34,8 @@ public class WhileStatNode extends DefaultMutableTreeNode implements Syntax_Int_
         v.visit(this);
     }
 
+    @Override
+    public void accept(CodeGen_Int_Visitor v) {
+        v.visit(this);
+    }
 }

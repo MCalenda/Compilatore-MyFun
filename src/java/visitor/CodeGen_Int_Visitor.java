@@ -34,4 +34,22 @@ public interface CodeGen_Int_Visitor {
     public void visit(IdInitObblNode idInitObblNode);
 
     public void visit(ConstNode constNode);
+
+    public void visit(ParamDecNode paramDecNode);
+
+    public void visit(StatNode statNode);
+
+    public void visit(IfStatNode ifStatNode);
+
+    public void visit(WhileStatNode whileStatNode);
+
+    public void visit(ReadStatNode readStatNode);
+
+    public void visit(WriteStatNode writeStatNode);
+
+    public void visit(AssignStatNode assignStatNode);
+
+    public void visit(CallFunNode callFunNode);
+
+    public void visit(ReturnNode returnNode);
 }

@@ -2,12 +2,14 @@ package tree.nodes;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import visitor.CodeGen_Int_Visitable;
+import visitor.CodeGen_Int_Visitor;
 import visitor.Semantic_Int_Visitable;
 import visitor.Semantic_Int_Visitor;
 import visitor.Syntax_Int_Visitable;
 import visitor.Syntax_Int_Visitor;
 
-public class StatNode extends DefaultMutableTreeNode implements Syntax_Int_Visitable, Semantic_Int_Visitable {
+public class StatNode extends DefaultMutableTreeNode implements Syntax_Int_Visitable, Semantic_Int_Visitable, CodeGen_Int_Visitable {
     public String name = "StatNode";
     public IfStatNode ifStatNode = null;
     public WhileStatNode whileStatNode = null;
@@ -59,6 +61,11 @@ public class StatNode extends DefaultMutableTreeNode implements Syntax_Int_Visit
 
     @Override
     public void accept(Semantic_Int_Visitor v) {
+        v.visit(this);
+    }
+
+    @Override
+    public void accept(CodeGen_Int_Visitor v) {
         v.visit(this);
     }
 }

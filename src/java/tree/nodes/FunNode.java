@@ -23,7 +23,6 @@ public class FunNode extends DefaultMutableTreeNode implements Syntax_Int_Visita
     // Controllo semantico
     public ValueType type = null;
 
-
     public FunNode(LeafID leafID, ArrayList<ParamDecNode> paramDecList, ValueType type,
             ArrayList<VarDeclNode> varDecList, ArrayList<StatNode> statList) {
         super("FunNode");
