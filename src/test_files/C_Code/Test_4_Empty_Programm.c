@@ -9,8 +9,17 @@
 
 // Funzione Main
 int main() {
-    char zx[512] = char temp_1[512] = "ciao";
-    char temp_2[512] = " a tutti";
-    char *temp_3 = strcat(temp_3, temp_3);
+    char *test = malloc(512 * sizeof(char));
+    strcpy(test, "");
+    strcat(test, "ciao");
+    strcat(test, "cacscas");
+    strcat(test, "adsadasdas");
+    char *cia = malloc(512 * sizeof(char));
+    printf("%s", cia);
+    printf("\r\n");
+    printf("%s", test);
+    printf("\r\n");
+    printf("%s", "ciaone");
+    printf("\r\n");
     return 0;
 }

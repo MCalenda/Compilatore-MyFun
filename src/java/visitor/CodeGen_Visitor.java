@@ -1,7 +1,9 @@
 package visitor;
 
 import java.io.*;
+import java.security.cert.TrustAnchor;
 
+import java_cup.internal_error;
 import symbol_table.ValueType;
 import tree.leaves.*;
 import tree.nodes.*;
@@ -9,10 +11,10 @@ import tree.nodes.*;
 public class CodeGen_Visitor implements CodeGen_Int_Visitor {
 
     private PrintWriter wr;
-    private Integer tempCounter;
+    private String lastID = null;
+    private Boolean isConcat = false;
 
     public CodeGen_Visitor(String name) throws IOException {
-        tempCounter = 0;
         File file = new File("src/test_files/C_Code/" + name.substring(0, name.length() - 6).split("/")[2] + ".c");
         if (!file.exists()) {
             file.createNewFile();
@@ -284,18 +286,43 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
 
     @Override
     public void visit(IdInitNode idInitNode) {
+        // Se sto inizializzando una stringa
         if (idInitNode.type == ValueType.string) {
             wr.print("*");
-        }
-        
-        idInitNode.leafID.accept(this);
+            idInitNode.leafID.accept(this);
+            wr.print("= malloc(512 * sizeof(char));");
 
-        if (idInitNode.exprNode != null) {
-            wr.print(" = ");
-            idInitNode.exprNode.accept(this);
-        }
+            if (idInitNode.exprNode != null) {
+                if (!idInitNode.exprNode.op.equals("STR_CONCAT")) {
+                    wr.print("strcpy(");
+                    idInitNode.leafID.accept(this);
+                    wr.print(", ");
+                    idInitNode.exprNode.accept(this);
+                    wr.print(") ");
+                } else {
+                    this.isConcat = true;
+                    this.lastID = idInitNode.leafID.value;
+                    wr.print("strcpy(");
+                    idInitNode.leafID.accept(this);
+                    wr.print(", \"\");");
+                    idInitNode.exprNode.accept(this);
+                    this.isConcat = false;
+                }
+            }
 
-        wr.print(";");
+        } else {
+            // Se sto inizializzando qualsiasi altra cosa
+            idInitNode.leafID.accept(this);
+
+            if (idInitNode.exprNode != null) {
+                wr.print(" = ");
+
+                // Conservo l'ultimo ID
+                this.lastID = idInitNode.leafID.value;
+
+                idInitNode.exprNode.accept(this);
+            }
+        }
     }
 
     // DA VEDERE SE TERNELO O MENO
@@ -312,13 +339,6 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
         }
         return "null";
     }
-
-    // DA VEDERE SE TENERLO O MENO
-    private Integer get_temp() {
-        tempCounter++;
-        return tempCounter;
-    }
-
 
     @Override
     public void visit(LeafID leafID) {
@@ -373,16 +393,8 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
                 break;
 
             case "STR_CONCAT":
-                wr.print("char temp_" + get_temp() + "[512] = ");
                 ((ExprNode) exprNode.val_One).accept(this);
-                wr.print("; ");
-
-                wr.print("char temp_" + get_temp() + "[512] = ");
                 ((ExprNode) exprNode.val_Two).accept(this);
-                wr.print("; ");
-
-                wr.print("char *temp_" + get_temp() + " = ");
-                wr.print("strcat(temp_" + (get_temp() - 1) + ", temp_" + (get_temp() - 2) +")");
                 break;
 
             case "OR":
@@ -471,9 +483,15 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
 
     @Override
     public void visit(LeafStringConst leafStringConst) {
-        if (leafStringConst.value.length() != 0)
-            wr.print("\"" + leafStringConst.value + "\"");
-        else
+        if (leafStringConst.value.length() != 0) {
+            if (this.isConcat) {
+                wr.print("strcat(" + this.lastID + ", ");
+                wr.print("\"" + leafStringConst.value + "\"");
+                wr.print("); ");
+            } else {
+                wr.print("\"" + leafStringConst.value + "\"");
+            }
+        } else
             wr.print(leafStringConst.value);
     }
 

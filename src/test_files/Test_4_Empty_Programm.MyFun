@@ -1,5 +1,13 @@
 #programma main
 main
-    string zx := 'ciao' & ' a tutti';
+    string test := 'ciao' & 'cacscas' & 'adsadasdas';
+
+    string cia;
+    ?. cia;
+
+    ?. test;
+
+    ?. 'ciaone';
+
 
 end main;
