@@ -10,4 +10,4 @@
 
 
 // Funzione Main
-int main() {char *x= malloc(512 * sizeof(char));strcpy(x, "cazzo") return 0; }
+int main() {char *x= malloc(512 * sizeof(char));strcpy(x, "prova") int w = 5.5double a = 5double y = w + areturn 0; }

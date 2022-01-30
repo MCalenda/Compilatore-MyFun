@@ -1,6 +1,9 @@
 #programma main
 main
-    string x := 'cazzo';
+    string x := 'prova';
+    integer w := 5.5;
+    real a := 5;
+    real y := w + a;
 
 
 end main;

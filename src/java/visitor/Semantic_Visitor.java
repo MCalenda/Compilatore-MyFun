@@ -527,6 +527,10 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
             return true;
         if (variable == ValueType.real && assign == ValueType.real)
             return true;
+        if (variable == ValueType.integer && assign == ValueType.real)
+            return true;
+        if (variable == ValueType.real && assign == ValueType.integer)
+            return true;
         if (variable == ValueType.bool && assign == ValueType.bool)
             return true;
         if (variable == ValueType.string && assign == ValueType.string)
