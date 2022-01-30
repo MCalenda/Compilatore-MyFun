@@ -159,17 +159,17 @@ public class CVisitor implements ICVisitor {
                             }
 
                             switch (parDeclNode.typeNode.type) {
-                                case "INT":
-                                    writer.println("atoi(argv[" + i + "]);");
-                                    break;
+                            case "INT":
+                                writer.println("atoi(argv[" + i + "]);");
+                                break;
 
-                                case "FLOAT":
-                                    writer.println("atof(argv[" + i + "]);");
-                                    break;
+                            case "FLOAT":
+                                writer.println("atof(argv[" + i + "]);");
+                                break;
 
-                                case "BOOL":
-                                    writer.println("strcmp(\"true\",argv[" + i + "])==0;");
-                                    break;
+                            case "BOOL":
+                                writer.println("strcmp(\"true\",argv[" + i + "])==0;");
+                                break;
                             }
                             i++;
                         }
@@ -232,7 +232,8 @@ public class CVisitor implements ICVisitor {
             node.statListNode.accept(this);
         }
 
-        // Se la funzione resituisce più di un valore devo creare la struttura e metterci dentro i parametri da restituire
+        // Se la funzione resituisce più di un valore devo creare la struttura e
+        // metterci dentro i parametri da restituire
         if (node.returnExprs.size() > 1) {
             writer.println("\n// Struttura di ritorno");
             String nomeStruct = "struct_" + actualProcName;
@@ -268,7 +269,7 @@ public class CVisitor implements ICVisitor {
 
         for (LeafID nodeID : node.identifiers) {
             node.typeNode.accept(this);
-            if(node.typeNode.type.equalsIgnoreCase("String"))
+            if (node.typeNode.type.equalsIgnoreCase("String"))
                 writer.print("* ");
 
             nodeID.accept(this);
@@ -306,31 +307,31 @@ public class CVisitor implements ICVisitor {
     public void visit(StatListNode nodeList) {
         for (StatNode statNode : nodeList.statList) {
             switch (statNode.getClass().getSimpleName()) {
-                case "IfStatNode":
-                    IfStatNode ifStat = (IfStatNode) statNode;
-                    ifStat.accept(this);
-                    break;
-                case "WhileStatNode":
-                    WhileStatNode whileStatNode = (WhileStatNode) statNode;
-                    whileStatNode.accept(this);
-                    break;
-                case "ReadLnStatNode":
-                    ReadLnStatNode readStatNode = (ReadLnStatNode) statNode;
-                    readStatNode.accept(this);
-                    break;
-                case "WriteStatNode":
-                    WriteStatNode writeStatNode = (WriteStatNode) statNode;
-                    writeStatNode.accept(this);
-                    break;
-                case "AssignStatNode":
-                    AssignStatNode assignStatNode = (AssignStatNode) statNode;
-                    assignStatNode.accept(this);
-                    break;
-                case "CallProcNode":
-                    CallProcNode callProcNode = (CallProcNode) statNode;
-                    callProcNode.accept(this);
-                    writer.println(";");
-                    break;
+            case "IfStatNode":
+                IfStatNode ifStat = (IfStatNode) statNode;
+                ifStat.accept(this);
+                break;
+            case "WhileStatNode":
+                WhileStatNode whileStatNode = (WhileStatNode) statNode;
+                whileStatNode.accept(this);
+                break;
+            case "ReadLnStatNode":
+                ReadLnStatNode readStatNode = (ReadLnStatNode) statNode;
+                readStatNode.accept(this);
+                break;
+            case "WriteStatNode":
+                WriteStatNode writeStatNode = (WriteStatNode) statNode;
+                writeStatNode.accept(this);
+                break;
+            case "AssignStatNode":
+                AssignStatNode assignStatNode = (AssignStatNode) statNode;
+                assignStatNode.accept(this);
+                break;
+            case "CallProcNode":
+                CallProcNode callProcNode = (CallProcNode) statNode;
+                callProcNode.accept(this);
+                writer.println(";");
+                break;
             }
         }
     }
@@ -381,105 +382,105 @@ public class CVisitor implements ICVisitor {
     public void visit(WriteStatNode node) {
         for (ExprNode exprNode : node.exprList) {
             switch (exprNode.name) {
-                case "INT_CONST":
-                    writer.print("printf(\"%d\", ");
+            case "INT_CONST":
+                writer.print("printf(\"%d\", ");
+                break;
+
+            case "FLOAT_CONST":
+                writer.print("printf(\"%f\", ");
+                break;
+
+            case "ID":
+                writer.print("printf(");
+                switch (exprNode.types.get(0).name()) {
+                case "String":
+                    writer.print("\"%s\", ");
                     break;
 
-                case "FLOAT_CONST":
-                    writer.print("printf(\"%f\", ");
+                case "Boolean", "Integer":
+                    writer.print("\"%d\", ");
                     break;
 
-                case "ID":
-                    writer.print("printf(");
-                    switch (exprNode.types.get(0).name()) {
-                        case "String":
-                            writer.print("\"%s\", ");
-                            break;
-
-                        case "Boolean", "Integer":
-                            writer.print("\"%d\", ");
-                            break;
-
-                        case "Float":
-                            writer.print("\"%f\", ");
-                            break;
-                    }
+                case "Float":
+                    writer.print("\"%f\", ");
                     break;
+                }
+                break;
 
-                case "CallProcOp":
-                    CallProcNode callProcNode = (CallProcNode) exprNode.value1;
-                    if (callProcNode != null) {
-                        if (callProcNode.types.size() > 1) {
-                            String nomeStruct = "struct_" + callProcNode.leafID.value;
-                            String nomeVariabile = callProcNode.leafID.value + "_return" + callProcIndex;
-                            writer.print("struct " + nomeStruct + " " + nomeVariabile + " = ");
+            case "CallProcOp":
+                CallProcNode callProcNode = (CallProcNode) exprNode.value1;
+                if (callProcNode != null) {
+                    if (callProcNode.types.size() > 1) {
+                        String nomeStruct = "struct_" + callProcNode.leafID.value;
+                        String nomeVariabile = callProcNode.leafID.value + "_return" + callProcIndex;
+                        writer.print("struct " + nomeStruct + " " + nomeVariabile + " = ");
+                        callProcNode.accept(this);
+                        writer.println(";");
+                        callProcIndex++;
+                        for (int i = 0; i < callProcNode.types.size(); i++) {
+                            writer.print("printf(");
+                            String variabile = nomeVariabile + ".variable" + i;
+                            switch (callProcNode.types.get(i).name()) {
+                            case "String":
+                                writer.print("\"%s\\n\", ");
+                                break;
+
+                            case "Boolean", "Integer":
+                                writer.print("\"%d\\n\", ");
+                                break;
+
+                            case "Float":
+                                writer.print("\"%f\\n\", ");
+                                break;
+                            }
+                            writer.println(variabile + ");");
+                        }
+                    } else {
+                        for (ValueType valueType : callProcNode.types) {
+                            writer.print("printf(");
+                            switch (valueType.name()) {
+                            case "String":
+                                writer.print("\"%s\", ");
+                                break;
+
+                            case "Boolean", "Integer":
+                                writer.print("\"%d\", ");
+                                break;
+
+                            case "Float":
+                                writer.print("\"%f\", ");
+                                break;
+                            }
                             callProcNode.accept(this);
-                            writer.println(";");
-                            callProcIndex++;
-                            for (int i = 0; i < callProcNode.types.size(); i++) {
-                                writer.print("printf(");
-                                String variabile = nomeVariabile + ".variable" + i;
-                                switch (callProcNode.types.get(i).name()) {
-                                    case "String":
-                                        writer.print("\"%s\\n\", ");
-                                        break;
-
-                                    case "Boolean", "Integer":
-                                        writer.print("\"%d\\n\", ");
-                                        break;
-
-                                    case "Float":
-                                        writer.print("\"%f\\n\", ");
-                                        break;
-                                }
-                                writer.println(variabile + ");");
-                            }
-                        } else {
-                            for (ValueType valueType : callProcNode.types) {
-                                writer.print("printf(");
-                                switch (valueType.name()) {
-                                    case "String":
-                                        writer.print("\"%s\", ");
-                                        break;
-
-                                    case "Boolean", "Integer":
-                                        writer.print("\"%d\", ");
-                                        break;
-
-                                    case "Float":
-                                        writer.print("\"%f\", ");
-                                        break;
-                                }
-                                callProcNode.accept(this);
-                                writer.println(");");
-                            }
+                            writer.println(");");
                         }
                     }
-                    break;
+                }
+                break;
 
-                case "AddOp":
-                    switch (SemanticVisitor.getType_Operations(((ExprNode) exprNode.value1).types.get(0), ((ExprNode) exprNode.value2).types.get(0))) {
-                        case String:
-                            writer.print("printf(\"%s\", ");
-                            exprNode.accept(this);
-                            writer.print(");");
-                            break;
-                        case Integer, Boolean:
-                            writer.print("printf(\"%d\", ");
-                            exprNode.accept(this);
-                            writer.print(");");
-                            break;
-                        case Float:
-                            writer.print("printf(\"%f\", ");
-                            exprNode.accept(this);
-                            writer.print(");");
-                            break;
-                    }
+            case "AddOp":
+                switch (SemanticVisitor.getType_Operations(((ExprNode) exprNode.value1).types.get(0), ((ExprNode) exprNode.value2).types.get(0))) {
+                case String:
+                    writer.print("printf(\"%s\", ");
+                    exprNode.accept(this);
+                    writer.print(");");
                     break;
+                case Integer, Boolean:
+                    writer.print("printf(\"%d\", ");
+                    exprNode.accept(this);
+                    writer.print(");");
+                    break;
+                case Float:
+                    writer.print("printf(\"%f\", ");
+                    exprNode.accept(this);
+                    writer.print(");");
+                    break;
+                }
+                break;
 
-                default:
-                    writer.print("printf(");
-                    break;
+            default:
+                writer.print("printf(");
+                break;
             }
 
             if (!(exprNode.value1 instanceof CallProcNode) && !exprNode.name.equalsIgnoreCase("AddOp")) {
@@ -507,7 +508,8 @@ public class CVisitor implements ICVisitor {
                 writer.println(";");
             }
         } else {
-            // Variabile temporanea per prendere l'expression giusta (cioè la parte destra dell'assegnazione)
+            // Variabile temporanea per prendere l'expression giusta (cioè la parte destra
+            // dell'assegnazione)
             int localIndex = 0;
 
             for (int i = 0; i < node.idList.size(); i++) {
@@ -539,7 +541,7 @@ public class CVisitor implements ICVisitor {
                         callProcNode.accept(this);
                         writer.println(";");
 
-                        //ciclo sui tipi di ritorno
+                        // ciclo sui tipi di ritorno
                         for (int j = 0; j < callProcNode.types.size(); j++) {
 
                             if (callProcNode.types.get(j) == ValueType.String) {
@@ -556,7 +558,7 @@ public class CVisitor implements ICVisitor {
                                 writer.println("_return" + callProcIndex + ".variable" + j + ";");
                             }
 
-                            //sommo la size dei tipi di ritorno all'indice del primo ciclo
+                            // sommo la size dei tipi di ritorno all'indice del primo ciclo
                             if (j != callProcNode.types.size() - 1)
                                 i++;
                         }
@@ -564,7 +566,7 @@ public class CVisitor implements ICVisitor {
                         localIndex++;
                         callProcIndex++;
 
-                        //Lascio un po' di spazio
+                        // Lascio un po' di spazio
                         writer.println();
                     }
                 }
@@ -618,121 +620,120 @@ public class CVisitor implements ICVisitor {
     @Override
     public void visit(ExprNode exprNode) {
         if (exprNode.value1 != null && exprNode.value2 != null) {
-            //((ExprNode) exprNode.value1).accept(this);
+            // ((ExprNode) exprNode.value1).accept(this);
 
             switch (exprNode.name) {
-                case "AddOp":
+            case "AddOp":
+                ((ExprNode) exprNode.value1).accept(this);
+                writer.print(" + ");
+                ((ExprNode) exprNode.value2).accept(this);
+                break;
+            case "DiffOp":
+                ((ExprNode) exprNode.value1).accept(this);
+                writer.print(" - ");
+                ((ExprNode) exprNode.value2).accept(this);
+                break;
+            case "DivOp":
+                ((ExprNode) exprNode.value1).accept(this);
+                writer.print(" / ");
+                ((ExprNode) exprNode.value2).accept(this);
+                break;
+            case "MulOp":
+                ((ExprNode) exprNode.value1).accept(this);
+                writer.print(" * ");
+                ((ExprNode) exprNode.value2).accept(this);
+                break;
+            case "AndOp":
+                ((ExprNode) exprNode.value1).accept(this);
+                writer.print(" && ");
+                ((ExprNode) exprNode.value2).accept(this);
+                break;
+            case "OrOp":
+                ((ExprNode) exprNode.value1).accept(this);
+                writer.print(" || ");
+                ((ExprNode) exprNode.value2).accept(this);
+                break;
+            case "GTOp":
+                if (((ExprNode) exprNode.value1).types.get(0) == ValueType.String) {
+                    writer.print("strcmp(");
                     ((ExprNode) exprNode.value1).accept(this);
-                    writer.print(" + ");
+                    writer.print(", ");
                     ((ExprNode) exprNode.value2).accept(this);
-                    break;
-                case "DiffOp":
+                    writer.print(") > 0");
+                } else {
                     ((ExprNode) exprNode.value1).accept(this);
-                    writer.print(" - ");
+                    writer.print(" > ");
                     ((ExprNode) exprNode.value2).accept(this);
-                    break;
-                case "DivOp":
+                }
+                break;
+            case "GEOp":
+                if (((ExprNode) exprNode.value1).types.get(0) == ValueType.String) {
+                    writer.print("strcmp(");
                     ((ExprNode) exprNode.value1).accept(this);
-                    writer.print(" / ");
+                    writer.print(", ");
                     ((ExprNode) exprNode.value2).accept(this);
-                    break;
-                case "MulOp":
+                    writer.print(") >= 0");
+                } else {
                     ((ExprNode) exprNode.value1).accept(this);
-                    writer.print(" * ");
+                    writer.print(" >= ");
                     ((ExprNode) exprNode.value2).accept(this);
-                    break;
-                case "AndOp":
+                }
+                break;
+            case "LTOp":
+                if (((ExprNode) exprNode.value1).types.get(0) == ValueType.String) {
+                    writer.print("strcmp(");
                     ((ExprNode) exprNode.value1).accept(this);
-                    writer.print(" && ");
+                    writer.print(", ");
                     ((ExprNode) exprNode.value2).accept(this);
-                    break;
-                case "OrOp":
+                    writer.print(") < 0");
+                } else {
                     ((ExprNode) exprNode.value1).accept(this);
-                    writer.print(" || ");
+                    writer.print(" < ");
                     ((ExprNode) exprNode.value2).accept(this);
-                    break;
-                case "GTOp":
-                    if (((ExprNode) exprNode.value1).types.get(0) == ValueType.String) {
-                        writer.print("strcmp(");
-                        ((ExprNode) exprNode.value1).accept(this);
-                        writer.print(", ");
-                        ((ExprNode) exprNode.value2).accept(this);
-                        writer.print(") > 0");
-                    } else {
-                        ((ExprNode) exprNode.value1).accept(this);
-                        writer.print(" > ");
-                        ((ExprNode) exprNode.value2).accept(this);
-                    }
-                    break;
-                case "GEOp":
-                    if (((ExprNode) exprNode.value1).types.get(0) == ValueType.String) {
-                        writer.print("strcmp(");
-                        ((ExprNode) exprNode.value1).accept(this);
-                        writer.print(", ");
-                        ((ExprNode) exprNode.value2).accept(this);
-                        writer.print(") >= 0");
-                    } else {
-                        ((ExprNode) exprNode.value1).accept(this);
-                        writer.print(" >= ");
-                        ((ExprNode) exprNode.value2).accept(this);
-                    }
-                    break;
-                case "LTOp":
-                    if (((ExprNode) exprNode.value1).types.get(0) == ValueType.String) {
-                        writer.print("strcmp(");
-                        ((ExprNode) exprNode.value1).accept(this);
-                        writer.print(", ");
-                        ((ExprNode) exprNode.value2).accept(this);
-                        writer.print(") < 0");
-                    } else {
-                        ((ExprNode) exprNode.value1).accept(this);
-                        writer.print(" < ");
-                        ((ExprNode) exprNode.value2).accept(this);
-                    }
-                    break;
-                case "LEOp":
-                    if (((ExprNode) exprNode.value1).types.get(0) == ValueType.String) {
-                        writer.print("strcmp(");
-                        ((ExprNode) exprNode.value1).accept(this);
-                        writer.print(", ");
-                        ((ExprNode) exprNode.value2).accept(this);
-                        writer.print(") <= 0");
-                    } else {
-                        ((ExprNode) exprNode.value1).accept(this);
-                        writer.print(" <= ");
-                        ((ExprNode) exprNode.value2).accept(this);
-                    }
-                    break;
-                case "EQOp":
-                    if (((ExprNode) exprNode.value1).types.get(0) == ValueType.String) {
-                        writer.print("strcmp(");
-                        ((ExprNode) exprNode.value1).accept(this);
-                        writer.print(", ");
-                        ((ExprNode) exprNode.value2).accept(this);
-                        writer.print(") == 0");
-                    } else {
-                        ((ExprNode) exprNode.value1).accept(this);
-                        writer.print(" == ");
-                        ((ExprNode) exprNode.value2).accept(this);
-                    }
-                    break;
-                case "NEOp":
-                    if (((ExprNode) exprNode.value1).types.get(0) == ValueType.String) {
-                        writer.print("strcmp(");
-                        ((ExprNode) exprNode.value1).accept(this);
-                        writer.print(", ");
-                        ((ExprNode) exprNode.value2).accept(this);
-                        writer.print(") != 0");
-                    } else {
-                        ((ExprNode) exprNode.value1).accept(this);
-                        writer.print(" != ");
-                        ((ExprNode) exprNode.value2).accept(this);
-                    }
-                    break;
+                }
+                break;
+            case "LEOp":
+                if (((ExprNode) exprNode.value1).types.get(0) == ValueType.String) {
+                    writer.print("strcmp(");
+                    ((ExprNode) exprNode.value1).accept(this);
+                    writer.print(", ");
+                    ((ExprNode) exprNode.value2).accept(this);
+                    writer.print(") <= 0");
+                } else {
+                    ((ExprNode) exprNode.value1).accept(this);
+                    writer.print(" <= ");
+                    ((ExprNode) exprNode.value2).accept(this);
+                }
+                break;
+            case "EQOp":
+                if (((ExprNode) exprNode.value1).types.get(0) == ValueType.String) {
+                    writer.print("strcmp(");
+                    ((ExprNode) exprNode.value1).accept(this);
+                    writer.print(", ");
+                    ((ExprNode) exprNode.value2).accept(this);
+                    writer.print(") == 0");
+                } else {
+                    ((ExprNode) exprNode.value1).accept(this);
+                    writer.print(" == ");
+                    ((ExprNode) exprNode.value2).accept(this);
+                }
+                break;
+            case "NEOp":
+                if (((ExprNode) exprNode.value1).types.get(0) == ValueType.String) {
+                    writer.print("strcmp(");
+                    ((ExprNode) exprNode.value1).accept(this);
+                    writer.print(", ");
+                    ((ExprNode) exprNode.value2).accept(this);
+                    writer.print(") != 0");
+                } else {
+                    ((ExprNode) exprNode.value1).accept(this);
+                    writer.print(" != ");
+                    ((ExprNode) exprNode.value2).accept(this);
+                }
+                break;
             }
 
-            //((ExprNode) exprNode.value2).accept(this);
-
+            // ((ExprNode) exprNode.value2).accept(this);
 
         } else if (exprNode.value1 != null) {
             if (exprNode.name.equalsIgnoreCase("UminusOp")) {

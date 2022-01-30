@@ -9,8 +9,10 @@ import tree.nodes.*;
 public class CodeGen_Visitor implements CodeGen_Int_Visitor {
 
     private PrintWriter wr;
+    private Integer tempCounter;
 
     public CodeGen_Visitor(String name) throws IOException {
+        tempCounter = 0;
         File file = new File("src/test_files/C_Code/" + name.substring(0, name.length() - 6).split("/")[2] + ".c");
         if (!file.exists()) {
             file.createNewFile();
@@ -200,35 +202,50 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
 
     @Override
     public void visit(WriteStatNode writeStatNode) {
-        wr.print("printf(");
 
-        
-        writeStatNode.expr.accept(this);
-
-        switch (writeStatNode.op) {
-        case "WRITE":
-            wr.print("); ");
+        // Dal tipo dell'espressione carpisco il tipo di valore da stampare
+        switch (writeStatNode.expr.type) {
+        case integer, bool:
+            wr.print("printf(\"%d\", ");
             break;
-        case "WRITELN":
-            wr.print(" + \"\\n\"); ");
+        case string:
+            wr.print("printf(\"%s\", ");
             break;
-        case "WRITET":
-
-            break;
-        case "WRITEB":
-
+        case real:
+            wr.print("printf(\"%f\", ");
             break;
         }
 
+        // Accetto l'espressione che viene stampata
+        writeStatNode.expr.accept(this);
+        wr.print("); ");
+
+        // Aggiungo eventuali extra post stampa
+        switch (writeStatNode.op) {
+        // La stampa ? (solo per chiarezza)
+        case "WRITE":
+            break;
+        // La stampa ?.
+        case "WRITELN":
+            wr.print("printf(\"\\r\\n\"); ");
+            break;
+        // La stampa ?:
+        case "WRITET":
+            wr.print("printf(\"\\t\"); ");
+            break;
+        // La stampa ?,
+        case "WRITEB":
+            wr.print("printf(\" \"); ");
+            break;
+        }
     }
 
     @Override
     public void visit(AssignStatNode assignStatNode) {
         assignStatNode.leafID.accept(this);
-
         wr.print(" = ");
-
         assignStatNode.expr.accept(this);
+        wr.print("; ");
     }
 
     @Override
@@ -236,32 +253,42 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
         callFunNode.leafID.accept(this);
 
         wr.print("(");
+        ExprNode lastExprNode = callFunNode.exprList.get(callFunNode.exprList.size() - 1);
         for (ExprNode exprNode : callFunNode.exprList) {
             exprNode.accept(this);
+            if (lastExprNode != exprNode)
+                wr.print(", ");
         }
-        wr.print(");");
+        wr.print(")");
     }
 
     @Override
     public void visit(ReturnNode returnNode) {
         wr.print("return ");
         returnNode.expr.accept(this);
+        wr.print("; ");
     }
 
     @Override
     public void visit(MainNode mainNode) {
-        wr.print("void main() {");
-
+        wr.print("int main() {");
+        for (VarDeclNode varDeclNode : mainNode.varDeclList) {
+            varDeclNode.accept(this);
+        }
+        for (StatNode statNode : mainNode.statList) {
+            statNode.accept(this);
+        }
+        wr.print("return 0; ");
         wr.print("}");
     }
 
     @Override
     public void visit(IdInitNode idInitNode) {
-        idInitNode.leafID.accept(this);
-
         if (idInitNode.type == ValueType.string) {
-            wr.print("[512]");
+            wr.print("*");
         }
+        
+        idInitNode.leafID.accept(this);
 
         if (idInitNode.exprNode != null) {
             wr.print(" = ");
@@ -272,7 +299,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
     }
 
     // DA VEDERE SE TERNELO O MENO
-    public String convert_type(ValueType type) {
+    private String convert_type(ValueType type) {
         switch (type) {
         case integer:
             return "int";
@@ -285,6 +312,13 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
         }
         return "null";
     }
+
+    // DA VEDERE SE TENERLO O MENO
+    private Integer get_temp() {
+        tempCounter++;
+        return tempCounter;
+    }
+
 
     @Override
     public void visit(LeafID leafID) {
@@ -339,9 +373,16 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
                 break;
 
             case "STR_CONCAT":
+                wr.print("char temp_" + get_temp() + "[512] = ");
                 ((ExprNode) exprNode.val_One).accept(this);
-                wr.print(" + ");
+                wr.print("; ");
+
+                wr.print("char temp_" + get_temp() + "[512] = ");
                 ((ExprNode) exprNode.val_Two).accept(this);
+                wr.print("; ");
+
+                wr.print("char *temp_" + get_temp() + " = ");
+                wr.print("strcat(temp_" + (get_temp() - 1) + ", temp_" + (get_temp() - 2) +")");
                 break;
 
             case "OR":
@@ -397,12 +438,14 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
                 ((LeafRealConst) exprNode.val_One).accept(this);
             } else if (exprNode.val_One instanceof LeafStringConst) {
                 ((LeafStringConst) exprNode.val_One).accept(this);
-            } else if (exprNode.name.equalsIgnoreCase("UMINUS")) {
+            } else if (exprNode.op.equalsIgnoreCase("UMINUS")) {
                 wr.print("-");
                 ((ExprNode) exprNode.val_One).accept(this);
-            } else if (exprNode.name.equalsIgnoreCase("NOT")) {
+            } else if (exprNode.op.equalsIgnoreCase("NOT")) {
                 wr.print("!");
                 ((ExprNode) exprNode.val_One).accept(this);
+            } else if (exprNode.op.equalsIgnoreCase("CALLFUN")) {
+                ((CallFunNode) exprNode.val_One).accept(this);
             } else if (exprNode.val_One instanceof ExprNode) {
                 ((ExprNode) exprNode.val_One).accept(this);
             }
@@ -428,7 +471,10 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
 
     @Override
     public void visit(LeafStringConst leafStringConst) {
-        wr.print("\"" + leafStringConst.value.toString() + "\"");
+        if (leafStringConst.value.length() != 0)
+            wr.print("\"" + leafStringConst.value + "\"");
+        else
+            wr.print(leafStringConst.value);
     }
 
     @Override

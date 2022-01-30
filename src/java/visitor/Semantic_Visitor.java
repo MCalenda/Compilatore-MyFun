@@ -431,7 +431,8 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
     @Override
     public void visit(WriteStatNode writeStatNode) {
-        
+        writeStatNode.expr.accept(this);
+        writeStatNode.type = writeStatNode.expr.type;
     }
 
     @Override

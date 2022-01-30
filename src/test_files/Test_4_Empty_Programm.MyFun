@@ -1,7 +1,5 @@
-fun prova():integer
-    return 2;
-end fun;
-
+#programma main
 main
-integer y := prova();
+    string zx := 'ciao' & ' a tutti';
+
 end main;

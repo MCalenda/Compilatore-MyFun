@@ -2,6 +2,7 @@ package tree.nodes;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import symbol_table.ValueType;
 import visitor.CodeGen_Int_Visitable;
 import visitor.CodeGen_Int_Visitor;
 import visitor.Semantic_Int_Visitable;
@@ -13,6 +14,9 @@ public class WriteStatNode extends DefaultMutableTreeNode implements Syntax_Int_
     public String name = "WriteStatNode";
     public ExprNode expr;
     public String op;
+
+    // Controllo semantico
+    public ValueType type = null;
 
     public WriteStatNode(String op, ExprNode expr) {
         super("WriteStatNode");
