@@ -63,6 +63,8 @@ end fun;
 
 # Funzione Main
 main
+    integer x;
+    real y;
     var ans := 0;
     real result;
 

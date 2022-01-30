@@ -197,8 +197,16 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
             if (debugVar) System.out.println("[DEBUG] " + (((ExprNode) exprNode.val_One).type) + " " + exprNode.op + " " + (((ExprNode) exprNode.val_Two).type));
 
             // Se è un operazione matematica
-            if (exprNode.op.equalsIgnoreCase("PLUS") || exprNode.op.equalsIgnoreCase("MINUS") || exprNode.op.equalsIgnoreCase("TIMES") || exprNode.op.equalsIgnoreCase("DIV")) {
+            if (exprNode.op.equalsIgnoreCase("PLUS") || exprNode.op.equalsIgnoreCase("MINUS") || exprNode.op.equalsIgnoreCase("TIMES") || exprNode.op.equalsIgnoreCase("DIV") || exprNode.op.equalsIgnoreCase("POW")) {
                 ValueType resultType = getType_Operations(((ExprNode) exprNode.val_One).type, ((ExprNode) exprNode.val_Two).type);
+                if (resultType == null) {
+                    System.err.println("[ERRORE SEMANTICO] tipi per op " + exprNode.op + " errati");
+                    System.exit(1);
+                } else exprNode.type = resultType;
+
+            // Se è una divisione per intero
+            } else if (exprNode.op.equalsIgnoreCase("DIVINT")) {
+                ValueType resultType = getTypeDivInt(((ExprNode) exprNode.val_One).type, ((ExprNode) exprNode.val_Two).type);
                 if (resultType == null) {
                     System.err.println("[ERRORE SEMANTICO] tipi per op " + exprNode.op + " errati");
                     System.exit(1);
@@ -214,14 +222,22 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
                     
             // Se è una concatenzazione di stringhe
             } else if (exprNode.op.equalsIgnoreCase("STR_CONCAT")) {
-                ValueType resultType = getTypeConcat(((ExprNode) exprNode.val_One).type, ((ExprNode) exprNode.val_Two).type);
+                ValueType resultType = getType_StrConc(((ExprNode) exprNode.val_One).type, ((ExprNode) exprNode.val_Two).type);
                 if (resultType == null) {
                     System.err.println("[ERRORE SEMANTICO] tipi per op " + exprNode.op + " errati");
                     System.exit(1);
                 } else exprNode.type = resultType; 
-            
-            // Se è una qualsiasi altra operazione Booleana (<, <=, >, >=, =, !=)
-            } else {
+
+            // Se è una operazione EQ o NE (=, !=)
+            } else if (exprNode.op.equalsIgnoreCase("EQ") || exprNode.op.equalsIgnoreCase("NE") ) {
+                ValueType resultType = getTypeEQNE(((ExprNode) exprNode.val_One).type, ((ExprNode) exprNode.val_Two).type);
+                if (resultType == null) {
+                    System.err.println("[ERRORE SEMANTICO] tipi per op " + exprNode.op + " errati");
+                    System.exit(1);
+                } else exprNode.type = resultType; 
+
+            // Se è una qualsiasi altra operazione Booleana (<, <=, >, >=)
+            }  else {
                 ValueType resultType = getType_Boolean(((ExprNode) exprNode.val_One).type, ((ExprNode) exprNode.val_Two).type);
                 if (resultType == null) {
                     System.err.println("[ERRORE SEMANTICO] tipi per op " + exprNode.op + " errati");
@@ -249,7 +265,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
                 ((LeafID) exprNode.val_One).accept(this);
                 exprNode.type = ((LeafID) exprNode.val_One).type;
 
-            // Se è un operazione unaria come UMINUS o NOT
+            // Se è un operazione UMINUS
             } else if (exprNode.op.equalsIgnoreCase("UMINUS")) {
                 ((ExprNode) exprNode.val_One).accept(this);
 
@@ -261,6 +277,8 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
                     System.err.println("[ERRORE SEMANTICO] tipo per op " + exprNode.op + " errato");
                     System.exit(1);
                 }
+
+            // Se è un operazione NOT
             } else if (exprNode.op.equalsIgnoreCase("NOT")) {
                 ((ExprNode) exprNode.val_One).accept(this);
 
@@ -272,7 +290,8 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
                     System.err.println("[ERRORE SEMANTICO] tipo per op " + exprNode.op + " errato");
                     System.exit(1);
                 }
-                // Call fun
+
+            // Se è una chiamata a funzione
             } else if (exprNode.val_One instanceof CallFunNode) {
                 ((CallFunNode) exprNode.val_One).accept(this);
                 exprNode.type = ((CallFunNode) exprNode.val_One).type;
@@ -432,12 +451,17 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
     @Override
     public void visit(WriteStatNode writeStatNode) {
         writeStatNode.expr.accept(this);
-        writeStatNode.type = writeStatNode.expr.type;
     }
 
     @Override
     public void visit(ReadStatNode readStatNode) {
-
+        if (readStatNode.expr != null) {
+            readStatNode.expr.accept(this);
+            if (readStatNode.expr.type != ValueType.string){
+                System.err.println("[SEMANTIC ERROR] tipo expr op READ errato atteso: [string] assegnato: [" + readStatNode.expr.type + "]");
+            }
+        }
+        for (LeafID leafID : readStatNode.IdList) leafID.accept(this);
     }
 
     @Override
@@ -526,10 +550,38 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
     public static ValueType getType_StrConc(ValueType type1, ValueType type2) {
         if (type1 == ValueType.string && type2 == ValueType.string)
             return ValueType.string;
+        if (type1 == ValueType.integer && type2 == ValueType.string)
+            return ValueType.string;
+        if (type1 == ValueType.string && type2 == ValueType.integer)
+            return ValueType.string;
+        if (type1 == ValueType.real && type2 == ValueType.string)
+            return ValueType.string;
+        if (type1 == ValueType.string && type2 == ValueType.real)
+            return ValueType.string;
+        if (type1 == ValueType.bool && type2 == ValueType.string)
+            return ValueType.string;
+        if (type1 == ValueType.string && type2 == ValueType.bool)
+            return ValueType.string;
         return null;
     }
 
     public static ValueType getType_AndOr(ValueType type1, ValueType type2) {
+        if (type1 == ValueType.bool && type2 == ValueType.bool)
+            return ValueType.bool;
+        return null;
+    }
+
+    public static ValueType getTypeEQNE(ValueType type1, ValueType type2) {
+        if (type1 == ValueType.integer && type2 == ValueType.integer)
+            return ValueType.bool;
+        if (type1 == ValueType.real && type2 == ValueType.real)
+            return ValueType.bool;
+        if (type1 == ValueType.integer && type2 == ValueType.real)
+            return ValueType.bool;
+        if (type1 == ValueType.real && type2 == ValueType.integer)
+            return ValueType.bool;
+        if (type1 == ValueType.string && type2 == ValueType.string)
+            return ValueType.bool;
         if (type1 == ValueType.bool && type2 == ValueType.bool)
             return ValueType.bool;
         return null;
@@ -547,9 +599,11 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
         return null;
     }
 
-    public static ValueType getTypeConcat(ValueType type1, ValueType type2) {
-        if (type1 == ValueType.string && type2 == ValueType.string)
-            return ValueType.string;
+    public static ValueType getTypeDivInt(ValueType type1, ValueType type2) {
+        if (type1 == ValueType.integer && type2 == ValueType.integer)
+            return ValueType.integer;
+        if (type1 == ValueType.real && type2 == ValueType.integer)
+            return ValueType.integer;
         return null;
     }
 }

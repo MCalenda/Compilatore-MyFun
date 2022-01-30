@@ -24,14 +24,14 @@ nonterminal Program, VarDecList, FunList, Main, VarDecl, Type, IdListInit, IdLis
 
 // PRECEDENCES
 
-precedence left STR_CONCAT;
-precedence left PLUS, MINUS;
-precedence left TIMES, DIV, DIVINT;
-precedence right POW;
 precedence left OR;
 precedence left AND;
 precedence right NOT;
 precedence nonassoc EQ, NE, LT, LE, GT, GE;
+precedence left STR_CONCAT;
+precedence left PLUS, MINUS;
+precedence left TIMES, DIV, DIVINT;
+precedence right POW;
 precedence left LPAR, RPAR;
 precedence left _uminus;
 

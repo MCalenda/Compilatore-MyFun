@@ -1,13 +1,6 @@
 #programma main
 main
-    string test := 'ciao' & 'cacscas' & 'adsadasdas';
-
-    string cia;
-    ?. cia;
-
-    ?. test;
-
-    ?. 'ciaone';
+    string x := 'cazzo';
 
 
 end main;

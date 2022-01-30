@@ -38,7 +38,7 @@ ID = [$_A-Za-z][$_A-Za-z0-9]*
 INTEGER_CONST = (({Number_From_One}{Number_From_Zero}*)|(0))
 REAL_CONST = (({Number_From_One}{Number_From_Zero}*)|(0))\.(({Number_From_Zero}*{Number_From_One}+)|(0))
 
-// Stringe
+// Stringhe
 String_Const_Start = "'"
 
 // Commenti
@@ -76,7 +76,7 @@ Comment_Line_Start_II = "//"
     "^"             {return symbol(sym.POW);}
     "/"             {return symbol(sym.DIV);}
     "*"             {return symbol(sym.TIMES);}
-    "div"           {return symbol(sym.DIV);}
+    "div"           {return symbol(sym.DIVINT);}
     "-"             {return symbol(sym.MINUS);}
     "+"             {return symbol(sym.PLUS);}
     ":="            {return symbol(sym.ASSIGN);}
