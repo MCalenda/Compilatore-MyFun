@@ -17,7 +17,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
     public Stack<SymbolTable> stack = new Stack<>();
 
     public boolean debugTab = true;
-    public boolean debugVar = true;
+    public boolean debugVar = false;
 
     @Override
     public void visit(ProgramNode programNode) {
@@ -40,9 +40,9 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
         programNode.main.accept(this);
         
         if (debugTab){
-            System.out.println("Tabella " + stack.peek().symbolTableName);
+            System.out.println("Tabella " + stack.peek().symbolTableName + " |");
             for (String key : stack.peek().keySet()) System.out.println(key + ": " + stack.peek().get(key).toString());
-            System.out.println("!--------------!");
+            System.out.println("-----------------------------------------------------");
         }
 
         stack.pop();
@@ -69,9 +69,9 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
         }
 
         if (debugTab) {
-            System.out.println("Tabella " + stack.peek().symbolTableName + " | padre: " + stack.peek().fatherSymbolTable.symbolTableName);
+            System.out.println("| Tabella " + stack.peek().symbolTableName + " | padre: " + stack.peek().fatherSymbolTable.symbolTableName + " |");
             for (String key : stack.peek().keySet()) System.out.println(key + ": " + stack.peek().get(key).toString());
-            System.out.println("!--------------!");
+            System.out.println("-----------------------------------------------------");
         }
 
         stack.pop();
@@ -113,19 +113,17 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
                 statNode.accept(this);
         }
         if (debugTab){
-            System.out.println("Tabella " + stack.peek().symbolTableName + " | padre: " + stack.peek().fatherSymbolTable.symbolTableName);
+            System.out.println("Tabella " + stack.peek().symbolTableName + " | padre: " + stack.peek().fatherSymbolTable.symbolTableName + " |");
             for (String key : stack.peek().keySet()) System.out.println(key + ": " + stack.peek().get(key).toString());
-            System.out.println("!--------------!");
+            System.out.println("-----------------------------------------------------");
         }
         stack.pop();
     }
 
     @Override
     public void visit(ParamDecNode paramDecNode) {
-        try {
-            SymbolTable picked = stack.peek();
-            picked.createEntry_variable(paramDecNode.leafID.value, paramDecNode.type);
-        } catch (Exception e) {
+        SymbolTable picked = stack.peek();
+        if (!picked.createEntry_variable(paramDecNode.leafID.value, paramDecNode.type)) {
             System.out.println("ERRORE SEMANTICO] parametro " + paramDecNode.leafID.value + " già dichiarato nel T.E. " + stack.peek().symbolTableName);
             System.exit(1);
         }
@@ -135,10 +133,8 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
     public void visit(VarDeclNode varDeclNode) {
         if (varDeclNode.idInitList != null) {
             for (IdInitNode idInitNode : varDeclNode.idInitList) {
-                try {
-                    SymbolTable picked = stack.peek();
-                    picked.createEntry_variable(idInitNode.leafID.value, varDeclNode.type);
-                } catch (Exception e) {
+                SymbolTable picked = stack.peek();
+                if (!picked.createEntry_variable(idInitNode.leafID.value, varDeclNode.type)) {
                     System.out.println("[ERRORE SEMANTICO] variabile " + idInitNode.leafID.value + " già dichiarata nel T.E. " + stack.peek().symbolTableName);
                     System.exit(1);
                 }
@@ -148,12 +144,10 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
             }
         } else if (varDeclNode.IdListInitObbl != null) {
             for (IdInitObblNode idInitObblNode : varDeclNode.IdListInitObbl) {
-                try {
-                    idInitObblNode.value.accept(this);
-                    idInitObblNode.type = idInitObblNode.value.type;
-                    SymbolTable picked = stack.peek();
-                    picked.createEntry_variable(idInitObblNode.leafID.value, idInitObblNode.type);
-                } catch (Exception e) {
+                idInitObblNode.value.accept(this);
+                idInitObblNode.type = idInitObblNode.value.type;
+                SymbolTable picked = stack.peek();
+                if (!picked.createEntry_variable(idInitObblNode.leafID.value, idInitObblNode.type)) {
                     System.out.println("[ERRORE SEMANTICO] variabile " + idInitObblNode.leafID.value + " già dichiarata nel T.E. " + stack.peek().symbolTableName);
                     System.exit(1);
                 }
@@ -371,9 +365,9 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
         }
 
         if (debugTab){
-            System.out.println("Tabella " + stack.peek().symbolTableName + " | padre: " + stack.peek().fatherSymbolTable.symbolTableName);
+            System.out.println("Tabella " + stack.peek().symbolTableName + " | padre: " + stack.peek().fatherSymbolTable.symbolTableName + " |");
             for (String key : stack.peek().keySet()) System.out.println(key + ": " + stack.peek().get(key).toString());
-            System.out.println("!--------------!");
+            System.out.println("-----------------------------------------------------");
         }
 
         stack.pop();
@@ -400,9 +394,9 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
         }
 
         if (debugTab){
-            System.out.println("Tabella " + stack.peek().symbolTableName + " | padre: " + stack.peek().fatherSymbolTable.symbolTableName);
+            System.out.println("Tabella " + stack.peek().symbolTableName + " | padre: " + stack.peek().fatherSymbolTable.symbolTableName + " |");
             for (String key : stack.peek().keySet()) System.out.println(key + ": " + stack.peek().get(key).toString());
-            System.out.println("!--------------!");
+            System.out.println("-----------------------------------------------------");
         }
 
         stack.pop();    
@@ -441,9 +435,9 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
         }
 
         if (debugTab){
-            System.out.println("Tabella " + stack.peek().symbolTableName + " | padre: " + stack.peek().fatherSymbolTable.symbolTableName);
+            System.out.println("Tabella " + stack.peek().symbolTableName + " | padre: " + stack.peek().fatherSymbolTable.symbolTableName + " |");
             for (String key : stack.peek().keySet()) System.out.println(key + ": " + stack.peek().get(key).toString());
-            System.out.println("!--------------!");
+            System.out.println("-----------------------------------------------------");
         }
         stack.pop();
     }
@@ -467,11 +461,17 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
     @Override
     public void visit(ReturnNode returnNode) {
         returnNode.expr.accept(this);
-        String thisFun = stack.peek().symbolTableName;
         SymbolTable symbolTable = stack.peek();
-        SymbolTableEntry functionDef = symbolTable.containsFunctionEntry(thisFun);
+        SymbolTableEntry functionDef = symbolTable.containsFunctionEntry(symbolTable.symbolTableName);
+        while (functionDef == null) {
+            if (symbolTable.hasFatherSymTab()){
+                symbolTable = symbolTable.fatherSymbolTable;
+                functionDef = symbolTable.containsFunctionEntry(symbolTable.symbolTableName);
+            }
+            else System.exit(1);
+        }
         if (functionDef.valueType != returnNode.expr.type) {
-            System.err.println("[ERRORE SEMANTICO] valore di ritorno della funzione " + thisFun + " errato atteso: [" + functionDef.valueType + "] assegnato: [" + returnNode.expr.type + "]");
+            System.err.println("[ERRORE SEMANTICO] valore di ritorno della funzione " + symbolTable.symbolTableName + " errato atteso: [" + functionDef.valueType + "] assegnato: [" + returnNode.expr.type + "]");
             System.exit(1);
         }
     }
