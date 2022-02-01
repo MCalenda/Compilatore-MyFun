@@ -5,7 +5,7 @@
  Inoltre la definisce 'grande' se è superiore a 100 altrimenti 'piccola'
 #
 
-var c := 'ciao';
+var c := 1;
 
 # fa somma e restituisce anche la taglia del numero, oltre che il risultato
 fun sommac(integer a, real b, out string size): real
@@ -46,9 +46,6 @@ main
 	string taglia;
 	var ans := 'no';
 	real risultato := sommac(a, b, @taglia);
-
-	stampa('la somma di ' & a & ' e ' & b & ' incrementata di ' & c & ' è ' & taglia);
-	stampa('ed è pari a ' & risultato);
 
 	?: 'vuoi continuare? (si/no)';
 	% ans;

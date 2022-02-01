@@ -9,14 +9,11 @@ import tree.nodes.*;
 import java.util.ArrayList;
 import java.util.Stack;
 
-import cup.sym;
-import java_cup.shift_action;
-
 public class Semantic_Visitor implements Semantic_Int_Visitor {
 
     public Stack<SymbolTable> stack = new Stack<>();
 
-    public boolean debugTab = true;
+    public boolean debugTab = false;
     public boolean debugVar = false;
 
     @Override
@@ -334,7 +331,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
                     System.err.println("[ERRORE SEMANTICO] i parametri della funzione " + callFunNode.leafID.value + " non corrispondono con la dichiarazione atteso: " + functionDef.params);
                     System.exit(1);
                 }
-                if ((callFunNode.exprList.get(i).op == "OUTPAR") != functionDef.isOut.get(i)) {
+                if ((callFunNode.exprList.get(i).op.equalsIgnoreCase("OUTPAR")) != functionDef.isOut.get(i)) {
                     System.err.println("[ERRORE SEMANTICO] i parametri della funzione " + callFunNode.leafID.value + " non corrispondono con la dichiarazione atteso: " + functionDef.params);
                     System.exit(1);
                 }

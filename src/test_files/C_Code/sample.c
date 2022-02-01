@@ -1,19 +1,16 @@
-#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-// Dichiarazione delle variabili locali
+#define space_conc(str1, str2) #str1 #str2
 
-// Dichiarazione delle funzioni
+char *str_concat(char *a, char *b) {
+    strcat(a, b);
+    return a;
+}
 
-// Funzione Main
 int main() {
-    char *str1 = malloc(512 * sizeof(char));
-    strcpy(str1, "");
-    strcat(str1, "sssss");
-    strcat(str1, "kkkk");
-    strcat(str1, "<<<<");
-
-    printf("%s", str1);
+    char *test = str_concat("ciao", "ciao");
+    printf("size: %s\n", test);
     return 0;
 }

@@ -2,6 +2,9 @@ package visitor;
 
 import java.io.*;
 import java.security.cert.TrustAnchor;
+import java.util.ArrayList;
+
+import org.apache.commons.lang3.ObjectUtils.Null;
 
 import java_cup.internal_error;
 import symbol_table.ValueType;
@@ -13,8 +16,11 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
     private PrintWriter wr;
     private String lastID = null;
     private Boolean isConcat = false;
+    private ArrayList<String> isOutParam = null;
 
     public CodeGen_Visitor(String name) throws IOException {
+        this.isOutParam = new ArrayList<String>();
+
         File file = new File("src/test_files/C_Code/" + name.substring(0, name.length() - 6).split("/")[2] + ".c");
         if (!file.exists()) {
             file.createNewFile();
@@ -98,7 +104,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
         funNode.leafID.accept(this);
         wr.print("(");
 
-        if (funNode.paramDecList != null) {
+        if (funNode.paramDecList.size() != 0) {
             ParamDecNode lastParDeclNode = funNode.paramDecList.get(funNode.paramDecList.size() - 1);
             for (ParamDecNode paramDecNode : funNode.paramDecList) {
                 paramDecNode.accept(this);
@@ -125,14 +131,16 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
         }
 
         wr.print("}");
+
+        this.isOutParam = new ArrayList<String>();
     }
 
     @Override
     public void visit(ParamDecNode paramDecNode) {
         wr.print(convert_type(paramDecNode.type) + " ");
 
-        if (paramDecNode.out) {
-            wr.print("*");
+        if (paramDecNode.out || paramDecNode.type == ValueType.string) {
+            this.isOutParam.add(paramDecNode.leafID.value);
         }
 
         paramDecNode.leafID.accept(this);
@@ -165,7 +173,6 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
         wr.print(") {");
 
         for (VarDeclNode varDeclNode : ifStatNode.varDeclList) {
-            wr.print("\t");
             varDeclNode.accept(this);
         }
 
@@ -173,7 +180,12 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
             statNode.accept(this);
         }
 
-        wr.print("\t}");
+        wr.print("}");
+
+        if (ifStatNode.elseNode != null) {
+            ifStatNode.elseNode.accept(this);
+        }
+
     }
 
     @Override
@@ -185,7 +197,6 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
         wr.print(") {");
 
         for (VarDeclNode varDeclNode : whileStatNode.varDeclList) {
-            wr.print("\t");
             varDeclNode.accept(this);
         }
 
@@ -193,12 +204,33 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
             statNode.accept(this);
         }
 
-        wr.print("\t}");
+        wr.print("}");
     }
 
     @Override
     public void visit(ReadStatNode readStatNode) {
-        // TODO Auto-generated method stub
+        if (readStatNode.expr != null) {
+            wr.print("printf(");
+            readStatNode.expr.accept(this);
+            wr.print(");");
+        }
+
+        for (LeafID leafID : readStatNode.IdList) {
+            // Dal tipo dell'espressione carpisco il tipo di valore da stampare
+            switch (leafID.type) {
+            case integer, bool:
+                wr.print("scanf(\"%d\", ");
+                break;
+            case string:
+                wr.print("scanf(\"%s\", ");
+                break;
+            case real:
+                wr.print("scanf(\"%f\", ");
+                break;
+            }
+            leafID.accept(this);
+            wr.print(");");
+        }
 
     }
 
@@ -247,7 +279,9 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
         assignStatNode.leafID.accept(this);
         wr.print(" = ");
         assignStatNode.expr.accept(this);
-        wr.print("; ");
+        if (!assignStatNode.expr.op.equalsIgnoreCase("CALLFUN")) {
+            wr.print(";");
+        }
     }
 
     @Override
@@ -255,13 +289,17 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
         callFunNode.leafID.accept(this);
 
         wr.print("(");
-        ExprNode lastExprNode = callFunNode.exprList.get(callFunNode.exprList.size() - 1);
-        for (ExprNode exprNode : callFunNode.exprList) {
-            exprNode.accept(this);
-            if (lastExprNode != exprNode)
-                wr.print(", ");
+        if (callFunNode.exprList.size() != 0) {
+            ExprNode lastExprNode = callFunNode.exprList.get(callFunNode.exprList.size() - 1);
+            for (ExprNode exprNode : callFunNode.exprList) {
+                if (exprNode.op.equalsIgnoreCase("OUTPAR") && exprNode.type != ValueType.string)
+                    wr.print("&");
+                exprNode.accept(this);
+                if (lastExprNode != exprNode)
+                    wr.print(", ");
+            }
         }
-        wr.print(")");
+        wr.print(");");
     }
 
     @Override
@@ -298,13 +336,24 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
                     idInitNode.leafID.accept(this);
                     wr.print(", ");
                     idInitNode.exprNode.accept(this);
-                    wr.print(") ");
+                    wr.print("); ");
                 } else {
                     this.isConcat = true;
                     this.lastID = idInitNode.leafID.value;
                     wr.print("strcpy(");
                     idInitNode.leafID.accept(this);
-                    wr.print(", \"\");");
+                    switch (((ExprNode) idInitNode.exprNode.val_One).op) {
+                    case "ID":
+                        wr.print(", ");
+                        ((ExprNode) idInitNode.exprNode.val_One).accept(this);
+                        wr.print(");");
+                        break;
+
+                    default:
+                        wr.print(", \"\");");
+                        
+                    break;
+                    }
                     idInitNode.exprNode.accept(this);
                     this.isConcat = false;
                 }
@@ -322,6 +371,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
 
                 idInitNode.exprNode.accept(this);
             }
+            wr.print("; ");
         }
     }
 
@@ -342,6 +392,9 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
 
     @Override
     public void visit(LeafID leafID) {
+        if (this.isOutParam.contains(leafID.value)) {
+            wr.print("*");
+        }
         wr.print(leafID.value);
     }
 
@@ -388,6 +441,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
             case "POW":
                 wr.print(" pow(");
                 ((ExprNode) exprNode.val_One).accept(this);
+                wr.print(", ");
                 ((ExprNode) exprNode.val_Two).accept(this);
                 wr.print(")");
                 break;
@@ -428,9 +482,29 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
                 break;
 
             case "EQ":
-                ((ExprNode) exprNode.val_One).accept(this);
-                wr.print(" == ");
-                ((ExprNode) exprNode.val_Two).accept(this);
+                if (((ExprNode) exprNode.val_One).type == ValueType.string) {
+                    wr.print("strcmp(");
+                    ((ExprNode) exprNode.val_One).accept(this);
+                    wr.print(", ");
+                    ((ExprNode) exprNode.val_Two).accept(this);
+                    wr.print(") == 1");
+                } else if (((ExprNode) exprNode.val_Two).type == ValueType.string) {
+                    wr.print("strcmp(");
+                    ((ExprNode) exprNode.val_One).accept(this);
+                    wr.print(", ");
+                    ((ExprNode) exprNode.val_Two).accept(this);
+                    wr.print(") == 1");
+                } else if (exprNode.val_One instanceof LeafStringConst || exprNode.val_Two instanceof LeafStringConst) {
+                    wr.print("strcmp(");
+                    ((ExprNode) exprNode.val_One).accept(this);
+                    wr.print(", ");
+                    ((ExprNode) exprNode.val_Two).accept(this);
+                    wr.print(") == 1");
+                } else {
+                    ((ExprNode) exprNode.val_One).accept(this);
+                    wr.print(" == ");
+                    ((ExprNode) exprNode.val_Two).accept(this);
+                }
                 break;
 
             case "NE":
@@ -492,7 +566,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
                 wr.print("\"" + leafStringConst.value + "\"");
             }
         } else
-            wr.print(leafStringConst.value);
+            wr.print("\"\"");
     }
 
     @Override
@@ -506,5 +580,19 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
         } else if (constNode.value instanceof LeafStringConst) {
             ((LeafStringConst) constNode.value).accept(this);
         }
+    }
+
+    @Override
+    public void visit(ElseNode elseNode) {
+        wr.print("else {");
+
+        for (VarDeclNode varDeclNode : elseNode.varDeclList) {
+            varDeclNode.accept(this);
+        }
+
+        for (StatNode statNode : elseNode.statList) {
+            statNode.accept(this);
+        }
+        wr.print("} ");
     }
 }

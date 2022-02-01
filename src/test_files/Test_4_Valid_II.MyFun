@@ -103,26 +103,26 @@ fun do_operation(integer choose)
     end if;end if;end if;end if;end if;end if;
 end fun;
 
-fun print_continue(out bool continue)
+fun print_continue(out bool conti)
     string in;
     % in 'Vuoi continuare? (s/n) --> ';
     if in = 's' then
-        continue := true;
+        conti := true;
     else
-        continue := false;
+        conti := false;
     end if;
 end fun;
 
 main
-    var choose := 0, continue := true;
+    var choose := 0, conti := true;
 
-    while continue loop
+    while conti loop
         choose := print_menu();
         if choose = 0 then
-            continue := false;
+            conti := false;
         else
             do_operation(choose);
-            print_continue(@continue);
+            print_continue(@conti);
         end if;
     end loop;
 end main;

@@ -27,7 +27,7 @@
             "name": "Launch Test 4",
             "request": "launch",
             "mainClass": "Tester",
-            "args": "src/test_files/Test_4_Empty_Programm.MyFun"
+            "args": "src/test_files/Test_4_Valid_II.MyFun"
         },
         {
             "type": "java",

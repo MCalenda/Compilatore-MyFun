@@ -52,4 +52,6 @@ public interface CodeGen_Int_Visitor {
     public void visit(CallFunNode callFunNode);
 
     public void visit(ReturnNode returnNode);
+
+    public void visit(ElseNode elseNode);
 }
