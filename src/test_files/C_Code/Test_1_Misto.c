@@ -6,16 +6,15 @@
 // Dichiarazione delle variabili locali
 
 // Dichiarazione delle funzioni
+char *str() { return "ciao"; }
 
 // Funzione Main
 int main() {
     char *test = malloc(512 * sizeof(char));
-    char *test_two = malloc(512 * sizeof(char));
-    strcpy(test_two, test);
-    teststrcat(test_two, " ancora");
+    strcpy(test, "");
+    strcat(test, str());
+    strcat(test, "ciao");
     printf("%s", test);
-    printf("\r\n");
-    printf("%s", test_two);
     printf("\r\n");
     return 0;
 }

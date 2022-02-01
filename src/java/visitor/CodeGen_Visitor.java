@@ -96,7 +96,10 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
     @Override
     public void visit(FunNode funNode) {
         if (funNode.type != null) {
-            wr.print(convert_type(funNode.type) + " ");
+            wr.print(convert_type(funNode.type));
+            if (funNode.type == ValueType.string) {
+                wr.print(" *");
+            }
         } else {
             wr.print("void ");
         }
@@ -286,7 +289,14 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
 
     @Override
     public void visit(CallFunNode callFunNode) {
-        callFunNode.leafID.accept(this);
+        if (this.isConcat) {
+            wr.print("strcat(" + this.lastID + ", ");
+            this.isConcat = false;
+            callFunNode.leafID.accept(this);
+            this.isConcat = true;
+        } else {
+            callFunNode.leafID.accept(this);
+        }
 
         wr.print("(");
         if (callFunNode.exprList.size() != 0) {
@@ -299,7 +309,12 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
                     wr.print(", ");
             }
         }
-        wr.print(");");
+        
+        wr.print(")");
+    
+        if (this.isConcat) {
+            wr.print("); ");
+        }
     }
 
     @Override
@@ -338,25 +353,18 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
                     idInitNode.exprNode.accept(this);
                     wr.print("); ");
                 } else {
-                    this.isConcat = true;
                     this.lastID = idInitNode.leafID.value;
                     wr.print("strcpy(");
                     idInitNode.leafID.accept(this);
-                    switch (((ExprNode) idInitNode.exprNode.val_One).op) {
-                    case "ID":
-                        wr.print(", ");
-                        ((ExprNode) idInitNode.exprNode.val_One).accept(this);
-                        wr.print(");");
-                        break;
-
-                    default:
-                        wr.print(", \"\");");
-                        
-                    break;
-                    }
+                    wr.print(", \"\");");
+                    this.isConcat = true;
                     idInitNode.exprNode.accept(this);
                     this.isConcat = false;
                 }
+            } else {
+                wr.print("strcpy(");
+                idInitNode.leafID.accept(this);
+                wr.print(", \"\");");
             }
 
         } else {
@@ -375,7 +383,6 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
         }
     }
 
-    // DA VEDERE SE TERNELO O MENO
     private String convert_type(ValueType type) {
         switch (type) {
         case integer:
@@ -395,7 +402,14 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
         if (this.isOutParam.contains(leafID.value)) {
             wr.print("*");
         }
-        wr.print(leafID.value);
+
+        if (this.isConcat) {
+            wr.print("strcat(" + this.lastID + ", ");
+            wr.print(leafID.value);
+            wr.print("); ");
+        } else {
+            wr.print(leafID.value);
+        }
     }
 
     @Override
@@ -540,19 +554,35 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
 
     @Override
     public void visit(LeafIntegerConst leafIntegerConst) {
-        wr.print(leafIntegerConst.value.toString());
+        if (this.isConcat) {
+            wr.print("strcat(" + this.lastID + ", ");
+            wr.print("\"" + leafIntegerConst.value.toString() + "\"");
+            wr.print("); ");
+        } else {
+            wr.print(leafIntegerConst.value.toString());
+        }
     }
 
     @Override
     public void visit(LeafBool leafBool) {
-        wr.print(leafBool.value.toString());
-
+        if (this.isConcat) {
+            wr.print("strcat(" + this.lastID + ", ");
+            wr.print("\"" + leafBool.value.toString() + "\"");
+            wr.print("); ");
+        } else {
+            wr.print(leafBool.value.toString());
+        }
     }
 
     @Override
     public void visit(LeafRealConst leafRealConst) {
-        wr.print(leafRealConst.value.toString());
-
+        if (this.isConcat) {
+            wr.print("strcat(" + this.lastID + ", ");
+            wr.print("\"" + leafRealConst.value.toString() + "\"");
+            wr.print("); ");
+        } else {
+            wr.print(leafRealConst.value.toString());
+        }
     }
 
     @Override
