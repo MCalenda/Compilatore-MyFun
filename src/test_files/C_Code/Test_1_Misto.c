@@ -10,6 +10,12 @@ char *str() { return "ciao"; }
 
 // Funzione Main
 int main() {
+    char *test_three = malloc(512 * sizeof(char));
+    strcpy(test_three, "");
+    strcat(test_three, "ciao");
+    strcat(test_three, " a tutti");
+    strcat(test_three, " ancora");
+    strcat(test_three, " per sempre");
     char *test = malloc(512 * sizeof(char));
     strcpy(test, "");
     strcat(test, str());

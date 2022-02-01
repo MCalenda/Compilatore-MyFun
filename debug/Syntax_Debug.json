@@ -1,0 +1,1187 @@
+{
+    "name": "ProgramNode",
+    "varDecList": [
+        {
+            "name": "VarDeclNode",
+            "idInitList": null,
+            "IdListInitObbl": [
+                {
+                    "name": "IdInitObblNode",
+                    "leafID": {
+                        "name": "LeafID",
+                        "value": "c",
+                        "type": null
+                    },
+                    "value": {
+                        "name": "ConstNode",
+                        "value": {
+                            "name": "LeafIntegerConst",
+                            "value": 1,
+                            "type": null
+                        },
+                        "type": null
+                    },
+                    "type": null
+                }
+            ],
+            "type": null
+        }
+    ],
+    "funList": [
+        {
+            "name": "FunNode",
+            "leafID": {
+                "name": "LeafID",
+                "value": "sommac",
+                "type": null
+            },
+            "paramDecList": [
+                {
+                    "name": "ParamDecNode",
+                    "out": false,
+                    "leafID": {
+                        "name": "LeafID",
+                        "value": "a",
+                        "type": null
+                    },
+                    "type": "integer"
+                },
+                {
+                    "name": "ParamDecNode",
+                    "out": false,
+                    "leafID": {
+                        "name": "LeafID",
+                        "value": "b",
+                        "type": null
+                    },
+                    "type": "real"
+                },
+                {
+                    "name": "ParamDecNode",
+                    "out": true,
+                    "leafID": {
+                        "name": "LeafID",
+                        "value": "size",
+                        "type": null
+                    },
+                    "type": "string"
+                }
+            ],
+            "varDecList": [
+                {
+                    "name": "VarDeclNode",
+                    "idInitList": [
+                        {
+                            "name": "IdInitNode",
+                            "leafID": {
+                                "name": "LeafID",
+                                "value": "result",
+                                "type": null
+                            },
+                            "exprNode": null,
+                            "type": null
+                        }
+                    ],
+                    "IdListInitObbl": null,
+                    "type": "real"
+                }
+            ],
+            "statList": [
+                {
+                    "name": "StatNode",
+                    "ifStatNode": null,
+                    "whileStatNode": null,
+                    "readStatNode": null,
+                    "writeStatNode": null,
+                    "assignStatNode": {
+                        "name": "AssignStatNode",
+                        "leafID": {
+                            "name": "LeafID",
+                            "value": "result",
+                            "type": null
+                        },
+                        "expr": {
+                            "name": "ExprNode",
+                            "op": "PLUS",
+                            "val_One": {
+                                "name": "ExprNode",
+                                "op": "PLUS",
+                                "val_One": {
+                                    "name": "ExprNode",
+                                    "op": "ID",
+                                    "val_One": {
+                                        "name": "LeafID",
+                                        "value": "a",
+                                        "type": null
+                                    },
+                                    "val_Two": null,
+                                    "type": null
+                                },
+                                "val_Two": {
+                                    "name": "ExprNode",
+                                    "op": "ID",
+                                    "val_One": {
+                                        "name": "LeafID",
+                                        "value": "b",
+                                        "type": null
+                                    },
+                                    "val_Two": null,
+                                    "type": null
+                                },
+                                "type": null
+                            },
+                            "val_Two": {
+                                "name": "ExprNode",
+                                "op": "ID",
+                                "val_One": {
+                                    "name": "LeafID",
+                                    "value": "c",
+                                    "type": null
+                                },
+                                "val_Two": null,
+                                "type": null
+                            },
+                            "type": null
+                        }
+                    },
+                    "callFunNode": null,
+                    "returnNode": null
+                },
+                {
+                    "name": "StatNode",
+                    "ifStatNode": {
+                        "name": "IfStatNode",
+                        "expr": {
+                            "name": "ExprNode",
+                            "op": "GT",
+                            "val_One": {
+                                "name": "ExprNode",
+                                "op": "ID",
+                                "val_One": {
+                                    "name": "LeafID",
+                                    "value": "result",
+                                    "type": null
+                                },
+                                "val_Two": null,
+                                "type": null
+                            },
+                            "val_Two": {
+                                "name": "ExprNode",
+                                "op": "INTEGER_CONST",
+                                "val_One": {
+                                    "name": "LeafIntegerConst",
+                                    "value": 100,
+                                    "type": null
+                                },
+                                "val_Two": null,
+                                "type": null
+                            },
+                            "type": null
+                        },
+                        "varDeclList": [
+                            {
+                                "name": "VarDeclNode",
+                                "idInitList": null,
+                                "IdListInitObbl": [
+                                    {
+                                        "name": "IdInitObblNode",
+                                        "leafID": {
+                                            "name": "LeafID",
+                                            "value": "valore",
+                                            "type": null
+                                        },
+                                        "value": {
+                                            "name": "ConstNode",
+                                            "value": {
+                                                "name": "LeafStringConst",
+                                                "value": "grande",
+                                                "type": null
+                                            },
+                                            "type": null
+                                        },
+                                        "type": null
+                                    }
+                                ],
+                                "type": null
+                            }
+                        ],
+                        "statList": [
+                            {
+                                "name": "StatNode",
+                                "ifStatNode": null,
+                                "whileStatNode": null,
+                                "readStatNode": null,
+                                "writeStatNode": null,
+                                "assignStatNode": {
+                                    "name": "AssignStatNode",
+                                    "leafID": {
+                                        "name": "LeafID",
+                                        "value": "size",
+                                        "type": null
+                                    },
+                                    "expr": {
+                                        "name": "ExprNode",
+                                        "op": "ID",
+                                        "val_One": {
+                                            "name": "LeafID",
+                                            "value": "valore",
+                                            "type": null
+                                        },
+                                        "val_Two": null,
+                                        "type": null
+                                    }
+                                },
+                                "callFunNode": null,
+                                "returnNode": null
+                            }
+                        ],
+                        "elseNode": {
+                            "name": "ElseNode",
+                            "varDeclList": [
+                                {
+                                    "name": "VarDeclNode",
+                                    "idInitList": null,
+                                    "IdListInitObbl": [
+                                        {
+                                            "name": "IdInitObblNode",
+                                            "leafID": {
+                                                "name": "LeafID",
+                                                "value": "valore",
+                                                "type": null
+                                            },
+                                            "value": {
+                                                "name": "ConstNode",
+                                                "value": {
+                                                    "name": "LeafStringConst",
+                                                    "value": "piccola",
+                                                    "type": null
+                                                },
+                                                "type": null
+                                            },
+                                            "type": null
+                                        }
+                                    ],
+                                    "type": null
+                                }
+                            ],
+                            "statList": [
+                                {
+                                    "name": "StatNode",
+                                    "ifStatNode": null,
+                                    "whileStatNode": null,
+                                    "readStatNode": null,
+                                    "writeStatNode": null,
+                                    "assignStatNode": {
+                                        "name": "AssignStatNode",
+                                        "leafID": {
+                                            "name": "LeafID",
+                                            "value": "size",
+                                            "type": null
+                                        },
+                                        "expr": {
+                                            "name": "ExprNode",
+                                            "op": "ID",
+                                            "val_One": {
+                                                "name": "LeafID",
+                                                "value": "valore",
+                                                "type": null
+                                            },
+                                            "val_Two": null,
+                                            "type": null
+                                        }
+                                    },
+                                    "callFunNode": null,
+                                    "returnNode": null
+                                }
+                            ]
+                        }
+                    },
+                    "whileStatNode": null,
+                    "readStatNode": null,
+                    "writeStatNode": null,
+                    "assignStatNode": null,
+                    "callFunNode": null,
+                    "returnNode": null
+                },
+                {
+                    "name": "StatNode",
+                    "ifStatNode": null,
+                    "whileStatNode": null,
+                    "readStatNode": null,
+                    "writeStatNode": null,
+                    "assignStatNode": null,
+                    "callFunNode": null,
+                    "returnNode": {
+                        "name": "ReturnNode",
+                        "expr": {
+                            "name": "ExprNode",
+                            "op": "ID",
+                            "val_One": {
+                                "name": "LeafID",
+                                "value": "result",
+                                "type": null
+                            },
+                            "val_Two": null,
+                            "type": null
+                        }
+                    }
+                }
+            ],
+            "type": "real"
+        },
+        {
+            "name": "FunNode",
+            "leafID": {
+                "name": "LeafID",
+                "value": "stampa",
+                "type": null
+            },
+            "paramDecList": [
+                {
+                    "name": "ParamDecNode",
+                    "out": false,
+                    "leafID": {
+                        "name": "LeafID",
+                        "value": "messaggio",
+                        "type": null
+                    },
+                    "type": "string"
+                }
+            ],
+            "varDecList": [
+                {
+                    "name": "VarDeclNode",
+                    "idInitList": null,
+                    "IdListInitObbl": [
+                        {
+                            "name": "IdInitObblNode",
+                            "leafID": {
+                                "name": "LeafID",
+                                "value": "i",
+                                "type": null
+                            },
+                            "value": {
+                                "name": "ConstNode",
+                                "value": {
+                                    "name": "LeafIntegerConst",
+                                    "value": 1,
+                                    "type": null
+                                },
+                                "type": null
+                            },
+                            "type": null
+                        }
+                    ],
+                    "type": null
+                }
+            ],
+            "statList": [
+                {
+                    "name": "StatNode",
+                    "ifStatNode": null,
+                    "whileStatNode": {
+                        "name": "WhileStatNode",
+                        "expr": {
+                            "name": "ExprNode",
+                            "op": "LE",
+                            "val_One": {
+                                "name": "ExprNode",
+                                "op": "ID",
+                                "val_One": {
+                                    "name": "LeafID",
+                                    "value": "i",
+                                    "type": null
+                                },
+                                "val_Two": null,
+                                "type": null
+                            },
+                            "val_Two": {
+                                "name": "ExprNode",
+                                "op": "INTEGER_CONST",
+                                "val_One": {
+                                    "name": "LeafIntegerConst",
+                                    "value": 4,
+                                    "type": null
+                                },
+                                "val_Two": null,
+                                "type": null
+                            },
+                            "type": null
+                        },
+                        "varDeclList": [
+                            {
+                                "name": "VarDeclNode",
+                                "idInitList": null,
+                                "IdListInitObbl": [
+                                    {
+                                        "name": "IdInitObblNode",
+                                        "leafID": {
+                                            "name": "LeafID",
+                                            "value": "incremento",
+                                            "type": null
+                                        },
+                                        "value": {
+                                            "name": "ConstNode",
+                                            "value": {
+                                                "name": "LeafIntegerConst",
+                                                "value": 1,
+                                                "type": null
+                                            },
+                                            "type": null
+                                        },
+                                        "type": null
+                                    }
+                                ],
+                                "type": null
+                            }
+                        ],
+                        "statList": [
+                            {
+                                "name": "StatNode",
+                                "ifStatNode": null,
+                                "whileStatNode": null,
+                                "readStatNode": null,
+                                "writeStatNode": {
+                                    "name": "WriteStatNode",
+                                    "expr": {
+                                        "name": "ExprNode",
+                                        "op": "STRING_CONST",
+                                        "val_One": {
+                                            "name": "LeafStringConst",
+                                            "value": "",
+                                            "type": null
+                                        },
+                                        "val_Two": null,
+                                        "type": null
+                                    },
+                                    "op": "WRITELN",
+                                    "type": null
+                                },
+                                "assignStatNode": null,
+                                "callFunNode": null,
+                                "returnNode": null
+                            },
+                            {
+                                "name": "StatNode",
+                                "ifStatNode": null,
+                                "whileStatNode": null,
+                                "readStatNode": null,
+                                "writeStatNode": null,
+                                "assignStatNode": {
+                                    "name": "AssignStatNode",
+                                    "leafID": {
+                                        "name": "LeafID",
+                                        "value": "i",
+                                        "type": null
+                                    },
+                                    "expr": {
+                                        "name": "ExprNode",
+                                        "op": "PLUS",
+                                        "val_One": {
+                                            "name": "ExprNode",
+                                            "op": "ID",
+                                            "val_One": {
+                                                "name": "LeafID",
+                                                "value": "i",
+                                                "type": null
+                                            },
+                                            "val_Two": null,
+                                            "type": null
+                                        },
+                                        "val_Two": {
+                                            "name": "ExprNode",
+                                            "op": "ID",
+                                            "val_One": {
+                                                "name": "LeafID",
+                                                "value": "incremento",
+                                                "type": null
+                                            },
+                                            "val_Two": null,
+                                            "type": null
+                                        },
+                                        "type": null
+                                    }
+                                },
+                                "callFunNode": null,
+                                "returnNode": null
+                            }
+                        ]
+                    },
+                    "readStatNode": null,
+                    "writeStatNode": null,
+                    "assignStatNode": null,
+                    "callFunNode": null,
+                    "returnNode": null
+                },
+                {
+                    "name": "StatNode",
+                    "ifStatNode": null,
+                    "whileStatNode": null,
+                    "readStatNode": null,
+                    "writeStatNode": {
+                        "name": "WriteStatNode",
+                        "expr": {
+                            "name": "ExprNode",
+                            "op": "ID",
+                            "val_One": {
+                                "name": "LeafID",
+                                "value": "messaggio",
+                                "type": null
+                            },
+                            "val_Two": null,
+                            "type": null
+                        },
+                        "op": "WRITELN",
+                        "type": null
+                    },
+                    "assignStatNode": null,
+                    "callFunNode": null,
+                    "returnNode": null
+                }
+            ],
+            "type": null
+        }
+    ],
+    "main": {
+        "name": "MainNode",
+        "varDeclList": [
+            {
+                "name": "VarDeclNode",
+                "idInitList": null,
+                "IdListInitObbl": [
+                    {
+                        "name": "IdInitObblNode",
+                        "leafID": {
+                            "name": "LeafID",
+                            "value": "a",
+                            "type": null
+                        },
+                        "value": {
+                            "name": "ConstNode",
+                            "value": {
+                                "name": "LeafIntegerConst",
+                                "value": 1,
+                                "type": null
+                            },
+                            "type": null
+                        },
+                        "type": null
+                    },
+                    {
+                        "name": "IdInitObblNode",
+                        "leafID": {
+                            "name": "LeafID",
+                            "value": "b",
+                            "type": null
+                        },
+                        "value": {
+                            "name": "ConstNode",
+                            "value": {
+                                "name": "LeafRealConst",
+                                "value": 2.2,
+                                "type": null
+                            },
+                            "type": null
+                        },
+                        "type": null
+                    }
+                ],
+                "type": null
+            },
+            {
+                "name": "VarDeclNode",
+                "idInitList": [
+                    {
+                        "name": "IdInitNode",
+                        "leafID": {
+                            "name": "LeafID",
+                            "value": "taglia",
+                            "type": null
+                        },
+                        "exprNode": null,
+                        "type": null
+                    }
+                ],
+                "IdListInitObbl": null,
+                "type": "string"
+            },
+            {
+                "name": "VarDeclNode",
+                "idInitList": null,
+                "IdListInitObbl": [
+                    {
+                        "name": "IdInitObblNode",
+                        "leafID": {
+                            "name": "LeafID",
+                            "value": "ans",
+                            "type": null
+                        },
+                        "value": {
+                            "name": "ConstNode",
+                            "value": {
+                                "name": "LeafStringConst",
+                                "value": "no",
+                                "type": null
+                            },
+                            "type": null
+                        },
+                        "type": null
+                    }
+                ],
+                "type": null
+            },
+            {
+                "name": "VarDeclNode",
+                "idInitList": [
+                    {
+                        "name": "IdInitNode",
+                        "leafID": {
+                            "name": "LeafID",
+                            "value": "risultato",
+                            "type": null
+                        },
+                        "exprNode": {
+                            "name": "ExprNode",
+                            "op": "CALLFUN",
+                            "val_One": {
+                                "name": "CallFunNode",
+                                "leafID": {
+                                    "name": "LeafID",
+                                    "value": "sommac",
+                                    "type": null
+                                },
+                                "exprList": [
+                                    {
+                                        "name": "ExprNode",
+                                        "op": "ID",
+                                        "val_One": {
+                                            "name": "LeafID",
+                                            "value": "a",
+                                            "type": null
+                                        },
+                                        "val_Two": null,
+                                        "type": null
+                                    },
+                                    {
+                                        "name": "ExprNode",
+                                        "op": "ID",
+                                        "val_One": {
+                                            "name": "LeafID",
+                                            "value": "b",
+                                            "type": null
+                                        },
+                                        "val_Two": null,
+                                        "type": null
+                                    },
+                                    {
+                                        "name": "ExprNode",
+                                        "op": "OUTPAR",
+                                        "val_One": {
+                                            "name": "LeafID",
+                                            "value": "taglia",
+                                            "type": null
+                                        },
+                                        "val_Two": null,
+                                        "type": null
+                                    }
+                                ],
+                                "type": null
+                            },
+                            "val_Two": null,
+                            "type": null
+                        },
+                        "type": null
+                    }
+                ],
+                "IdListInitObbl": null,
+                "type": "real"
+            }
+        ],
+        "statList": [
+            {
+                "name": "StatNode",
+                "ifStatNode": null,
+                "whileStatNode": null,
+                "readStatNode": null,
+                "writeStatNode": {
+                    "name": "WriteStatNode",
+                    "expr": {
+                        "name": "ExprNode",
+                        "op": "STRING_CONST",
+                        "val_One": {
+                            "name": "LeafStringConst",
+                            "value": "vuoi continuare? (si/no)",
+                            "type": null
+                        },
+                        "val_Two": null,
+                        "type": null
+                    },
+                    "op": "WRITET",
+                    "type": null
+                },
+                "assignStatNode": null,
+                "callFunNode": null,
+                "returnNode": null
+            },
+            {
+                "name": "StatNode",
+                "ifStatNode": null,
+                "whileStatNode": null,
+                "readStatNode": {
+                    "nome": "ReadStatNode",
+                    "IdList": [
+                        {
+                            "name": "LeafID",
+                            "value": "ans",
+                            "type": null
+                        }
+                    ],
+                    "expr": null
+                },
+                "writeStatNode": null,
+                "assignStatNode": null,
+                "callFunNode": null,
+                "returnNode": null
+            },
+            {
+                "name": "StatNode",
+                "ifStatNode": null,
+                "whileStatNode": {
+                    "name": "WhileStatNode",
+                    "expr": {
+                        "name": "ExprNode",
+                        "op": "EQ",
+                        "val_One": {
+                            "name": "ExprNode",
+                            "op": "ID",
+                            "val_One": {
+                                "name": "LeafID",
+                                "value": "ans",
+                                "type": null
+                            },
+                            "val_Two": null,
+                            "type": null
+                        },
+                        "val_Two": {
+                            "name": "ExprNode",
+                            "op": "STRING_CONST",
+                            "val_One": {
+                                "name": "LeafStringConst",
+                                "value": "si",
+                                "type": null
+                            },
+                            "val_Two": null,
+                            "type": null
+                        },
+                        "type": null
+                    },
+                    "varDeclList": [],
+                    "statList": [
+                        {
+                            "name": "StatNode",
+                            "ifStatNode": null,
+                            "whileStatNode": null,
+                            "readStatNode": {
+                                "nome": "ReadStatNode",
+                                "IdList": [
+                                    {
+                                        "name": "LeafID",
+                                        "value": "a",
+                                        "type": null
+                                    }
+                                ],
+                                "expr": {
+                                    "name": "ExprNode",
+                                    "op": "STRING_CONST",
+                                    "val_One": {
+                                        "name": "LeafStringConst",
+                                        "value": "inserisci un intero:",
+                                        "type": null
+                                    },
+                                    "val_Two": null,
+                                    "type": null
+                                }
+                            },
+                            "writeStatNode": null,
+                            "assignStatNode": null,
+                            "callFunNode": null,
+                            "returnNode": null
+                        },
+                        {
+                            "name": "StatNode",
+                            "ifStatNode": null,
+                            "whileStatNode": null,
+                            "readStatNode": {
+                                "nome": "ReadStatNode",
+                                "IdList": [
+                                    {
+                                        "name": "LeafID",
+                                        "value": "b",
+                                        "type": null
+                                    }
+                                ],
+                                "expr": {
+                                    "name": "ExprNode",
+                                    "op": "STRING_CONST",
+                                    "val_One": {
+                                        "name": "LeafStringConst",
+                                        "value": "inserisci un reale:",
+                                        "type": null
+                                    },
+                                    "val_Two": null,
+                                    "type": null
+                                }
+                            },
+                            "writeStatNode": null,
+                            "assignStatNode": null,
+                            "callFunNode": null,
+                            "returnNode": null
+                        },
+                        {
+                            "name": "StatNode",
+                            "ifStatNode": null,
+                            "whileStatNode": null,
+                            "readStatNode": null,
+                            "writeStatNode": null,
+                            "assignStatNode": {
+                                "name": "AssignStatNode",
+                                "leafID": {
+                                    "name": "LeafID",
+                                    "value": "risultato",
+                                    "type": null
+                                },
+                                "expr": {
+                                    "name": "ExprNode",
+                                    "op": "CALLFUN",
+                                    "val_One": {
+                                        "name": "CallFunNode",
+                                        "leafID": {
+                                            "name": "LeafID",
+                                            "value": "sommac",
+                                            "type": null
+                                        },
+                                        "exprList": [
+                                            {
+                                                "name": "ExprNode",
+                                                "op": "ID",
+                                                "val_One": {
+                                                    "name": "LeafID",
+                                                    "value": "a",
+                                                    "type": null
+                                                },
+                                                "val_Two": null,
+                                                "type": null
+                                            },
+                                            {
+                                                "name": "ExprNode",
+                                                "op": "ID",
+                                                "val_One": {
+                                                    "name": "LeafID",
+                                                    "value": "b",
+                                                    "type": null
+                                                },
+                                                "val_Two": null,
+                                                "type": null
+                                            },
+                                            {
+                                                "name": "ExprNode",
+                                                "op": "OUTPAR",
+                                                "val_One": {
+                                                    "name": "LeafID",
+                                                    "value": "taglia",
+                                                    "type": null
+                                                },
+                                                "val_Two": null,
+                                                "type": null
+                                            }
+                                        ],
+                                        "type": null
+                                    },
+                                    "val_Two": null,
+                                    "type": null
+                                }
+                            },
+                            "callFunNode": null,
+                            "returnNode": null
+                        },
+                        {
+                            "name": "StatNode",
+                            "ifStatNode": null,
+                            "whileStatNode": null,
+                            "readStatNode": null,
+                            "writeStatNode": null,
+                            "assignStatNode": null,
+                            "callFunNode": {
+                                "name": "CallFunNode",
+                                "leafID": {
+                                    "name": "LeafID",
+                                    "value": "stampa",
+                                    "type": null
+                                },
+                                "exprList": [
+                                    {
+                                        "name": "ExprNode",
+                                        "op": "STR_CONCAT",
+                                        "val_One": {
+                                            "name": "ExprNode",
+                                            "op": "STR_CONCAT",
+                                            "val_One": {
+                                                "name": "ExprNode",
+                                                "op": "STR_CONCAT",
+                                                "val_One": {
+                                                    "name": "ExprNode",
+                                                    "op": "STR_CONCAT",
+                                                    "val_One": {
+                                                        "name": "ExprNode",
+                                                        "op": "STR_CONCAT",
+                                                        "val_One": {
+                                                            "name": "ExprNode",
+                                                            "op": "STR_CONCAT",
+                                                            "val_One": {
+                                                                "name": "ExprNode",
+                                                                "op": "STR_CONCAT",
+                                                                "val_One": {
+                                                                    "name": "ExprNode",
+                                                                    "op": "STRING_CONST",
+                                                                    "val_One": {
+                                                                        "name": "LeafStringConst",
+                                                                        "value": "la somma di ",
+                                                                        "type": null
+                                                                    },
+                                                                    "val_Two": null,
+                                                                    "type": null
+                                                                },
+                                                                "val_Two": {
+                                                                    "name": "ExprNode",
+                                                                    "op": "ID",
+                                                                    "val_One": {
+                                                                        "name": "LeafID",
+                                                                        "value": "a",
+                                                                        "type": null
+                                                                    },
+                                                                    "val_Two": null,
+                                                                    "type": null
+                                                                },
+                                                                "type": null
+                                                            },
+                                                            "val_Two": {
+                                                                "name": "ExprNode",
+                                                                "op": "STRING_CONST",
+                                                                "val_One": {
+                                                                    "name": "LeafStringConst",
+                                                                    "value": " e ",
+                                                                    "type": null
+                                                                },
+                                                                "val_Two": null,
+                                                                "type": null
+                                                            },
+                                                            "type": null
+                                                        },
+                                                        "val_Two": {
+                                                            "name": "ExprNode",
+                                                            "op": "ID",
+                                                            "val_One": {
+                                                                "name": "LeafID",
+                                                                "value": "b",
+                                                                "type": null
+                                                            },
+                                                            "val_Two": null,
+                                                            "type": null
+                                                        },
+                                                        "type": null
+                                                    },
+                                                    "val_Two": {
+                                                        "name": "ExprNode",
+                                                        "op": "STRING_CONST",
+                                                        "val_One": {
+                                                            "name": "LeafStringConst",
+                                                            "value": " incrementata di ",
+                                                            "type": null
+                                                        },
+                                                        "val_Two": null,
+                                                        "type": null
+                                                    },
+                                                    "type": null
+                                                },
+                                                "val_Two": {
+                                                    "name": "ExprNode",
+                                                    "op": "ID",
+                                                    "val_One": {
+                                                        "name": "LeafID",
+                                                        "value": "c",
+                                                        "type": null
+                                                    },
+                                                    "val_Two": null,
+                                                    "type": null
+                                                },
+                                                "type": null
+                                            },
+                                            "val_Two": {
+                                                "name": "ExprNode",
+                                                "op": "STRING_CONST",
+                                                "val_One": {
+                                                    "name": "LeafStringConst",
+                                                    "value": " è ",
+                                                    "type": null
+                                                },
+                                                "val_Two": null,
+                                                "type": null
+                                            },
+                                            "type": null
+                                        },
+                                        "val_Two": {
+                                            "name": "ExprNode",
+                                            "op": "ID",
+                                            "val_One": {
+                                                "name": "LeafID",
+                                                "value": "taglia",
+                                                "type": null
+                                            },
+                                            "val_Two": null,
+                                            "type": null
+                                        },
+                                        "type": null
+                                    }
+                                ],
+                                "type": null
+                            },
+                            "returnNode": null
+                        },
+                        {
+                            "name": "StatNode",
+                            "ifStatNode": null,
+                            "whileStatNode": null,
+                            "readStatNode": null,
+                            "writeStatNode": null,
+                            "assignStatNode": null,
+                            "callFunNode": {
+                                "name": "CallFunNode",
+                                "leafID": {
+                                    "name": "LeafID",
+                                    "value": "stampa",
+                                    "type": null
+                                },
+                                "exprList": [
+                                    {
+                                        "name": "ExprNode",
+                                        "op": "STR_CONCAT",
+                                        "val_One": {
+                                            "name": "ExprNode",
+                                            "op": "STRING_CONST",
+                                            "val_One": {
+                                                "name": "LeafStringConst",
+                                                "value": " ed è pari a ",
+                                                "type": null
+                                            },
+                                            "val_Two": null,
+                                            "type": null
+                                        },
+                                        "val_Two": {
+                                            "name": "ExprNode",
+                                            "op": "ID",
+                                            "val_One": {
+                                                "name": "LeafID",
+                                                "value": "risultato",
+                                                "type": null
+                                            },
+                                            "val_Two": null,
+                                            "type": null
+                                        },
+                                        "type": null
+                                    }
+                                ],
+                                "type": null
+                            },
+                            "returnNode": null
+                        },
+                        {
+                            "name": "StatNode",
+                            "ifStatNode": null,
+                            "whileStatNode": null,
+                            "readStatNode": {
+                                "nome": "ReadStatNode",
+                                "IdList": [
+                                    {
+                                        "name": "LeafID",
+                                        "value": "ans",
+                                        "type": null
+                                    }
+                                ],
+                                "expr": {
+                                    "name": "ExprNode",
+                                    "op": "STRING_CONST",
+                                    "val_One": {
+                                        "name": "LeafStringConst",
+                                        "value": "vuoi continuare? (si/no):\\t",
+                                        "type": null
+                                    },
+                                    "val_Two": null,
+                                    "type": null
+                                }
+                            },
+                            "writeStatNode": null,
+                            "assignStatNode": null,
+                            "callFunNode": null,
+                            "returnNode": null
+                        }
+                    ]
+                },
+                "readStatNode": null,
+                "writeStatNode": null,
+                "assignStatNode": null,
+                "callFunNode": null,
+                "returnNode": null
+            },
+            {
+                "name": "StatNode",
+                "ifStatNode": null,
+                "whileStatNode": null,
+                "readStatNode": null,
+                "writeStatNode": {
+                    "name": "WriteStatNode",
+                    "expr": {
+                        "name": "ExprNode",
+                        "op": "STRING_CONST",
+                        "val_One": {
+                            "name": "LeafStringConst",
+                            "value": "",
+                            "type": null
+                        },
+                        "val_Two": null,
+                        "type": null
+                    },
+                    "op": "WRITELN",
+                    "type": null
+                },
+                "assignStatNode": null,
+                "callFunNode": null,
+                "returnNode": null
+            },
+            {
+                "name": "StatNode",
+                "ifStatNode": null,
+                "whileStatNode": null,
+                "readStatNode": null,
+                "writeStatNode": {
+                    "name": "WriteStatNode",
+                    "expr": {
+                        "name": "ExprNode",
+                        "op": "STRING_CONST",
+                        "val_One": {
+                            "name": "LeafStringConst",
+                            "value": "ciao",
+                            "type": null
+                        },
+                        "val_Two": null,
+                        "type": null
+                    },
+                    "op": "WRITE",
+                    "type": null
+                },
+                "assignStatNode": null,
+                "callFunNode": null,
+                "returnNode": null
+            }
+        ]
+    }
+}

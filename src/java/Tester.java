@@ -19,31 +19,36 @@ class Tester {
         // Creazione del parser sul flusso di token
         parser parser = new parser(lexer);
 
+        File file;
         ProgramNode root;
+        BufferedWriter bw;
+        Symbol token;
+
+        // Creazione del visitor semantico
         Semantic_Visitor semanticVisitor = new Semantic_Visitor();
 
         System.out.println("Quale operazione vuoi eseguire ?");
         System.out.println("1: Analisi Sintattica (Salvataggio dei Token in un file)");
         System.out.println("2: Analisi Lessicale (Stampa dell'albero di Parsing)");
         System.out.println("3: Analisi Semantica (Stampa dei messaggi di Debug)");
-        System.out.println("4: Generazione del codice C.");
+        System.out.println("4: Generazione del codice C (Senza esecuzione)");
         System.out.print("Effettuare una scelta: ");
         try (Scanner scanner = new Scanner(System.in)) {
             // int scelta = scanner.nextInt();
-            int scelta = 4;
+            int scelta = 2;
 
             System.out.println();
 
             switch (scelta) {
             case 1:
-                File file = new File("debug/Lexer_Debug.txt");
-                Symbol token = lexer.next_token();
+                file = new File("debug/Lexer_Debug.txt");
+                token = lexer.next_token();
 
                 if (!file.exists()) {
                     file.createNewFile();
                 }
 
-                BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+                bw = new BufferedWriter(new FileWriter(file));
                 while (token.sym != sym.EOF) {
                     bw.write("<" + sym.terminalNames[token.sym] + (token.value == null ? ">" : ", " + token.value + ">"));
                     bw.write("\n");
@@ -58,6 +63,20 @@ class Tester {
                 break;
 
             case 2:
+                file = new File("debug/Syntax_Debug.json");
+                root = (ProgramNode) parser.parse().value;
+
+                if (!file.exists()) {
+                    file.createNewFile();
+                }
+
+                bw = new BufferedWriter(new FileWriter(file));
+                bw.write(root.toString());
+
+                System.out.println("Albero JSON salvato all'interno del file \"debug/Syntax_Debug.json\" !!!");
+
+                bw.flush();
+                bw.close();
                 break;
 
             case 3:
@@ -81,7 +100,7 @@ class Tester {
                 break;
 
             default:
-                System.out.println("Scelta effettuata non valida !");
+                System.out.println("Scelta effettuata non valida !!!");
                 System.exit(0);
                 break;
             }

@@ -5,7 +5,7 @@ end fun;
 main
     # string test := 'ciao' & ' a tutti';
     # string test_two := 'ciao' & ' a tutti' & ' ancora';
-    # string test_three := 'ciao' & ' a tutti' & ' ancora' & ' per sempre';
+    string test_three := 'ciao' & ' a tutti' & ' ancora' & ' per sempre';
 
     # string test := 'ciao';
     # string test_two := ' ancora' & ' ancora' & test;

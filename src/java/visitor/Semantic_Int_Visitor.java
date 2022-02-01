@@ -7,8 +7,8 @@ import tree.leaves.LeafRealConst;
 import tree.leaves.LeafStringConst;
 import tree.nodes.*;
 
+// Interfaccia per l'implementazione dei vari metodi polimorfi
 public interface Semantic_Int_Visitor {
-    
     public void visit(ProgramNode programNode);
     public void visit(MainNode mainNode);
     public void visit(VarDeclNode varDeclNode);
@@ -32,6 +32,4 @@ public interface Semantic_Int_Visitor {
     public void visit(LeafRealConst leafRealConst);
     public void visit(LeafBool leafBool);
     public void visit(LeafStringConst leafStringConst);
-
-
 }
