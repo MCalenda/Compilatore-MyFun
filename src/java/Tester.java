@@ -1,13 +1,8 @@
-import java.awt.Dimension;
-import java.awt.Font;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.Scanner;
-
-import javax.swing.JFrame;
-import javax.swing.JTree;
 
 import cup.parser;
 import cup.sym;
@@ -16,7 +11,6 @@ import java_cup.runtime.Symbol;
 import tree.nodes.ProgramNode;
 import visitor.CodeGen_Visitor;
 import visitor.Semantic_Visitor;
-import visitor.Syntax_Visitor;
 
 class Tester {
     public static void main(String[] args) throws Exception {
@@ -64,27 +58,6 @@ class Tester {
                 break;
 
             case 2:
-                root = (ProgramNode) parser.parse().value;
-
-                Syntax_Visitor syntaxVisitor = new Syntax_Visitor();
-                syntaxVisitor.visit(root);
-
-                System.out.println("Visualizzo l'albero !!!");
-
-                JFrame frame = new JFrame("Albero Sintattico");
-
-                JTree tree = new JTree(root);
-                final Font currentFont = tree.getFont();
-                final Font bigFont = new Font(currentFont.getName(), currentFont.getStyle(), currentFont.getSize() + 5);
-                tree.setFont(bigFont);
-                frame.add(tree);
-
-                frame.setPreferredSize(new Dimension(600, 600));
-                frame.setMinimumSize(new Dimension(600, 600));
-
-                frame.pack();
-                frame.setVisible(true);
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 break;
 
             case 3:

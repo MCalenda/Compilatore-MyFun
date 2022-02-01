@@ -2,18 +2,15 @@ package tree.nodes;
 
 import java.util.ArrayList;
 
-import javax.swing.tree.DefaultMutableTreeNode;
-
 import symbol_table.ValueType;
 import tree.leaves.LeafID;
 import visitor.CodeGen_Int_Visitable;
 import visitor.CodeGen_Int_Visitor;
 import visitor.Semantic_Int_Visitable;
 import visitor.Semantic_Int_Visitor;
-import visitor.Syntax_Int_Visitable;
-import visitor.Syntax_Int_Visitor;
 
-public class CallFunNode extends DefaultMutableTreeNode implements Syntax_Int_Visitable, Semantic_Int_Visitable, CodeGen_Int_Visitable {
+public class CallFunNode implements Semantic_Int_Visitable, CodeGen_Int_Visitable {
+    // Attributi
     public String name = "CallFunNode";
     public LeafID leafID;
     public ArrayList<ExprNode> exprList;
@@ -21,26 +18,21 @@ public class CallFunNode extends DefaultMutableTreeNode implements Syntax_Int_Vi
     // Controllo semantico
     public ValueType type = null;
 
+    // Costruttori
     public CallFunNode(LeafID leafID, ArrayList<ExprNode> exprList) {
-        super("CallFunNode");
         this.leafID = leafID;
         this.exprList = exprList;
     }
 
     public CallFunNode(LeafID leafID) {
-        super("CallFunNode");
         this.leafID = leafID;
         this.exprList = new ArrayList<ExprNode>();
     }
 
-    @Override
-    public DefaultMutableTreeNode accept(Syntax_Int_Visitor v) {
-        return v.visit(this);
-    }
-
+    // Metodi polimorfi per i visitor
     @Override
     public void accept(Semantic_Int_Visitor v) {
-        v.visit(this); 
+        v.visit(this);
     }
 
     @Override

@@ -6,24 +6,27 @@ import visitor.CodeGen_Int_Visitor;
 import visitor.Semantic_Int_Visitable;
 import visitor.Semantic_Int_Visitor;
 
-public class LeafBool implements Semantic_Int_Visitable, CodeGen_Int_Visitable{
+public class LeafBool implements Semantic_Int_Visitable, CodeGen_Int_Visitable {
+    // Attributi
     public String name = "LeafBool";
     public Boolean value;
 
     // Controllo semantico
     public ValueType type = null;
 
+    // Costruttore
     public LeafBool(Boolean value) {
         this.value = value;
     }
-    
-    public String toString(){
+
+    public String toString() {
         return value.toString();
     }
 
+    // Metodi polimorfi per i visitor
     @Override
     public void accept(Semantic_Int_Visitor v) {
-        v.visit(this);        
+        v.visit(this);
     }
 
     @Override

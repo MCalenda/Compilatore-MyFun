@@ -1,28 +1,21 @@
 package tree.nodes;
 
-import javax.swing.tree.DefaultMutableTreeNode;
-
 import visitor.CodeGen_Int_Visitable;
 import visitor.CodeGen_Int_Visitor;
 import visitor.Semantic_Int_Visitable;
 import visitor.Semantic_Int_Visitor;
-import visitor.Syntax_Int_Visitable;
-import visitor.Syntax_Int_Visitor;
 
-public class ReturnNode extends DefaultMutableTreeNode implements Syntax_Int_Visitable, Semantic_Int_Visitable, CodeGen_Int_Visitable {
+public class ReturnNode implements Semantic_Int_Visitable, CodeGen_Int_Visitable {
+    // Attributi
     public String name = "ReturnNode";
     public ExprNode expr;
 
+    // Costruttore
     public ReturnNode(ExprNode expr) {
-        super("ReturnNode");
         this.expr = expr;
     }
 
-    @Override
-    public DefaultMutableTreeNode accept(Syntax_Int_Visitor v) {
-        return v.visit(this);
-    }
-
+    // Metodi polimorfi per i visitor
     @Override
     public void accept(Semantic_Int_Visitor v) {
         v.visit(this);

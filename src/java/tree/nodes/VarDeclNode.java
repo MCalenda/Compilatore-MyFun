@@ -1,17 +1,15 @@
 package tree.nodes;
 
 import java.util.ArrayList;
-import javax.swing.tree.DefaultMutableTreeNode;
 
 import visitor.CodeGen_Int_Visitable;
 import visitor.CodeGen_Int_Visitor;
 import visitor.Semantic_Int_Visitable;
 import visitor.Semantic_Int_Visitor;
-import visitor.Syntax_Int_Visitable;
-import visitor.Syntax_Int_Visitor;
 import symbol_table.ValueType;
 
-public class VarDeclNode extends DefaultMutableTreeNode implements Syntax_Int_Visitable, Semantic_Int_Visitable, CodeGen_Int_Visitable{
+public class VarDeclNode implements Semantic_Int_Visitable, CodeGen_Int_Visitable {
+    // Attributi
     public String name = "VarDeclNode";
     public ArrayList<IdInitNode> idInitList = null;
     public ArrayList<IdInitObblNode> IdListInitObbl = null;
@@ -19,23 +17,17 @@ public class VarDeclNode extends DefaultMutableTreeNode implements Syntax_Int_Vi
     // Controllo semantico
     public ValueType type = null;
 
-
+    // Costruttori
     public VarDeclNode(ValueType type, ArrayList<IdInitNode> idInitList) {
-        super("VarDeclNode");
         this.type = type;
         this.idInitList = idInitList;
     }
 
     public VarDeclNode(ArrayList<IdInitObblNode> IdListInitObbl) {
-        super("VarDeclNode");
         this.IdListInitObbl = IdListInitObbl;
     }
 
-    @Override
-    public DefaultMutableTreeNode accept(Syntax_Int_Visitor v) {
-        return v.visit(this);
-    }
-
+    // Metodi polimorfi per i visitor
     @Override
     public void accept(Semantic_Int_Visitor v) {
         v.visit(this);

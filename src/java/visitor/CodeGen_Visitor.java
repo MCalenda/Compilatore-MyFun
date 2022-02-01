@@ -1,12 +1,8 @@
 package visitor;
 
 import java.io.*;
-import java.security.cert.TrustAnchor;
 import java.util.ArrayList;
 
-import org.apache.commons.lang3.ObjectUtils.Null;
-
-import java_cup.internal_error;
 import symbol_table.ValueType;
 import tree.leaves.*;
 import tree.nodes.*;

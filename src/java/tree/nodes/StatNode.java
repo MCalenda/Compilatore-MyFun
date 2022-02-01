@@ -1,15 +1,12 @@
 package tree.nodes;
 
-import javax.swing.tree.DefaultMutableTreeNode;
-
 import visitor.CodeGen_Int_Visitable;
 import visitor.CodeGen_Int_Visitor;
 import visitor.Semantic_Int_Visitable;
 import visitor.Semantic_Int_Visitor;
-import visitor.Syntax_Int_Visitable;
-import visitor.Syntax_Int_Visitor;
 
-public class StatNode extends DefaultMutableTreeNode implements Syntax_Int_Visitable, Semantic_Int_Visitable, CodeGen_Int_Visitable {
+public class StatNode implements Semantic_Int_Visitable, CodeGen_Int_Visitable {
+    // Attributi
     public String name = "StatNode";
     public IfStatNode ifStatNode = null;
     public WhileStatNode whileStatNode = null;
@@ -19,46 +16,36 @@ public class StatNode extends DefaultMutableTreeNode implements Syntax_Int_Visit
     public CallFunNode callFunNode = null;
     public ReturnNode returnNode = null;
 
+    // Costruttori
     public StatNode(IfStatNode ifStatNode) {
-        super("StatNode");
         this.ifStatNode = ifStatNode;
     }
 
     public StatNode(WhileStatNode whileStatNode) {
-        super("StatNode");
         this.whileStatNode = whileStatNode;
     }
 
     public StatNode(ReadStatNode readStatNode) {
-        super("StatNode");
         this.readStatNode = readStatNode;
     }
 
     public StatNode(WriteStatNode writeStatNode) {
-        super("StatNode");
         this.writeStatNode = writeStatNode;
     }
 
     public StatNode(AssignStatNode assignStatNode) {
-        super("StatNode");
         this.assignStatNode = assignStatNode;
     }
 
     public StatNode(CallFunNode callFunNode) {
-        super("StatNode");
         this.callFunNode = callFunNode;
     }
 
     public StatNode(ReturnNode returnNode) {
-        super("StatNode");
         this.returnNode = returnNode;
     }
 
-    @Override
-    public DefaultMutableTreeNode accept(Syntax_Int_Visitor v) {
-        return v.visit(this);
-    }
-
+    // Metodi polimorfi per i visitor
     @Override
     public void accept(Semantic_Int_Visitor v) {
         v.visit(this);
