@@ -1,41 +1,39 @@
 package visitor;
 
-import symbol_table.SymbolTable;
-import symbol_table.SymbolTableEntry;
-import symbol_table.ValueType;
-import tree.leaves.*;
-import tree.nodes.*;
-
 import java.util.ArrayList;
 import java.util.Stack;
+
+import symbol_table.*;
+import tree.leaves.*;
+import tree.nodes.*;
 
 public class Semantic_Visitor implements Semantic_Int_Visitor {
 
     public Stack<SymbolTable> stack = new Stack<>();
 
+    //DEBUG
     public boolean debugTab = false;
     public boolean debugVar = false;
 
     @Override
     public void visit(ProgramNode programNode) {
-        SymbolTable symbolTable = new SymbolTable();
-        symbolTable.symbolTableName = "Global";
+        SymbolTable symbolTable = new SymbolTable("Global");
         stack.push(symbolTable);
         
-        if (programNode.varDecList != null) {
-            for (VarDeclNode varDeclNode : programNode.varDecList) {
+        // Controllo la lista di dichiarazioni di variabili
+        if (programNode.varDecList != null)
+            for (VarDeclNode varDeclNode : programNode.varDecList)
                 varDeclNode.accept(this);
-            }
-        }
 
-        if (programNode.funList != null) {
-            for (FunNode funNode : programNode.funList) {
+        // Controllo la lista di dichiarazioni di funzioni
+        if (programNode.funList != null)
+            for (FunNode funNode : programNode.funList)
                 funNode.accept(this);
-            }
-        }
 
+        // Controllo il main
         programNode.main.accept(this);
         
+        // DEBUG
         if (debugTab){
             System.out.println("Tabella " + stack.peek().symbolTableName + " |");
             for (String key : stack.peek().keySet()) System.out.println(key + ": " + stack.peek().get(key).toString());
@@ -47,24 +45,23 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
     @Override
     public void visit(MainNode mainNode) {
-        SymbolTable symbolTable = new SymbolTable();
-        symbolTable.symbolTableName = "Main";
-        // Setta come padre Global
+        SymbolTable symbolTable = new SymbolTable("Main");
+
+        //Setto come padre la tabella Global
         symbolTable.setFatherSymTab(stack.firstElement());
         stack.push(symbolTable);
 
-        if (mainNode.varDeclList != null) {
-            for (VarDeclNode varDeclNode : mainNode.varDeclList) {
+        // Controllo la lista di dichiarazioni di variabili
+        if (mainNode.varDeclList != null)
+            for (VarDeclNode varDeclNode : mainNode.varDeclList)
                 varDeclNode.accept(this);
-            }
-        }
-
-        if (mainNode.statList != null) {
-            for (StatNode statNode : mainNode.statList) {
+        
+        // Controllo la lista di dichiarazioni di funzioni
+        if (mainNode.statList != null)
+            for (StatNode statNode : mainNode.statList)
                 statNode.accept(this);
-            }
-        }
 
+        // DEBUG
         if (debugTab) {
             System.out.println("| Tabella " + stack.peek().symbolTableName + " | padre: " + stack.peek().fatherSymbolTable.symbolTableName + " |");
             for (String key : stack.peek().keySet()) System.out.println(key + ": " + stack.peek().get(key).toString());
@@ -76,50 +73,61 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
     
     @Override
     public void visit(FunNode funNode) {
+        SymbolTable symbolTable = new SymbolTable(funNode.leafID.value);
+
+        // Setto come padre la tabella Global
+        symbolTable.setFatherSymTab(stack.firstElement());
+        stack.push(symbolTable);
+
+        // Lista di tipi dei parametri
         ArrayList<ValueType> params = new ArrayList<>();
+        // Lista di booleani, i-imo è un outParam
         ArrayList<Boolean> isOut = new ArrayList<>();
 
-        if (funNode.paramDecList != null) {
-            for (ParamDecNode parDecNode : funNode.paramDecList) {
-                params.add(parDecNode.type);
+        // Controllo la lista di parametri 
+        if (funNode.paramDecList != null)
+        for (ParamDecNode parDecNode : funNode.paramDecList) {
+            parDecNode.accept(this);
+            params.add(parDecNode.type);
                 if (parDecNode.out)
                     isOut.add(true);
                 else
                     isOut.add(false);
-            }
-            if (!stack.firstElement().createEntry_function(funNode.leafID.value, funNode.type, params, isOut)) {
-                System.err.println("[ERRORE SEMANTICO] funzione " + funNode.leafID.value + " gia dichiarata nel T.E. " + stack.peek().symbolTableName);
-                System.exit(1);
-            }
         }
-        SymbolTable symbolTable = new SymbolTable();
-        symbolTable.symbolTableName = funNode.leafID.value;
-        symbolTable.setFatherSymTab(stack.firstElement());
-        stack.push(symbolTable);
-        
-        if (funNode.paramDecList != null) {
-            for (ParamDecNode parDecNode : funNode.paramDecList)
-                parDecNode.accept(this);
+
+        // Creo la funzione in tabella
+        if (!stack.firstElement().createEntry_function(funNode.leafID.value, funNode.type, params, isOut)) {
+            System.err.println("[ERRORE SEMANTICO] funzione " + funNode.leafID.value + " gia dichiarata nel T.E. " + stack.peek().symbolTableName);
+            System.exit(1);
         }
-        if (funNode.varDecList != null) {
+      
+        // Controllo la lista di dichiarazioni di variabili
+        if (funNode.varDecList != null)
             for (VarDeclNode varDeclNode : funNode.varDecList)
                 varDeclNode.accept(this);
-        }
+
+        // Controllo la lista di statements
         if (funNode.statList != null) {
             for (StatNode statNode : funNode.statList)
                 statNode.accept(this);
         }
+
+        // DEBUG
         if (debugTab){
             System.out.println("Tabella " + stack.peek().symbolTableName + " | padre: " + stack.peek().fatherSymbolTable.symbolTableName + " |");
             for (String key : stack.peek().keySet()) System.out.println(key + ": " + stack.peek().get(key).toString());
             System.out.println("-----------------------------------------------------");
         }
+
         stack.pop();
     }
 
     @Override
     public void visit(ParamDecNode paramDecNode) {
+        // Prendo la tabella al top (sarà sempre quella della funzione)
         SymbolTable picked = stack.peek();
+ 
+        // Creo la variabile in tabella
         if (!picked.createEntry_variable(paramDecNode.leafID.value, paramDecNode.type)) {
             System.out.println("ERRORE SEMANTICO] parametro " + paramDecNode.leafID.value + " già dichiarato nel T.E. " + stack.peek().symbolTableName);
             System.exit(1);
@@ -128,22 +136,30 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
     @Override
     public void visit(VarDeclNode varDeclNode) {
+        //Prendo la tabella al top dello stack
+        SymbolTable picked = stack.peek();
+
+        // Controllo la lista di ID della dichiarazione (inizializzazione possibile)
         if (varDeclNode.idInitList != null) {
             for (IdInitNode idInitNode : varDeclNode.idInitList) {
-                SymbolTable picked = stack.peek();
+                // Passo il tipo ad ogni elemento della lista di ID
+                idInitNode.type = varDeclNode.type;
+                // Creo la variabile in tabella
                 if (!picked.createEntry_variable(idInitNode.leafID.value, varDeclNode.type)) {
                     System.out.println("[ERRORE SEMANTICO] variabile " + idInitNode.leafID.value + " già dichiarata nel T.E. " + stack.peek().symbolTableName);
                     System.exit(1);
                 }
-                // Passo il tipo dell'inizializzazione ad ogni elemento della lista di ID
-                idInitNode.type = varDeclNode.type;
                 idInitNode.accept(this);
             }
+
+        // Controllo la lista di ID della dichiarazione (inizializzazione obbligata)
         } else if (varDeclNode.IdListInitObbl != null) {
             for (IdInitObblNode idInitObblNode : varDeclNode.IdListInitObbl) {
+                // Inferisco il tipo del valore
                 idInitObblNode.value.accept(this);
+                // Passo il tipo ad ogni elemento della lista di ID
                 idInitObblNode.type = idInitObblNode.value.type;
-                SymbolTable picked = stack.peek();
+                // Creo la variabile in tabella
                 if (!picked.createEntry_variable(idInitObblNode.leafID.value, idInitObblNode.type)) {
                     System.out.println("[ERRORE SEMANTICO] variabile " + idInitObblNode.leafID.value + " già dichiarata nel T.E. " + stack.peek().symbolTableName);
                     System.exit(1);
@@ -155,48 +171,55 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
     
     @Override
     public void visit(IdInitNode idInitNode) {
-        // Aggiorno il tipo di leafID
+        // Controllo il tipo della leafID
         idInitNode.leafID.accept(this);
         
-        // Nel caso ci sia un operazione di assegnamento
+        // Nel caso ci sia un inizializzazione
         if (idInitNode.exprNode != null) {
             idInitNode.exprNode.accept(this);
-            if (debugVar) System.out.println("[DEBUG] " + idInitNode.leafID.value + ":" + idInitNode.type + " assegno " + idInitNode.exprNode.type);
+            // Controllo se il tipo dell'inizializzazione è compatibile con la variabile
             if (!checkAssignmentType(idInitNode.type, idInitNode.exprNode.type)) {
                 System.err.println("[ERRORE SEMANTICO] init errato variabile " + idInitNode.leafID.value + " atteso: [" + idInitNode.type + "] assegnato: [" + idInitNode.exprNode.type + "]");
                 System.exit(1);
             }
-        } else {
-            if (debugVar) System.out.println("[DEBUG] variabile " + idInitNode.leafID.value + ":" + idInitNode.type + " dichiarato");
-        }
+
+            // DEBUG
+            if (debugVar) System.out.println("[DEBUG] " + idInitNode.leafID.value + ":" + idInitNode.type + " assegno " + idInitNode.exprNode.type);
+        } else if (debugVar) System.out.println("[DEBUG] variabile " + idInitNode.leafID.value + ":" + idInitNode.type + " dichiarato");
     }
     
     @Override
     public void visit(IdInitObblNode idInitObblNode) {
-        idInitObblNode.leafID.type = idInitObblNode.type;
         idInitObblNode.leafID.accept(this);
+
+        // DEBUG
         if (debugVar) System.out.println("[DEBUG] variabile " + idInitObblNode.leafID.value + ":var assegno " + idInitObblNode.value.type);
     }
    
     @Override
     public void visit(ExprNode exprNode) {
-        // Se è un espressione con doppio argomento
+
+        // Se è un'operazione con doppio argomento
         if (exprNode.val_One != null && exprNode.val_Two != null) {
+            // Controllo il tipo delle due espressioni
             ((ExprNode) exprNode.val_One).accept(this);
             ((ExprNode) exprNode.val_Two).accept(this);
 
+            // DEBUG
             if (debugVar) System.out.println("[DEBUG] " + (((ExprNode) exprNode.val_One).type) + " " + exprNode.op + " " + (((ExprNode) exprNode.val_Two).type));
 
-            // Se è un operazione matematica
+            // Se è un operazione aritmetica
             if (exprNode.op.equalsIgnoreCase("PLUS") || exprNode.op.equalsIgnoreCase("MINUS") || exprNode.op.equalsIgnoreCase("TIMES") || exprNode.op.equalsIgnoreCase("DIV") || exprNode.op.equalsIgnoreCase("POW")) {
+                // Controllo che i tipi delle due espressioni siano compatibili per questa operazione
                 ValueType resultType = getType_Operations(((ExprNode) exprNode.val_One).type, ((ExprNode) exprNode.val_Two).type);
                 if (resultType == null) {
                     System.err.println("[ERRORE SEMANTICO] tipi per op " + exprNode.op + " errati");
                     System.exit(1);
                 } else exprNode.type = resultType;
 
-            // Se è una divisione per intero
+            // Se è una operazione di divisione per intero
             } else if (exprNode.op.equalsIgnoreCase("DIVINT")) {
+                // Controllo che i tipi delle due espressioni siano compatibili per questa operazione
                 ValueType resultType = getTypeDivInt(((ExprNode) exprNode.val_One).type, ((ExprNode) exprNode.val_Two).type);
                 if (resultType == null) {
                     System.err.println("[ERRORE SEMANTICO] tipi per op " + exprNode.op + " errati");
@@ -205,6 +228,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
             // Se è un AND o un OR
             } else if (exprNode.op.equalsIgnoreCase("AND") || exprNode.op.equalsIgnoreCase("OR")) {
+                // Controllo che i tipi delle due espressioni siano compatibili per questa operazione
                 ValueType resultType = getType_AndOr(((ExprNode) exprNode.val_One).type, ((ExprNode) exprNode.val_Two).type);
                 if (resultType == null) {
                     System.err.println("[ERRORE SEMANTICO] tipi per op " + exprNode.op + " errati");
@@ -213,6 +237,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
                     
             // Se è una concatenzazione di stringhe
             } else if (exprNode.op.equalsIgnoreCase("STR_CONCAT")) {
+                // Controllo che i tipi delle due espressioni siano compatibili per questa operazione
                 ValueType resultType = getType_StrConc(((ExprNode) exprNode.val_One).type, ((ExprNode) exprNode.val_Two).type);
                 if (resultType == null) {
                     System.err.println("[ERRORE SEMANTICO] tipi per op " + exprNode.op + " errati");
@@ -221,14 +246,16 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
             // Se è una operazione EQ o NE (=, !=)
             } else if (exprNode.op.equalsIgnoreCase("EQ") || exprNode.op.equalsIgnoreCase("NE") ) {
+                // Controllo che i tipi delle due espressioni siano compatibili per questa operazione
                 ValueType resultType = getTypeEQNE(((ExprNode) exprNode.val_One).type, ((ExprNode) exprNode.val_Two).type);
                 if (resultType == null) {
                     System.err.println("[ERRORE SEMANTICO] tipi per op " + exprNode.op + " errati");
                     System.exit(1);
                 } else exprNode.type = resultType; 
 
-            // Se è una qualsiasi altra operazione Booleana (<, <=, >, >=)
+            // Se è una qualsiasi altra operazione a doppio argomento (<, <=, >, >=)
             }  else {
+                // Controllo che i tipi delle due espressioni siano compatibili per questa operazione
                 ValueType resultType = getType_Boolean(((ExprNode) exprNode.val_One).type, ((ExprNode) exprNode.val_Two).type);
                 if (resultType == null) {
                     System.err.println("[ERRORE SEMANTICO] tipi per op " + exprNode.op + " errati");
@@ -236,51 +263,58 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
                 } else exprNode.type = resultType;
             }
 
-            // Se è un espressione con argomento singolo
+        // Se è un'operazione a singolo argomento
         } else if (exprNode.val_One != null) {
 
-            // Se è un assegnamento di qualche costante o ID
+            // Se è una costante intera
             if (exprNode.val_One instanceof LeafIntegerConst) {
                 ((LeafIntegerConst) exprNode.val_One).accept(this);
                 exprNode.type = ((LeafIntegerConst) exprNode.val_One).type;
+            
+            // Se è una costante reale
             } else if (exprNode.val_One instanceof LeafRealConst) {
                 ((LeafRealConst) exprNode.val_One).accept(this);
                 exprNode.type = ((LeafRealConst) exprNode.val_One).type;
+
+            // Se è una costante stringa
             } else if (exprNode.val_One instanceof LeafStringConst) {
                 ((LeafStringConst) exprNode.val_One).accept(this);
                 exprNode.type = ((LeafStringConst) exprNode.val_One).type;
+
+            // Se è una costante booleana
             } else if (exprNode.val_One instanceof LeafBool) {
                 ((LeafBool) exprNode.val_One).accept(this);
                 exprNode.type = ((LeafBool) exprNode.val_One).type;
+
+            // Se è una leafID
             } else if (exprNode.val_One instanceof LeafID) {
                 ((LeafID) exprNode.val_One).accept(this);
                 exprNode.type = ((LeafID) exprNode.val_One).type;
 
-            // Se è un operazione UMINUS
+            // Se è un'operazione di meno unario
             } else if (exprNode.op.equalsIgnoreCase("UMINUS")) {
                 ((ExprNode) exprNode.val_One).accept(this);
-
-                if (debugVar) System.out.println("[DEBUG] " + exprNode.op + " " + (((ExprNode) exprNode.val_One).type));
-
+                // Controllo che il tipo dell'argomento sia compatibile per questa operazione
                 if (((ExprNode) exprNode.val_One).type == ValueType.integer || ((ExprNode) exprNode.val_One).type == ValueType.real)
                     exprNode.type = (((ExprNode) exprNode.val_One).type);
                 else {
                     System.err.println("[ERRORE SEMANTICO] tipo per op " + exprNode.op + " errato");
                     System.exit(1);
                 }
-
-            // Se è un operazione NOT
+                // DEBUG
+                if (debugVar) System.out.println("[DEBUG] " + exprNode.op + " " + (((ExprNode) exprNode.val_One).type));
+               
+            // Se è un operazione di not
             } else if (exprNode.op.equalsIgnoreCase("NOT")) {
                 ((ExprNode) exprNode.val_One).accept(this);
-
-                if (debugVar) System.out.println("[DEBUG] " + exprNode.op + " " + (((ExprNode) exprNode.val_One).type));
-
+                // Controllo che il tipo dell'argomento sia compatibile per questa operazione
                 if (((ExprNode) exprNode.val_One).type == ValueType.bool)
                     exprNode.type = (((ExprNode) exprNode.val_One).type);
                 else {
                     System.err.println("[ERRORE SEMANTICO] tipo per op " + exprNode.op + " errato");
                     System.exit(1);
                 }
+                if (debugVar) System.out.println("[DEBUG] " + exprNode.op + " " + (((ExprNode) exprNode.val_One).type));
 
             // Se è una chiamata a funzione
             } else if (exprNode.val_One instanceof CallFunNode) {
@@ -311,57 +345,68 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
     
     @Override
     public void visit(CallFunNode callFunNode) {
-        SymbolTable symbolTable = stack.peek();
+        // Trovo la definizione di funzione nella tabella Global
+        SymbolTable symbolTable = stack.firstElement();
         SymbolTableEntry functionDef = symbolTable.containsFunctionEntry(callFunNode.leafID.value);
 
-        // Controllo se il nome della funzione è nel Type Environment
+        // Controllo se la funzione è dichiarata nella tabella Global
         if (functionDef == null) {
-            System.err.println("[ERRORE SEMANTICO] funzione " + callFunNode.leafID.value + " non dichiarata nel T.E. " + stack.peek().symbolTableName);
+            System.err.println("[ERRORE SEMANTICO] funzione " + callFunNode.leafID.value + " non dichiarata");
             System.exit(1);
         }
 
-        // Controllo dei parametri della funzione
+        // Controllo che i parametri passati siano giusti in numero
         if (functionDef.params.size() != callFunNode.exprList.size()) {
             System.err.println("[ERRORE SEMANTICO] i parametri della funzione " + callFunNode.leafID.value + " non corrispondono con la dichiarazione atteso: " + functionDef.params);
             System.exit(0);
+
         } else {
+            // Controllo i singoli parametri
             for (int i = 0; i < callFunNode.exprList.size(); i++) {
                 callFunNode.exprList.get(i).accept(this);
+
+                // Controllo che il parametro sia giusto in tipo
                 if (callFunNode.exprList.get(i).type != functionDef.params.get(i)) {
                     System.err.println("[ERRORE SEMANTICO] i parametri della funzione " + callFunNode.leafID.value + " non corrispondono con la dichiarazione atteso: " + functionDef.params);
                     System.exit(1);
                 }
+
+                 // Controllo che il parametro sia giusto in modalità outpar
                 if ((callFunNode.exprList.get(i).op.equalsIgnoreCase("OUTPAR")) != functionDef.isOut.get(i)) {
                     System.err.println("[ERRORE SEMANTICO] i parametri della funzione " + callFunNode.leafID.value + " non corrispondono con la dichiarazione atteso: " + functionDef.params);
                     System.exit(1);
                 }
             }
         }
+
+        // Setto il tipo della callFun come il tipo di ritorno della funzione
         callFunNode.type = functionDef.valueType;
     }
     
     @Override
     public void visit(IfStatNode ifStatNode) {
+        // Controllo il tipo dell'espressione dell'IF, deve essere un booleano
         ifStatNode.expr.accept(this);
         if (ifStatNode.expr.type != ValueType.bool){
             System.err.println("[ERRORE SEMANTICO] espressione dello statement IF di tipo non bool");
             System.exit(1);
         }
 
-        SymbolTable symbolTable = new SymbolTable();
-        symbolTable.symbolTableName = ifStatNode.name;
+        // Creo una nuova tabella e setto il padre come il top dello stack
+        SymbolTable symbolTable = new SymbolTable(ifStatNode.name);
         symbolTable.setFatherSymTab(stack.peek());
         stack.push(symbolTable);
 
-        for (VarDeclNode varDeclNode : ifStatNode.varDeclList) {
+        // Controllo la lista di dichiarazioni di variabili
+        for (VarDeclNode varDeclNode : ifStatNode.varDeclList)
             varDeclNode.accept(this);
-        }
 
-        for (StatNode statNode : ifStatNode.statList) {
+        // Controllo la lista di statements
+        for (StatNode statNode : ifStatNode.statList)
             statNode.accept(this);
-        }
 
-        if (debugTab){
+        // DEBUG
+        if (debugTab) {
             System.out.println("Tabella " + stack.peek().symbolTableName + " | padre: " + stack.peek().fatherSymbolTable.symbolTableName + " |");
             for (String key : stack.peek().keySet()) System.out.println(key + ": " + stack.peek().get(key).toString());
             System.out.println("-----------------------------------------------------");
@@ -369,27 +414,29 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
         stack.pop();
 
+        // Controllo, se c'è, il nodo ELSE
         if (ifStatNode.elseNode != null) {
             ifStatNode.elseNode.accept(this);
         }
-
     }
     
     @Override
     public void visit(ElseNode elseNode) {
-        SymbolTable symbolTable = new SymbolTable();
-        symbolTable.symbolTableName = elseNode.name;
+
+        // Creo una nuova tabella e setto il padre come il top dello stack
+        SymbolTable symbolTable = new SymbolTable(elseNode.name);
         symbolTable.setFatherSymTab(stack.peek());
         stack.push(symbolTable);
 
-        for (VarDeclNode varDeclNode : elseNode.varDeclList) {
+        // Controllo la lista di dichiarazioni di variabili
+        for (VarDeclNode varDeclNode : elseNode.varDeclList)
             varDeclNode.accept(this);
-        }
 
-        for (StatNode statNode : elseNode.statList) {
+        // Controllo la lista di statements
+        for (StatNode statNode : elseNode.statList)
             statNode.accept(this);
-        }
 
+        // DEBUG
         if (debugTab){
             System.out.println("Tabella " + stack.peek().symbolTableName + " | padre: " + stack.peek().fatherSymbolTable.symbolTableName + " |");
             for (String key : stack.peek().keySet()) System.out.println(key + ": " + stack.peek().get(key).toString());
@@ -401,41 +448,53 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
     @Override
     public void visit(AssignStatNode assignStatNode) {
+
+        // Controllo il tipo della leafID (e se è stata dichiarata)
         assignStatNode.leafID.accept(this);
+
+        // Controllo il tipo dell'espressione
         assignStatNode.expr.accept(this);
+
+        // Controllo che i tipi siano compatibili per un assegnamento
         if (!checkAssignmentType(assignStatNode.leafID.type, assignStatNode.expr.type)) {
             System.err.println("[SEMANTIC ERROR] assegnamento sbagliato per variabile " + assignStatNode.leafID.value+ " atteso: [" + assignStatNode.leafID.type + "] assegnato: [" + assignStatNode.expr.type + "]");
             System.exit(1);
         }
+
+        // DEBUG
         if (debugVar) System.out.println("[DEBUG] " + assignStatNode.leafID.value + ":" + assignStatNode.leafID.type + " assegno " + assignStatNode.expr.type);
     }
     
     @Override
     public void visit(WhileStatNode whileStatNode) {
+
+        // Controllo il tipo dell'espressione del WHILE, deve essere un booleano
         whileStatNode.expr.accept(this);
         if (whileStatNode.expr.type != ValueType.bool){
             System.err.println("[ERRORE SEMANTICO] espressione dello statement WHILE di tipo non bool");
             System.exit(1);
         }
 
-        SymbolTable symbolTable = new SymbolTable();
-        symbolTable.symbolTableName = whileStatNode.name;
+        // Creo una nuova tabella e setto il padre come il top dello stack
+        SymbolTable symbolTable = new SymbolTable(whileStatNode.name);
         symbolTable.setFatherSymTab(stack.peek());
         stack.push(symbolTable);
 
-        for (VarDeclNode varDeclNode : whileStatNode.varDeclList) {
+        // Controllo la lista di dichiarazioni di variabili
+        for (VarDeclNode varDeclNode : whileStatNode.varDeclList)
             varDeclNode.accept(this);
-        }
 
-        for (StatNode statNode : whileStatNode.statList) {
+        // Controllo la lista di statements
+        for (StatNode statNode : whileStatNode.statList)
             statNode.accept(this);
-        }
 
+        // DEBUG
         if (debugTab){
             System.out.println("Tabella " + stack.peek().symbolTableName + " | padre: " + stack.peek().fatherSymbolTable.symbolTableName + " |");
             for (String key : stack.peek().keySet()) System.out.println(key + ": " + stack.peek().get(key).toString());
             System.out.println("-----------------------------------------------------");
         }
+
         stack.pop();
     }
 
@@ -446,27 +505,35 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
     @Override
     public void visit(ReadStatNode readStatNode) {
+
+        // Controllo il tipo dell'espressione della READ, se c'è
         if (readStatNode.expr != null) {
             readStatNode.expr.accept(this);
+            // L'espressione deve essere di tipo string
             if (readStatNode.expr.type != ValueType.string){
                 System.err.println("[SEMANTIC ERROR] tipo expr op READ errato atteso: [string] assegnato: [" + readStatNode.expr.type + "]");
             }
         }
+
+        // Controllo che che le leafID siano state dichiarate
         for (LeafID leafID : readStatNode.IdList) leafID.accept(this);
     }
 
     @Override
     public void visit(ReturnNode returnNode) {
+
+        // Controllo il tipo dell'espressione del return
         returnNode.expr.accept(this);
+
+        // Controllo se esiste una funzione con il nome della tabella corrente
         SymbolTable symbolTable = stack.peek();
         SymbolTableEntry functionDef = symbolTable.containsFunctionEntry(symbolTable.symbolTableName);
-        while (functionDef == null) {
-            if (symbolTable.hasFatherSymTab()){
-                symbolTable = symbolTable.fatherSymbolTable;
-                functionDef = symbolTable.containsFunctionEntry(symbolTable.symbolTableName);
-            }
-            else System.exit(1);
-        }
+
+        // Risalgo fino alla tabella Global
+        while (functionDef == null)
+            functionDef = symbolTable.containsFunctionEntry(symbolTable.fatherSymbolTable.symbolTableName);
+
+        // Se il tipo di ritorno della funzione non è compatibile con l'espressione del return
         if (functionDef.valueType != returnNode.expr.type) {
             System.err.println("[ERRORE SEMANTICO] valore di ritorno della funzione " + symbolTable.symbolTableName + " errato atteso: [" + functionDef.valueType + "] assegnato: [" + returnNode.expr.type + "]");
             System.exit(1);
@@ -491,6 +558,8 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
     public void visit(LeafID leafID) {
         SymbolTable symbolTable = stack.peek();
         SymbolTableEntry symbolTableEntry = symbolTable.containsEntry(leafID.value);
+
+        // controllo se la variabile è stata dichiarata e ne salvo il tipo
         if (symbolTableEntry != null) leafID.type = symbolTableEntry.valueType;
         else {
             System.err.println("[ERRORE SEMANTICO] variabile " + leafID.value + " non dichiarata nel T.E. " + stack.peek().symbolTableName);
