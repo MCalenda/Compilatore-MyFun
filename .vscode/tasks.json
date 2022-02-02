@@ -22,7 +22,9 @@
       "presentation": {
         "reveal": "always"
       },
-      "problemMatcher": ["$eslint-compact"],
+      "problemMatcher": [
+        "$eslint-compact"
+      ],
       "group": {
         "kind": "build",
         "isDefault": true
@@ -35,7 +37,24 @@
       "presentation": {
         "reveal": "always"
       },
-      "problemMatcher": ["$eslint-compact"],
+      "problemMatcher": [
+        "$eslint-compact"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "type": "shell",
+      "label": "C Compile and Run",
+      "command": "gcc -g ${fileDirname}\\${fileBasename} -o src\\test_files\\Compiled\\ExeFiles\\${fileBasenameNoExtension}.exe ; src\\test_files\\Compiled\\ExeFiles\\${fileBasenameNoExtension}.exe",
+      "presentation": {
+        "reveal": "always"
+      },
+      "problemMatcher": [
+        "$eslint-compact"
+      ],
       "group": {
         "kind": "build",
         "isDefault": true
