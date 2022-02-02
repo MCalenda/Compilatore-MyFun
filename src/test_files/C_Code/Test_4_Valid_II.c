@@ -39,7 +39,16 @@ void do_sum() {
     scanf("%f", op2);
     printf("%s", "");
     printf("\r\n");
-    printf("%s", "La somma tra " op1 " e " op2 " vale " op1 + op2);
+    char *temp_0 = malloc(512 * sizeof(char));
+    strcpy(temp_0, "");
+    strcat(temp_0, "La somma tra ");
+    strcat(temp_0, op1);
+    strcat(temp_0, " e ");
+    strcat(temp_0, op2);
+    strcat(temp_0, " vale ");
+    strcat(temp_0, op1);
+    +strcat(temp_0, op2);
+    printf("%s", temp_0);
     printf("\r\n");
 }
 void do_mul() {
@@ -53,7 +62,16 @@ void do_mul() {
     scanf("%f", op2);
     printf("%s", "");
     printf("\r\n");
-    printf("%s", "La moltiplicazione tra " op1 " e " op2 " vale " op1 * op2);
+    char *temp_1 = malloc(512 * sizeof(char));
+    strcpy(temp_1, "");
+    strcat(temp_1, "La moltiplicazione tra ");
+    strcat(temp_1, op1);
+    strcat(temp_1, " e ");
+    strcat(temp_1, op2);
+    strcat(temp_1, " vale ");
+    strcat(temp_1, op1);
+    *strcat(temp_1, op2);
+    printf("%s", temp_1);
     printf("\r\n");
 }
 void do_div_int() {
@@ -67,7 +85,16 @@ void do_div_int() {
     scanf("%d", op2);
     printf("%s", "");
     printf("\r\n");
-    printf("%s", "La divisione intera tra " op1 " e " op2 " vale " op1 / op2);
+    char *temp_2 = malloc(512 * sizeof(char));
+    strcpy(temp_2, "");
+    strcat(temp_2, "La divisione intera tra ");
+    strcat(temp_2, op1);
+    strcat(temp_2, " e ");
+    strcat(temp_2, op2);
+    strcat(temp_2, " vale ");
+    strcat(temp_2, op1);
+    / strcat(temp_2, op2);
+    printf("%s", temp_2);
     printf("\r\n");
 }
 void do_pow() {
@@ -81,7 +108,14 @@ void do_pow() {
     scanf("%f", op2);
     printf("%s", "");
     printf("\r\n");
-    printf("%s", "La potenza di " op1 " elevato a " op2 " vale " pow(op1, op2));
+    char *temp_3 = malloc(512 * sizeof(char));
+    strcpy(temp_3, "");
+    strcat(temp_3, "La potenza di ");
+    strcat(temp_3, op1);
+    strcat(temp_3, " elevato a ");
+    strcat(temp_3, op2);
+    strcat(temp_3, " vale ");
+    pow(strcat(temp_3, op1);, strcat(temp_3, op2);) printf("%s", temp_3);
     printf("\r\n");
 }
 int recursive_fib(int n) {
@@ -119,19 +153,22 @@ int iterative_fib(int n) {
 void do_fib(bool recursive) {
     int n;
     char *message = malloc(512 * sizeof(char));
+    strcpy(message, "");
     printf("%s", "\n(5) FIBONACCI");
     printf("\r\n");
     printf("\nInserisci n: ");
     scanf("%d", n);
     printf("%s", "");
     printf("\r\n");
-    message = "Il numero di Fibonacci in posizione " n " vale ";
+    strcat(message, "Il numero di Fibonacci in posizione ");
+    strcat(message, n);
+    strcat(message, " vale ");
     if (recursive) {
-        message = messagerecursive_fib(n);
-        ;
+        strcat(message, message);
+        strcat(message, recursive_fib(strcat(message, n);););
     } else {
-        message = messageiterative_fib(n);
-        ;
+        strcat(message, message);
+        strcat(message, iterative_fib(strcat(message, n);););
     }
     printf("%s", message);
     printf("\r\n");
@@ -163,6 +200,7 @@ void do_operation(int choose) {
 }
 void print_continue(bool *conti) {
     char *in = malloc(512 * sizeof(char));
+    strcpy(in, "");
     printf("Vuoi continuare? (s/n) --> ");
     scanf("%s", in);
     if (strcmp(in, "s") == 1) {
@@ -177,10 +215,8 @@ int main() {
     int choose = 0;
     bool conti = true;
     while (conti) {
-        choose = print_menu();
-        if (choose == 0) {
-            conti = false;
-        } else {
+        choose = print_menu() if (choose == 0) { conti = false; }
+        else {
             do_operation(choose);
             print_continue(&conti);
         }

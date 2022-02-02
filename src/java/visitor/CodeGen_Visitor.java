@@ -3,19 +3,29 @@ package visitor;
 import java.io.*;
 import java.util.ArrayList;
 
+import org.apache.commons.lang3.ObjectUtils.Null;
+
 import symbol_table.ValueType;
 import tree.leaves.*;
 import tree.nodes.*;
 
 public class CodeGen_Visitor implements CodeGen_Int_Visitor {
-
+    // Attributi
     private PrintWriter wr;
+
     private String lastID = null;
     private Boolean isConcat = false;
-    private ArrayList<String> isOutParam = null;
+    private Boolean isInFunCall = false;
 
+    private ArrayList<String> isOutParam = null;
+    private ArrayList<String> tempList = null;
+    private ArrayList<String> concatParam = null;
+
+    // Costruttore
     public CodeGen_Visitor(String name) throws IOException {
         this.isOutParam = new ArrayList<String>();
+        this.tempList = new ArrayList<String>();
+        this.concatParam = new ArrayList<String>();
 
         File file = new File("src/test_files/C_Code/" + name.substring(0, name.length() - 6).split("/")[2] + ".c");
         if (!file.exists()) {
@@ -92,7 +102,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
     @Override
     public void visit(FunNode funNode) {
         if (funNode.type != null) {
-            wr.print(convert_type(funNode.type));
+            wr.print(convert_type(funNode.type) + " ");
             if (funNode.type == ValueType.string) {
                 wr.print(" *");
             }
@@ -138,8 +148,12 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
     public void visit(ParamDecNode paramDecNode) {
         wr.print(convert_type(paramDecNode.type) + " ");
 
-        if (paramDecNode.out || paramDecNode.type == ValueType.string) {
+        if (paramDecNode.out && paramDecNode.type != ValueType.string) {
             this.isOutParam.add(paramDecNode.leafID.value);
+        } else {
+            if (paramDecNode.type == ValueType.string) {
+                wr.print("*");
+            }
         }
 
         paramDecNode.leafID.accept(this);
@@ -147,18 +161,63 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
 
     @Override
     public void visit(StatNode statNode) {
-        if (statNode.ifStatNode != null)
+        // Nel caso in cui sia un if
+        if (statNode.ifStatNode != null) {
+            if (statNode.ifStatNode.expr.op.equalsIgnoreCase("CALLFUN")) {
+                this.isInFunCall = true;
+                this.concact_for_callfun(((CallFunNode) statNode.ifStatNode.expr.val_One).exprList);
+            }
             statNode.ifStatNode.accept(this);
-        if (statNode.whileStatNode != null)
+            this.isInFunCall = false;
+        }
+
+        // Nel caso in cui sia un while
+        if (statNode.whileStatNode != null) {
+            if (statNode.whileStatNode.expr.op.equalsIgnoreCase("CALLFUN")) {
+                this.isInFunCall = true;
+                this.concact_for_callfun(((CallFunNode) statNode.whileStatNode.expr.val_One).exprList);
+            }
             statNode.whileStatNode.accept(this);
-        if (statNode.readStatNode != null)
+            this.isInFunCall = false;
+        }
+
+        // Nel caso in cui sia una read
+        if (statNode.readStatNode != null) {
+            if (statNode.readStatNode.expr.op.equalsIgnoreCase("CALLFUN")) {
+                this.isInFunCall = true;
+                this.concact_for_callfun(((CallFunNode) statNode.readStatNode.expr.val_One).exprList);
+            }
             statNode.readStatNode.accept(this);
-        if (statNode.writeStatNode != null)
+            this.isInFunCall = false;
+        }
+
+        // Nel caso in cui sia una chiamata a una stampa
+        if (statNode.writeStatNode != null) {
+            if (statNode.writeStatNode.expr.op.equalsIgnoreCase("CALLFUN")) {
+                this.isInFunCall = true;
+                this.concact_for_callfun(((CallFunNode) statNode.writeStatNode.expr.val_One).exprList);
+            }
             statNode.writeStatNode.accept(this);
-        if (statNode.assignStatNode != null)
+            this.isInFunCall = false;
+        }
+
+        // Nel caso in cui sia un assegnamento
+        if (statNode.assignStatNode != null) {
+            if (statNode.assignStatNode.expr.op.equalsIgnoreCase("CALLFUN")) {
+                this.isInFunCall = true;
+                this.concact_for_callfun(((CallFunNode) statNode.assignStatNode.expr.val_One).exprList);
+            }
             statNode.assignStatNode.accept(this);
-        if (statNode.callFunNode != null)
+            this.isInFunCall = false;
+        }
+
+        // Nel caso in cui sia una chiamata di funzione
+        if (statNode.callFunNode != null) {
+            this.concact_for_callfun(statNode.callFunNode.exprList);
             statNode.callFunNode.accept(this);
+        }
+
+        // Nel caso in cui sia un statement di return
         if (statNode.returnNode != null)
             statNode.returnNode.accept(this);
     }
@@ -235,6 +294,20 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
 
     @Override
     public void visit(WriteStatNode writeStatNode) {
+        if (writeStatNode.expr.op.equalsIgnoreCase("STR_CONCAT")) {
+            wr.print("char *");
+            wr.print(this.create_temp());
+            wr.print("= malloc(512 * sizeof(char));");
+
+            wr.print("strcpy(");
+            wr.print(this.tempList.get(this.get_current_temp()));
+            wr.print(", \"\");");
+
+            this.lastID = this.tempList.get(this.get_current_temp());
+            this.isConcat = true;
+            writeStatNode.expr.accept(this);
+            this.isConcat = false;
+        }
 
         // Dal tipo dell'espressione carpisco il tipo di valore da stampare
         switch (writeStatNode.expr.type) {
@@ -249,8 +322,12 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
             break;
         }
 
-        // Accetto l'espressione che viene stampata
-        writeStatNode.expr.accept(this);
+        if (!writeStatNode.expr.op.equalsIgnoreCase("STR_CONCAT")) {
+            // Accetto l'espressione che viene stampata
+            writeStatNode.expr.accept(this);
+        } else {
+            wr.print(this.lastID);
+        }
         wr.print("); ");
 
         // Aggiungo eventuali extra post stampa
@@ -275,16 +352,24 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
 
     @Override
     public void visit(AssignStatNode assignStatNode) {
-        assignStatNode.leafID.accept(this);
-        wr.print(" = ");
-        assignStatNode.expr.accept(this);
-        if (!assignStatNode.expr.op.equalsIgnoreCase("CALLFUN")) {
-            wr.print(";");
+        if (!assignStatNode.expr.op.equalsIgnoreCase("STR_CONCAT")) {
+            assignStatNode.leafID.accept(this);
+            wr.print(" = ");
+            assignStatNode.expr.accept(this);
+            if (!assignStatNode.expr.op.equalsIgnoreCase("CALLFUN")) {
+                wr.print(";");
+            }
+        } else {
+            this.lastID = assignStatNode.leafID.value;
+            this.isConcat = true;
+            assignStatNode.expr.accept(this);
+            this.isConcat = false;
         }
     }
 
     @Override
     public void visit(CallFunNode callFunNode) {
+        // La stai chiamando in una concatenenazione
         if (this.isConcat) {
             wr.print("strcat(" + this.lastID + ", ");
             this.isConcat = false;
@@ -297,17 +382,28 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
         wr.print("(");
         if (callFunNode.exprList.size() != 0) {
             ExprNode lastExprNode = callFunNode.exprList.get(callFunNode.exprList.size() - 1);
+            int concatParamId = 0;
             for (ExprNode exprNode : callFunNode.exprList) {
-                if (exprNode.op.equalsIgnoreCase("OUTPAR") && exprNode.type != ValueType.string)
-                    wr.print("&");
-                exprNode.accept(this);
+                if (exprNode.op.equalsIgnoreCase("STR_CONCAT")) {
+                    wr.print(this.concatParam.get(concatParamId));
+                    concatParamId++;
+                } else {
+                    if (exprNode.op.equalsIgnoreCase("OUTPAR") && exprNode.type != ValueType.string)
+                        wr.print("&");
+                    exprNode.accept(this);
+                }
                 if (lastExprNode != exprNode)
                     wr.print(", ");
             }
         }
-        
-        wr.print(")");
-    
+
+        // BUG DA RISOLVERE
+        if (this.isInFunCall) {
+            wr.print(")");
+        } else {
+            wr.print(");");
+        }
+
         if (this.isConcat) {
             wr.print("); ");
         }
@@ -315,9 +411,28 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
 
     @Override
     public void visit(ReturnNode returnNode) {
-        wr.print("return ");
-        returnNode.expr.accept(this);
-        wr.print("; ");
+        if (!returnNode.expr.op.equalsIgnoreCase("STR_CONCAT")) {
+            wr.print("return ");
+            returnNode.expr.accept(this);
+            wr.print("; ");
+        } else {
+            wr.print("char *");
+            wr.print(this.create_temp());
+            wr.print("= malloc(512 * sizeof(char));");
+
+            wr.print("strcpy(");
+            wr.print(this.tempList.get(this.get_current_temp()));
+            wr.print(", \"\");");
+
+            this.lastID = this.tempList.get(this.get_current_temp());
+            this.isConcat = true;
+            returnNode.expr.accept(this);
+            this.isConcat = false;
+
+            wr.print("return ");
+            wr.print(this.tempList.get(this.get_current_temp()));
+            wr.print("; ");
+        }
     }
 
     @Override
@@ -377,20 +492,6 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
             }
             wr.print("; ");
         }
-    }
-
-    private String convert_type(ValueType type) {
-        switch (type) {
-        case integer:
-            return "int";
-        case string:
-            return "char";
-        case real:
-            return "double";
-        case bool:
-            return "bool";
-        }
-        return "null";
     }
 
     @Override
@@ -620,5 +721,48 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
             statNode.accept(this);
         }
         wr.print("} ");
+    }
+
+    private String convert_type(ValueType type) {
+        switch (type) {
+        case integer:
+            return "int";
+        case string:
+            return "char";
+        case real:
+            return "double";
+        case bool:
+            return "bool";
+        }
+        return "null";
+    }
+
+    private String create_temp() {
+        this.tempList.add("temp_" + this.tempList.size());
+        return this.tempList.get(this.tempList.size() - 1);
+    }
+
+    private Integer get_current_temp() {
+        return this.tempList.size() - 1;
+    }
+
+    private void concact_for_callfun(ArrayList<ExprNode> exprList) {
+        for (ExprNode exprNode : exprList) {
+            if (exprNode.op.equalsIgnoreCase("STR_CONCAT")) {
+                wr.print("char *");
+                wr.print(this.create_temp());
+                wr.print("= malloc(512 * sizeof(char));");
+
+                wr.print("strcpy(");
+                wr.print(this.tempList.get(this.get_current_temp()));
+                wr.print(", \"\");");
+
+                this.concatParam.add(this.tempList.get(this.get_current_temp()));
+                this.lastID = this.tempList.get(this.get_current_temp());
+                this.isConcat = true;
+                exprNode.accept(this);
+                this.isConcat = false;
+            }
+        }
     }
 }

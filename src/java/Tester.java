@@ -35,7 +35,7 @@ class Tester {
         System.out.print("Effettuare una scelta: ");
         try (Scanner scanner = new Scanner(System.in)) {
             // int scelta = scanner.nextInt();
-            int scelta = 2;
+            int scelta = 4;
 
             System.out.println();
 
