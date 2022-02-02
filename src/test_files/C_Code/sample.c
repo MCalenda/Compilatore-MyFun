@@ -2,15 +2,20 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define space_conc(str1, str2) #str1 #str2
+char *int_to_string(int x) {
+    char *str = malloc(512 * sizeof(char));
+    sprintf(str, "%d", x);
+    return str;
+}
 
-char *str_concat(char *a, char *b) {
-    strcat(a, b);
-    return a;
+char *double_to_string(double x) {
+    char *str = malloc(512 * sizeof(char));
+    sprintf(str, "%f", x);
+    return str;
 }
 
 int main() {
-    char *test = str_concat("ciao", "ciao");
-    printf("size: %s\n", test);
+    printf("size: %s \n", int_to_string(45));
+    printf("size: %s \n", double_to_string(45.56));
     return 0;
 }

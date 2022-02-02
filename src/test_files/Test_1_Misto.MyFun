@@ -1,3 +1,9 @@
+
+
 main
-    ?. 'ciaone' & ' a tutti';
+    string str;
+    integer x;
+    str := str & sommac(5,4);
+    x := sommac(5,4);
+    ?. str;
 end main;

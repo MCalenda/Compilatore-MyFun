@@ -3,8 +3,6 @@ package visitor;
 import java.io.*;
 import java.util.ArrayList;
 
-import org.apache.commons.lang3.ObjectUtils.Null;
-
 import symbol_table.ValueType;
 import tree.leaves.*;
 import tree.nodes.*;
@@ -14,6 +12,8 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
     private PrintWriter wr;
 
     private String lastID = null;
+    private int concatParamId = 0;
+
     private Boolean isConcat = false;
     private Boolean isInFunCall = false;
 
@@ -46,15 +46,28 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
         wr.println("#include <stdlib.h>");
         wr.println("#include <stdbool.h>");
         wr.println("#include <string.h>");
+        wr.println("#include <math.h>");
 
-        if (programNode.varDecList != null) {
+        // Funzioni per la conversione di tipo
+        wr.println("\n// Funzioni di conversione");
+        wr.print("char *int_to_string(int x) { ");
+        wr.print("char *str = malloc(512 * sizeof(char)); ");
+        wr.print("sprintf(str, \"%d\", x); ");
+        wr.print("return str; } ");
+
+        wr.print("char *double_to_string(double x) { ");
+        wr.print("char *str = malloc(512 * sizeof(char)); ");
+        wr.print("sprintf(str, \"%f\", x); ");
+        wr.print("return str; } ");
+
+        if (programNode.varDecList.size() != 0) {
             wr.println("\n// Dichiarazione delle variabili locali");
             for (VarDeclNode varDeclNode : programNode.varDecList) {
                 varDeclNode.accept(this);
             }
         }
 
-        if (programNode.funList != null) {
+        if (programNode.funList.size() != 0) {
             wr.println("\n\n// Dichiarazione delle funzioni");
             for (FunNode funNode : programNode.funList) {
                 funNode.accept(this);
@@ -86,17 +99,25 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
     public void visit(IdInitObblNode idInitObblNode) {
         wr.print(convert_type(idInitObblNode.type) + " ");
 
-        idInitObblNode.leafID.accept(this);
-
         if (idInitObblNode.type == ValueType.string) {
-            wr.print("[512]");
+            wr.print("*");
+            idInitObblNode.leafID.accept(this);
+            wr.print("= malloc(512 * sizeof(char));");
+        } else {
+            idInitObblNode.leafID.accept(this);
+            wr.print(" = ");
         }
 
-        wr.print(" = ");
-
-        idInitObblNode.value.accept(this);
-
-        wr.print(";");
+        if (idInitObblNode.type == ValueType.string) {
+            wr.print("strcpy(");
+            idInitObblNode.leafID.accept(this);
+            wr.print(", ");
+            idInitObblNode.value.accept(this);
+            wr.print(");");
+        } else {
+            idInitObblNode.value.accept(this);
+            wr.print(";");
+        }
     }
 
     @Override
@@ -183,9 +204,12 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
 
         // Nel caso in cui sia una read
         if (statNode.readStatNode != null) {
-            if (statNode.readStatNode.expr.op.equalsIgnoreCase("CALLFUN")) {
-                this.isInFunCall = true;
-                this.concact_for_callfun(((CallFunNode) statNode.readStatNode.expr.val_One).exprList);
+            // Nel caso in cui sia una read con messaggio
+            if (statNode.readStatNode.expr != null) {
+                if (statNode.readStatNode.expr.op.equalsIgnoreCase("CALLFUN")) {
+                    this.isInFunCall = true;
+                    this.concact_for_callfun(((CallFunNode) statNode.readStatNode.expr.val_One).exprList);
+                }
             }
             statNode.readStatNode.accept(this);
             this.isInFunCall = false;
@@ -277,13 +301,13 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
             // Dal tipo dell'espressione carpisco il tipo di valore da stampare
             switch (leafID.type) {
             case integer, bool:
-                wr.print("scanf(\"%d\", ");
+                wr.print("scanf(\"%d\", &");
                 break;
             case string:
                 wr.print("scanf(\"%s\", ");
                 break;
             case real:
-                wr.print("scanf(\"%f\", ");
+                wr.print("scanf(\"%f\", &");
                 break;
             }
             leafID.accept(this);
@@ -356,9 +380,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
             assignStatNode.leafID.accept(this);
             wr.print(" = ");
             assignStatNode.expr.accept(this);
-            if (!assignStatNode.expr.op.equalsIgnoreCase("CALLFUN")) {
-                wr.print(";");
-            }
+            wr.print(";");
         } else {
             this.lastID = assignStatNode.leafID.value;
             this.isConcat = true;
@@ -369,12 +391,28 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
 
     @Override
     public void visit(CallFunNode callFunNode) {
+        boolean itsWasConcat = false;
+        boolean conversion = false;
+
         // La stai chiamando in una concatenenazione
         if (this.isConcat) {
             wr.print("strcat(" + this.lastID + ", ");
             this.isConcat = false;
-            callFunNode.leafID.accept(this);
-            this.isConcat = true;
+            itsWasConcat = true;
+            switch (callFunNode.type) {
+            case integer, bool:
+                conversion = true;
+                wr.print("int_to_string(");
+                callFunNode.leafID.accept(this);
+                break;
+            case real:
+                conversion = true;
+                wr.print("double_to_string(");
+                callFunNode.leafID.accept(this);
+                break;
+            case string:
+                callFunNode.leafID.accept(this);
+            }
         } else {
             callFunNode.leafID.accept(this);
         }
@@ -382,19 +420,29 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
         wr.print("(");
         if (callFunNode.exprList.size() != 0) {
             ExprNode lastExprNode = callFunNode.exprList.get(callFunNode.exprList.size() - 1);
-            int concatParamId = 0;
             for (ExprNode exprNode : callFunNode.exprList) {
                 if (exprNode.op.equalsIgnoreCase("STR_CONCAT")) {
-                    wr.print(this.concatParam.get(concatParamId));
-                    concatParamId++;
+                    wr.print(this.concatParam.get(this.concatParamId));
+                    this.concatParamId++;
                 } else {
                     if (exprNode.op.equalsIgnoreCase("OUTPAR") && exprNode.type != ValueType.string)
                         wr.print("&");
+
                     exprNode.accept(this);
                 }
                 if (lastExprNode != exprNode)
                     wr.print(", ");
             }
+        }
+
+        if (itsWasConcat) {
+            wr.print(") ");
+            itsWasConcat = false;
+        }
+
+        if (conversion) {
+            wr.print(") ");
+            conversion = false;
         }
 
         // BUG DA RISOLVERE
@@ -403,18 +451,16 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
         } else {
             wr.print(");");
         }
-
-        if (this.isConcat) {
-            wr.print("); ");
-        }
     }
 
     @Override
     public void visit(ReturnNode returnNode) {
         if (!returnNode.expr.op.equalsIgnoreCase("STR_CONCAT")) {
             wr.print("return ");
+            this.isInFunCall = true;
             returnNode.expr.accept(this);
             wr.print("; ");
+            this.isInFunCall = false;
         } else {
             wr.print("char *");
             wr.print(this.create_temp());
@@ -489,8 +535,13 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
                 this.lastID = idInitNode.leafID.value;
 
                 idInitNode.exprNode.accept(this);
+
+                if (!idInitNode.exprNode.op.equalsIgnoreCase("CALLFUN")) {
+                    wr.print("; ");
+                }
+            } else {
+                wr.print("; ");
             }
-            wr.print("; ");
         }
     }
 
@@ -502,7 +553,21 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
 
         if (this.isConcat) {
             wr.print("strcat(" + this.lastID + ", ");
-            wr.print(leafID.value);
+            switch (leafID.type) {
+            case integer, bool:
+                wr.print("int_to_string(");
+                wr.print(leafID.value);
+                wr.print(")");
+                break;
+            case real:
+                wr.print("double_to_string(");
+                wr.print(leafID.value);
+                wr.print(")");
+                break;
+            case string:
+                wr.print(leafID.value);
+                break;
+            }
             wr.print("); ");
         } else {
             wr.print(leafID.value);
@@ -514,54 +579,83 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
         if (exprNode.val_One != null && exprNode.val_Two != null) {
             switch (exprNode.op) {
             case "PLUS":
-                ((ExprNode) exprNode.val_One).accept(this);
-                wr.print(" + ");
-                ((ExprNode) exprNode.val_Two).accept(this);
+                if (!this.isConcat) {
+                    ((ExprNode) exprNode.val_One).accept(this);
+                    wr.print(" + ");
+                    ((ExprNode) exprNode.val_Two).accept(this);
+                } else {
+                    this.concact_convertion(exprNode, "+");
+                }
                 break;
-
             case "MINUS":
-                ((ExprNode) exprNode.val_One).accept(this);
-                wr.print(" - ");
-                ((ExprNode) exprNode.val_Two).accept(this);
+                if (!this.isConcat) {
+                    ((ExprNode) exprNode.val_One).accept(this);
+                    wr.print(" - ");
+                    ((ExprNode) exprNode.val_Two).accept(this);
+                } else {
+                    this.concact_convertion(exprNode, "-");
+                }
                 break;
-
             case "TIMES":
-                ((ExprNode) exprNode.val_One).accept(this);
-                wr.print(" * ");
-                ((ExprNode) exprNode.val_Two).accept(this);
+                if (!this.isConcat) {
+                    ((ExprNode) exprNode.val_One).accept(this);
+                    wr.print(" * ");
+                    ((ExprNode) exprNode.val_Two).accept(this);
+                } else {
+                    this.concact_convertion(exprNode, "*");
+                }
                 break;
-
             case "DIV":
-                ((ExprNode) exprNode.val_One).accept(this);
-                wr.print(" / ");
-                ((ExprNode) exprNode.val_Two).accept(this);
+                if (!this.isConcat) {
+                    ((ExprNode) exprNode.val_One).accept(this);
+                    wr.print(" / ");
+                    ((ExprNode) exprNode.val_Two).accept(this);
+                } else {
+                    this.concact_convertion(exprNode, "/");
+                }
                 break;
-
             case "DIVINT":
-                ((ExprNode) exprNode.val_One).accept(this);
-                wr.print(" / ");
-                ((ExprNode) exprNode.val_Two).accept(this);
+                if (!this.isConcat) {
+                    ((ExprNode) exprNode.val_One).accept(this);
+                    wr.print(" / ");
+                    ((ExprNode) exprNode.val_Two).accept(this);
+                } else {
+                    this.concact_convertion(exprNode, "/");
+                }
                 break;
-
             case "AND":
                 ((ExprNode) exprNode.val_One).accept(this);
                 wr.print(" && ");
                 ((ExprNode) exprNode.val_Two).accept(this);
                 break;
-
             case "POW":
-                wr.print(" pow(");
-                ((ExprNode) exprNode.val_One).accept(this);
-                wr.print(", ");
-                ((ExprNode) exprNode.val_Two).accept(this);
-                wr.print(")");
-                break;
+                if (this.isConcat) {
+                    wr.print("strcat(");
+                    wr.print(this.lastID);
+                    wr.print(", ");
 
+                    this.isConcat = false;
+                    wr.print("double_to_string(");
+                    wr.print(" pow(");
+                    ((ExprNode) exprNode.val_One).accept(this);
+                    wr.print(", ");
+                    ((ExprNode) exprNode.val_Two).accept(this);
+                    wr.print(")");
+                    this.isConcat = true;
+
+                    wr.print("));");
+                } else {
+                    wr.print(" pow(");
+                    ((ExprNode) exprNode.val_One).accept(this);
+                    wr.print(", ");
+                    ((ExprNode) exprNode.val_Two).accept(this);
+                    wr.print(")");
+                }
+                break;
             case "STR_CONCAT":
                 ((ExprNode) exprNode.val_One).accept(this);
                 ((ExprNode) exprNode.val_Two).accept(this);
                 break;
-
             case "OR":
                 ((ExprNode) exprNode.val_One).accept(this);
                 wr.print(" || ");
@@ -598,19 +692,19 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
                     ((ExprNode) exprNode.val_One).accept(this);
                     wr.print(", ");
                     ((ExprNode) exprNode.val_Two).accept(this);
-                    wr.print(") == 1");
+                    wr.print(") == 0");
                 } else if (((ExprNode) exprNode.val_Two).type == ValueType.string) {
                     wr.print("strcmp(");
                     ((ExprNode) exprNode.val_One).accept(this);
                     wr.print(", ");
                     ((ExprNode) exprNode.val_Two).accept(this);
-                    wr.print(") == 1");
+                    wr.print(") == 0");
                 } else if (exprNode.val_One instanceof LeafStringConst || exprNode.val_Two instanceof LeafStringConst) {
                     wr.print("strcmp(");
                     ((ExprNode) exprNode.val_One).accept(this);
                     wr.print(", ");
                     ((ExprNode) exprNode.val_Two).accept(this);
-                    wr.print(") == 1");
+                    wr.print(") == 0");
                 } else {
                     ((ExprNode) exprNode.val_One).accept(this);
                     wr.print(" == ");
@@ -730,7 +824,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
         case string:
             return "char";
         case real:
-            return "double";
+            return "float";
         case bool:
             return "bool";
         }
@@ -738,7 +832,9 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
     }
 
     private String create_temp() {
+        this.lastID = "temp_" + this.tempList.size();
         this.tempList.add("temp_" + this.tempList.size());
+
         return this.tempList.get(this.tempList.size() - 1);
     }
 
@@ -764,5 +860,34 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
                 this.isConcat = false;
             }
         }
+    }
+
+    private void concact_convertion(ExprNode expr, String op) {
+        wr.print("strcat(");
+        wr.print(this.lastID);
+        wr.print(", ");
+        switch (expr.type) {
+        case integer:
+            wr.print("int_to_string(");
+            this.isConcat = false;
+            ((ExprNode) expr.val_One).accept(this);
+            wr.print(" " + op + " ");
+            ((ExprNode) expr.val_Two).accept(this);
+            this.isConcat = true;
+            wr.print(")");
+            break;
+        case real:
+            wr.print("double_to_string(");
+            this.isConcat = false;
+            ((ExprNode) expr.val_One).accept(this);
+            wr.print(" " + op + " ");
+            ((ExprNode) expr.val_Two).accept(this);
+            this.isConcat = true;
+            wr.print(")");
+            break;
+        default:
+            break;
+        }
+        wr.print(");");
     }
 }

@@ -1,9 +1,20 @@
+#include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-// Dichiarazione delle variabili locali
+// Funzioni di conversione
+char *int_to_string(int x) {
+    char *str = malloc(512 * sizeof(char));
+    sprintf(str, "%d", x);
+    return str;
+}
+char *double_to_string(double x) {
+    char *str = malloc(512 * sizeof(char));
+    sprintf(str, "%f", x);
+    return str;
+}
 
 // Dichiarazione delle funzioni
 int print_menu() {
@@ -25,52 +36,50 @@ int print_menu() {
     printf("%s", "\t(0) Esci");
     printf("\r\n");
     printf("--> ");
-    scanf("%d", choose);
+    scanf("%d", &choose);
     return choose;
 }
 void do_sum() {
-    double op1;
-    double op2;
+    float op1;
+    float op2;
     printf("%s", "\n(1) SOMMA\n");
     printf("\r\n");
     printf("Inserisci il primo operando: ");
-    scanf("%f", op1);
+    scanf("%f", &op1);
     printf("Inserisci il secondo operando: ");
-    scanf("%f", op2);
+    scanf("%f", &op2);
     printf("%s", "");
     printf("\r\n");
     char *temp_0 = malloc(512 * sizeof(char));
     strcpy(temp_0, "");
     strcat(temp_0, "La somma tra ");
-    strcat(temp_0, op1);
+    strcat(temp_0, double_to_string(op1));
     strcat(temp_0, " e ");
-    strcat(temp_0, op2);
+    strcat(temp_0, double_to_string(op2));
     strcat(temp_0, " vale ");
-    strcat(temp_0, op1);
-    +strcat(temp_0, op2);
+    strcat(temp_0, double_to_string(op1 + op2));
     printf("%s", temp_0);
     printf("\r\n");
 }
 void do_mul() {
-    double op1;
-    double op2;
+    float op1;
+    float op2;
     printf("%s", "\n(2) MOLTIPLICAZIONE");
     printf("\r\n");
     printf("\nInserisci il primo operando: ");
-    scanf("%f", op1);
+    scanf("%f", &op1);
     printf("Inserisci il secondo operando: ");
-    scanf("%f", op2);
+    scanf("%f", &op2);
     printf("%s", "");
     printf("\r\n");
     char *temp_1 = malloc(512 * sizeof(char));
     strcpy(temp_1, "");
     strcat(temp_1, "La moltiplicazione tra ");
-    strcat(temp_1, op1);
+    strcat(temp_1, double_to_string(op1));
     strcat(temp_1, " e ");
-    strcat(temp_1, op2);
+    strcat(temp_1, double_to_string(op2));
     strcat(temp_1, " vale ");
-    strcat(temp_1, op1);
-    *strcat(temp_1, op2);
+    strcat(temp_1, double_to_string(op1 * op2));
     printf("%s", temp_1);
     printf("\r\n");
 }
@@ -80,42 +89,42 @@ void do_div_int() {
     printf("%s", "\n(3) DIVISIONE INTERA");
     printf("\r\n");
     printf("\nInserisci il primo operando: ");
-    scanf("%d", op1);
+    scanf("%d", &op1);
     printf("Inserisci il secondo operando: ");
-    scanf("%d", op2);
+    scanf("%d", &op2);
     printf("%s", "");
     printf("\r\n");
     char *temp_2 = malloc(512 * sizeof(char));
     strcpy(temp_2, "");
     strcat(temp_2, "La divisione intera tra ");
-    strcat(temp_2, op1);
+    strcat(temp_2, int_to_string(op1));
     strcat(temp_2, " e ");
-    strcat(temp_2, op2);
+    strcat(temp_2, int_to_string(op2));
     strcat(temp_2, " vale ");
-    strcat(temp_2, op1);
-    / strcat(temp_2, op2);
+    strcat(temp_2, int_to_string(op1 / op2));
     printf("%s", temp_2);
     printf("\r\n");
 }
 void do_pow() {
-    double op1;
-    double op2;
+    float op1;
+    float op2;
     printf("%s", "\n(4) POTENZA");
     printf("\r\n");
     printf("\nInserisci la base: ");
-    scanf("%f", op1);
+    scanf("%f", &op1);
     printf("Inserisci l'esponente: ");
-    scanf("%f", op2);
+    scanf("%f", &op2);
     printf("%s", "");
     printf("\r\n");
     char *temp_3 = malloc(512 * sizeof(char));
     strcpy(temp_3, "");
     strcat(temp_3, "La potenza di ");
-    strcat(temp_3, op1);
+    strcat(temp_3, double_to_string(op1));
     strcat(temp_3, " elevato a ");
-    strcat(temp_3, op2);
+    strcat(temp_3, double_to_string(op2));
     strcat(temp_3, " vale ");
-    pow(strcat(temp_3, op1);, strcat(temp_3, op2);) printf("%s", temp_3);
+    strcat(temp_3, double_to_string(pow(op1, op2)));
+    printf("%s", temp_3);
     printf("\r\n");
 }
 int recursive_fib(int n) {
@@ -125,9 +134,7 @@ int recursive_fib(int n) {
     if (n == 2) {
         return 1;
     }
-    return recursive_fib(n - 1);
-    +recursive_fib(n - 2);
-    ;
+    return recursive_fib(n - 1) + recursive_fib(n - 2);
 }
 int iterative_fib(int n) {
     if (n == 1) {
@@ -157,18 +164,18 @@ void do_fib(bool recursive) {
     printf("%s", "\n(5) FIBONACCI");
     printf("\r\n");
     printf("\nInserisci n: ");
-    scanf("%d", n);
+    scanf("%d", &n);
     printf("%s", "");
     printf("\r\n");
     strcat(message, "Il numero di Fibonacci in posizione ");
-    strcat(message, n);
+    strcat(message, int_to_string(n));
     strcat(message, " vale ");
-    if (recursive) {
-        strcat(message, message);
-        strcat(message, recursive_fib(strcat(message, n);););
+    if (recursive == true) {
+        strcat(message, "");
+        strcat(message, int_to_string(recursive_fib(n)));
     } else {
-        strcat(message, message);
-        strcat(message, iterative_fib(strcat(message, n);););
+        strcat(message, "");
+        strcat(message, int_to_string(iterative_fib(n)));
     }
     printf("%s", message);
     printf("\r\n");
@@ -203,7 +210,7 @@ void print_continue(bool *conti) {
     strcpy(in, "");
     printf("Vuoi continuare? (s/n) --> ");
     scanf("%s", in);
-    if (strcmp(in, "s") == 1) {
+    if (strcmp(in, "s") == 0) {
         *conti = true;
     } else {
         *conti = false;
@@ -215,8 +222,10 @@ int main() {
     int choose = 0;
     bool conti = true;
     while (conti) {
-        choose = print_menu() if (choose == 0) { conti = false; }
-        else {
+        choose = print_menu();
+        if (choose == 0) {
+            conti = false;
+        } else {
             do_operation(choose);
             print_continue(&conti);
         }
