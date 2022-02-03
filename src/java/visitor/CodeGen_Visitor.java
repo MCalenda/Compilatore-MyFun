@@ -9,20 +9,18 @@ import tree.nodes.*;
 
 public class CodeGen_Visitor implements CodeGen_Int_Visitor {
 
-    private PrintWriter wr;
+    private final PrintWriter wr;
 
     private ArrayList<String> isOutParam = null;
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public CodeGen_Visitor(String name) throws IOException {
         File file = new File("src/test_files/C_Code/" + name.substring(0, name.length() - 6).split("/")[2] + ".c");
-        if (!file.exists()) {
-            file.createNewFile();
-            System.out.print("File " + file.getName() + " creato !!!");
-        } else {
+        if (file.exists()) {
             file.delete();
-            file.createNewFile();
-            System.out.print("File " + file.getName() + " creato !!!");
         }
+        file.createNewFile();
+        System.out.print("File " + file.getName() + " creato !!!");
 
         wr = new PrintWriter(file);
     }
@@ -135,7 +133,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
 
     @Override
     public void visit(FunNode funNode) {
-        this.isOutParam = new ArrayList<String>();
+        this.isOutParam = new ArrayList<>();
         if (funNode.type != null) {
             wr.print(convert_type(funNode.type) + " ");
             if (funNode.type == ValueType.string)
@@ -169,7 +167,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
         }
 
         wr.print("}");
-        this.isOutParam = new ArrayList<String>();
+        this.isOutParam = new ArrayList<>();
     }
 
     @Override
@@ -261,15 +259,9 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
         for (LeafID leafID : readStatNode.IdList) {
             // Dal tipo dell'espressione carpisco il tipo di valore da stampare
             switch (leafID.type) {
-                case integer, bool:
-                    wr.print("scanf(\"%d\", &");
-                    break;
-                case string:
-                    wr.print("scanf(\"%s\", ");
-                    break;
-                case real:
-                    wr.print("scanf(\"%f\", &");
-                    break;
+                case integer, bool -> wr.print("scanf(\"%d\", &");
+                case string -> wr.print("scanf(\"%s\", ");
+                case real -> wr.print("scanf(\"%f\", &");
             }
             leafID.accept(this);
             wr.print(");");
@@ -280,15 +272,9 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
     public void visit(WriteStatNode writeStatNode) {
         // Dal tipo dell'espressione carpisco il tipo di valore da stampare
         switch (writeStatNode.expr.type) {
-            case integer, bool:
-                wr.print("printf(\"%d\", ");
-                break;
-            case string:
-                wr.print("printf(\"%s\", ");
-                break;
-            case real:
-                wr.print("printf(\"%f\", ");
-                break;
+            case integer, bool -> wr.print("printf(\"%d\", ");
+            case string -> wr.print("printf(\"%s\", ");
+            case real -> wr.print("printf(\"%f\", ");
         }
         writeStatNode.expr.accept(this);
         wr.print(");");
@@ -581,16 +567,11 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
     }
 
     private String convert_type(ValueType type) {
-        switch (type) {
-        case integer:
-            return "int";
-        case string:
-            return "char";
-        case real:
-            return "float";
-        case bool:
-            return "bool";
-        }
-        return "null";
+        return switch (type) {
+            case integer -> "int";
+            case string -> "char";
+            case real -> "float";
+            case bool -> "bool";
+        };
     }
 }

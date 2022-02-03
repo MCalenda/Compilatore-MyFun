@@ -13,6 +13,7 @@ import visitor.CodeGen_Visitor;
 import visitor.Semantic_Visitor;
 
 class Tester {
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void main(String[] args) throws Exception {
         // Creazione del lexer sul file di input
         Lexer lexer = new Lexer(new FileReader(args[0]));
