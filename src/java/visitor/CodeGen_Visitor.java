@@ -8,12 +8,11 @@ import tree.leaves.*;
 import tree.nodes.*;
 
 public class CodeGen_Visitor implements CodeGen_Int_Visitor {
-    // Attributi
+
     private PrintWriter wr;
 
     private ArrayList<String> isOutParam = null;
 
-    // Costruttore
     public CodeGen_Visitor(String name) throws IOException {
         File file = new File("src/test_files/C_Code/" + name.substring(0, name.length() - 6).split("/")[2] + ".c");
         if (!file.exists()) {
