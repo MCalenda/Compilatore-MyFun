@@ -23,6 +23,7 @@ class Tester {
         ProgramNode root;
         BufferedWriter bw;
         Symbol token;
+        CodeGen_Visitor codeGen_Visitor;
 
         // Creazione del visitor semantico
         Semantic_Visitor semanticVisitor = new Semantic_Visitor();
@@ -32,10 +33,11 @@ class Tester {
         System.out.println("2: Analisi Lessicale (Stampa dell'albero di Parsing)");
         System.out.println("3: Analisi Semantica (Stampa dei messaggi di Debug)");
         System.out.println("4: Generazione del codice C (Senza esecuzione)");
+        System.out.println("5: Generazione del codice C (Con esecuzione)");
         System.out.print("Effettuare una scelta: ");
         try (Scanner scanner = new Scanner(System.in)) {
             // int scelta = scanner.nextInt();
-            int scelta = 4;
+            int scelta = 5;
 
             System.out.println();
 
@@ -95,7 +97,18 @@ class Tester {
 
                 semanticVisitor.visit(root);
 
-                CodeGen_Visitor codeGen_Visitor = new CodeGen_Visitor(args[0]);
+                codeGen_Visitor = new CodeGen_Visitor(args[0]);
+                codeGen_Visitor.visit(root);
+                break;
+
+            case 5:
+                root = (ProgramNode) parser.parse().value;
+
+                System.out.println();
+
+                semanticVisitor.visit(root);
+
+                codeGen_Visitor = new CodeGen_Visitor(args[0]);
                 codeGen_Visitor.visit(root);
                 break;
 

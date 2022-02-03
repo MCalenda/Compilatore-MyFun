@@ -3,5 +3,6 @@
         "mweberaw.jflex",
         "mweberaw.cup",
         "vscjava.vscode-java-pack",
+        "davidanson.vscode-markdownlint"
     ]
 }

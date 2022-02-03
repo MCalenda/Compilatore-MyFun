@@ -1,6 +1,46 @@
 # Linguaggio MyFun
 
-Specifica del linguaggio MyFun implementato all'interno del progetto:
+Il seguente documento contiene la specifica del linguaggio MyFun implementato all'interno del progetto.
+
+## Indice dei contenuti
+
+- [Linguaggio MyFun](#linguaggio-myfun)
+  - [Indice dei contenuti](#indice-dei-contenuti)
+  - [Scelte progettuali](#scelte-progettuali)
+    - [Analisi Sintattica](#analisi-sintattica)
+    - [Analisi Lessicale](#analisi-lessicale)
+    - [Analisi Semantica](#analisi-semantica)
+  - [Regole di precedenze](#regole-di-precedenze)
+  - [Gestione degli errori](#gestione-degli-errori)
+  - [Specifica lessicale](#specifica-lessicale)
+    - [Commenti](#commenti)
+    - [Parole chiave](#parole-chiave)
+  - [Specifiche Grammaticali](#specifiche-grammaticali)
+    - [Struttura di base](#struttura-di-base)
+    - [Dichiarazioni di variabili](#dichiarazioni-di-variabili)
+      - [Gestione dei Tipi](#gestione-dei-tipi)
+      - [Gestione degli ID](#gestione-degli-id)
+      - [Gestione delle costanti](#gestione-delle-costanti)
+    - [Dichiarazioni di funzioni](#dichiarazioni-di-funzioni)
+      - [Chiamate di funzioni](#chiamate-di-funzioni)
+      - [Gestione dei parametri](#gestione-dei-parametri)
+    - [Corpo Main](#corpo-main)
+      - [Gestione degli statement](#gestione-degli-statement)
+        - [Statement di assegnamento](#statement-di-assegnamento)
+        - [Statement di lettura](#statement-di-lettura)
+        - [Statement di Scrittura](#statement-di-scrittura)
+        - [Statement IF](#statement-if)
+        - [Statement WHILE](#statement-while)
+      - [Gestione delle espressioni](#gestione-delle-espressioni)
+
+## Scelte progettuali
+
+### Analisi Sintattica
+
+### Analisi Lessicale
+
+### Analisi Semantica
+
 
 ## Regole di precedenze
 
@@ -24,9 +64,9 @@ Sono state utilizzate le seguenti regole di precedenza dalla più alta alla più
 
 Sono stati generati i seguenti errori:
 
-* **Stringa costante non completata:** nel caso in cui il programma in input presenti una stringa
+- **Stringa costante non completata:** nel caso in cui il programma in input presenti una stringa
 costante aperta ma non chiusa (es. "questa è una stringa non chiusa ).
-* **Commento non chiuso:** nel caso in cui il programma in input presenti un commento non chiuso
+- **Commento non chiuso:** nel caso in cui il programma in input presenti un commento non chiuso
 (es. /* questo è un commento non chiuso )
 
 **N.B.:** in entrambi i casi si raggiunge l'EOF mentre si sta riconoscendo un commento
@@ -103,10 +143,6 @@ Nel linguaggio sono implementate le seguenti parole chiave:
 
 Un programma è strutturato come:
 
-1. Una **lista di dichiarazione di variabili**.
-2. Una **lista di funzioni**.
-3. Un **Main**.
-
 ```c
 Program ::= VarDeclList FunList Main
 ```
@@ -115,25 +151,12 @@ Program ::= VarDeclList FunList Main
 
 Una dichiarazione di una variabile è composta da:
 
-* Un **tipo**.
-* Una **lista di ID**.
-* Un **punto e virgola**.
-
-Oppure:
-
-* La parola chiave **VAR**.
-* Una **lista di inizizializzazioni**.
-* Una **punto e virgola**.
-
 ```c
 VarDecl ::= Type IdListInit SEMI
  | VAR IdListInitObbl SEMI
 ```
 
 Una lista di dichiarazioni di variabili può essere **vuota** oppure composta da:
-
-* Una **dichiarzione di variabile**.
-* Una **lista di dichiarazione di variabili**.
 
 ```c
 VarDeclList ::= ε 
@@ -152,34 +175,12 @@ Type ::= INTEGER | BOOL | REAL | STRING
 
 Una lista semplice di **ID** e composta da una **ID** oppure da:
 
-* Una **lista di ID**.
-* Un **virgola**.
-* Un **ID**.
-
 ```c
 IdList ::= ID 
  | IdList COMMA ID
 ```
 
 Una lista di inizializazzioni di ID e composta da un **ID** oppure da:
-
-* Una **lista di inizializzazioni**.
-* Una **virgola**.
-* Un **ID**.
-
-Oppure:
-
-* Un **ID**.
-* Un **assegnazione**.
-* Un **espressione**.
-
-Oppure:
-
-* Una **lista di Inizializzazioni**.
-* Una **virgola**.
-* Un **ID**.
-* Un **assegnazione**.
-* Un **espressione**.
 
 ```c
 IdListInit ::= ID 
@@ -189,18 +190,6 @@ IdListInit ::= ID
 ```
 
 Una lista di iniziallizazioni obbligatorie è definita come:
-
-* Un **ID**.
-* Un **assegnamento**.
-* Una **costante**.
-
-Oppure:
-
-* Una **lista di assegnazioni obbligatorie**.
-* Una **virgola**.
-* Un **ID**.
-* Un **assegnamento**.
-* Una **costante**.
 
 ```c
 IdListInitObbl ::= ID ASSIGN Const
@@ -219,39 +208,12 @@ Const ::= INTEGER_CONST | REAL_CONST | TRUE | FALSE | STRING_CONST
 
 Una funzione è definita come:
 
-* Parola chiave **FUN**.
-* Un **ID**.
-* Una **parentesi aperta**.
-* Una **lista di Parametri**.
-* Una **parentesi chiusa**.
-* **Due punti**.
-* Un **tipo di ritorno**.
-* Una **lista di dichiarazioni di variabili**.
-* Una **lista di statement**.
-* La parola chiave **END FUN**.
-* Una **virgola**.
-
-Oppure:
-
-* Parola chiave **FUN**.
-* Un **ID**.
-* Una **parentesi aperta**.
-* Una **lista di Parametri**.
-* Una **parentesi chiusa**.
-* Una **lista di dichiarazioni di variabili**.
-* Una **lista di statement**.
-* La parola chiave **END FUN**.
-* Una **virgola**.
-
 ```c
 Fun := FUN ID LPAR ParamDeclList RPAR COLON Type VarDeclList StatList END FUN SEMI 
  | FUN ID LPAR ParamDeclList RPAR VarDeclList StatList END FUN SEMI
 ```
 
 Una lista di funzioni è definita come la **parola vuota** oppure:
-
-* Una **funzione**.
-* Una **lista di funzioni**.
 
 ```c
 FunList ::= ε  
@@ -262,17 +224,6 @@ FunList ::= ε
 
 Una chiamata di funzione è definita come:
 
-* Un **ID**.
-* Una **paratesi aperta**.
-* Una **lista di espressioni**.
-* Una **parentesi chiusa**.
-
-Oppure:
-
-* Un **ID**.
-* Una **parentesi aperta**.
-* Una **parentesi chiusa**.
-
 ```c
 CallFun ::= ID LPAR ExprList RPAR   
  | ID LPAR RPAR 
@@ -282,15 +233,6 @@ CallFun ::= ID LPAR ExprList RPAR
 
 Un parametro è definito come:
 
-* Un **tipo**.
-* Un **ID**.
-  
-Oppure:
-
-* La parola chiave **OUT**.
-* Un **tipo**.
-* Un **ID**.
-
 ```c
 ParDecl ::= Type ID
  | OUT Type ID
@@ -298,18 +240,12 @@ ParDecl ::= Type ID
 
 Una lista di parametri è definita come la **parola vuota** oppure:
 
-* Una **lista non vuota di parametri**.
-
 ```c
 ParamDeclList ::= ε
  | NonEmptyParamDeclList
 ```
 
 Una lista non vuota di paramentri è definita come una **dichiarazione di parametro** oppure:
-
-* Una **lista non vuota di parametri**.
-* Una **virgola**.
-* Una **dichiarazione di parametro**.
 
 ```c
 NonEmptyParamDeclList ::= ParDecl
@@ -320,12 +256,6 @@ NonEmptyParamDeclList ::= ParDecl
 
 Il corpo Main è definito come:
 
-* La parola chiave **MAIN**
-* Una **lista di dichiarazioni**.
-* Una **lista di statement**.
-* La parola chiave **END MAIN**.
-* una **virgola**.
-  
 ```c
 Main ::= MAIN VarDeclList StatList END MAIN SEMI
 ```
@@ -347,9 +277,6 @@ Stat ::= IfStat SEMI
 
 Una lista di statement è definita come uno **statement** oppure:
 
-* Uno **statement**.
-* Una **lista di statement**.
-
 ```c
 StatList ::= Stat 
   | Stat StatList
@@ -359,12 +286,6 @@ StatList ::= Stat
 
 Uno statement di assegnamento è definito come:
 
-* Un **ID**.
-* Un **operazione di assegnamento**.
-* Un **espressione**.
-
-*
-
 ```c
 AssignStat ::=  ID ASSIGN Expr
 ```
@@ -373,15 +294,6 @@ AssignStat ::=  ID ASSIGN Expr
 
 Uno statement di lettura è definito come:
 
-* La parala chiave **READ**.
-* Una **lista di ID**.
-* Un **espressione**.
-
-oppure:
-
-* La parola chiave **READ**.
-* Una **lista di ID**.
-  
 ```c
 ReadStat ::= READ IdList Expr // Expr deve essere di tipo stringa
  | READ IdList
@@ -390,24 +302,6 @@ ReadStat ::= READ IdList Expr // Expr deve essere di tipo stringa
 ##### Statement di Scrittura
 
 Uno statement di scrittura è definit come:
-
-* La parola chive **WRITE**.
-* Un **espressione**.
-
-Oppure:
-
-* La parola chiave **WRITELN**.
-* Un **espressione**.
-  
-Oppure:
-
-* La parole chiave **WRITET**.
-* Un **espressione**.
-  
-Oppure:
-
-* La parole chiave **WRITEB**.
-* Un **espressione**.
 
 ```c
 WriteStat ::=  WRITE  Expr 
@@ -420,23 +314,11 @@ WriteStat ::=  WRITE  Expr
 
 Lo statement if è composta da:
 
-* La parola chiave **IF**.
-* Un **espressione**.
-* La parola chiave **THEN**.
-* Una **lista di dichiarazione di variabili**.
-* Una **lista di statement**.
-* Un **Else**.
-* La parola chiave **END IF**.
-
 ```c
 IfStat ::= IF Expr THEN VarDeclList StatList Else END IF
 ```
 
 Lo statement Else è composto da la parola vuota oppure:
-
-* La parola chiave **ELSE**.
-* Una **lista di dichiarazioni di variabili**.
-* Una **lista di statement**.
 
 ```c
 Else ::= ε
@@ -446,13 +328,6 @@ Else ::= ε
 ##### Statement WHILE
 
 Lo statement while è composta da:
-
-* La parola chiave **WHILE**.
-* Un **espressione**.
-* La parola chiave **LOOP**.
-* Una **lista di dichiarazioni di variabili**.
-* Una **lista di statement**.
-* La parola chiave **END LOOP**.
 
 ```c
 WhileStat ::= WHILE Expr LOOP VarDeclList  StatList END LOOP
@@ -491,22 +366,6 @@ Expr ::= TRUE
 ```
 
 Una lista di espressioni è composta da un **espressione** oppure:
-
-* Un **espressione**.
-* Una **virgola**.
-* Una **lista di espressioni**.
-
-Oppure:
-
-* Una **chiocchiola**.
-* Un **ID**.
-  
-Oppure:
-
-* Una **chiocchiola**.
-* Un **ID**.
-* Una **virgola**.
-* Una **lista di espressioni**.
 
 ```c
 ExprList ::= Expr 

@@ -47,7 +47,7 @@
     },
     {
       "type": "shell",
-      "label": "C Compile and Run",
+      "label": "C Compile and Run (Only Windows)",
       "command": "gcc -g ${fileDirname}\\${fileBasename} -o src\\test_files\\Compiled\\ExeFiles\\${fileBasenameNoExtension}.exe ; src\\test_files\\Compiled\\ExeFiles\\${fileBasenameNoExtension}.exe",
       "presentation": {
         "reveal": "always"

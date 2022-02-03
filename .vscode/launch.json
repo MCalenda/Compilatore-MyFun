@@ -6,7 +6,7 @@
             "name": "Launch Test 1",
             "request": "launch",
             "mainClass": "Tester",
-            "args": "src/test_files/Test_1_Misto.MyFun"
+            "args": "src/test_files/Test_1_Debug.MyFun"
         },
         {
             "type": "java",
@@ -34,7 +34,21 @@
             "name": "Launch Test 5",
             "request": "launch",
             "mainClass": "Tester",
-            "args": "src/test_files/Test_5_Super_Test.MyFun"
+            "args": "src/test_files/Test_5_Beppe_Test.MyFun"
+        },
+        {
+            "type": "java",
+            "name": "Launch Test 6",
+            "request": "launch",
+            "mainClass": "Tester",
+            "args": "src/test_files/Test_6_Marco_Test.MyFun"
+        },
+        {
+            "type": "java",
+            "name": "Launch Test 7",
+            "request": "launch",
+            "mainClass": "Tester",
+            "args": "src/test_files/Test_7_Gabri_Test.MyFun"
         }
     ]
 }
