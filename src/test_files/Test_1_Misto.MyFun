@@ -1,9 +1,18 @@
-
+fun prova(out string a, out integer b, integer c, string d)
+    a := a & " e' cambiato";
+    b := 6;
+    c := 7;
+    d := d & " o forse si";
+end fun;
 
 main
-    string str;
-    integer x;
-    str := str & sommac(5,4);
-    x := sommac(5,4);
-    ?. str;
+
+
+    string a := "questa";
+    integer b := 5;
+    integer c := 6;
+    string d := "codesta non e' cambiata";
+    prova(@a, @b, c, d);
+    ?. a & " " & " " & b & " " & c & " " & d;
+
 end main;

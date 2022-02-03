@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import tree.nodes.*;
 import tree.leaves.*;
 import symbol_table.*;
+import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
   */
@@ -1630,7 +1631,7 @@ class CUP$parser$actions {
 		int exprListleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int exprListright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object exprList = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 ((ArrayList<ExprNode>) exprList).add(0, (ExprNode) expr); RESULT = exprList; 
+		 ((ArrayList<ExprNode>) exprList).add(0,(ExprNode) expr); RESULT = exprList; 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ExprList",15, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1642,7 +1643,7 @@ class CUP$parser$actions {
 		int idleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		String id = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 ArrayList<ExprNode> tmp_list = new ArrayList<ExprNode>(); tmp_list.add(0, new ExprNode("OUTPAR", new LeafID(id))); RESULT = tmp_list; 
+		 ArrayList<ExprNode> tmp_list = new ArrayList<ExprNode>(); tmp_list.add(new ExprNode("OUTPAR", new LeafID(id))); RESULT = tmp_list; 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ExprList",15, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1657,7 +1658,7 @@ class CUP$parser$actions {
 		int exprListleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int exprListright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object exprList = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 ((ArrayList<ExprNode>) exprList).add(new ExprNode("OUTPAR", new LeafID(id))); RESULT = exprList; 
+		 ((ArrayList<ExprNode>) exprList).add(0, new ExprNode("OUTPAR", new LeafID(id))); RESULT = exprList; 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ExprList",15, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;

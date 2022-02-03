@@ -193,7 +193,7 @@ Expr ::= TRUE:val                                                               
 
 // TESTED ✅
 ExprList ::= Expr:expr                                                          {: ArrayList<ExprNode> tmp_list = new ArrayList<ExprNode>(); tmp_list.add(0, (ExprNode) expr); RESULT = tmp_list; :}
-    | Expr:expr COMMA ExprList:exprList                                         {: ((ArrayList<ExprNode>) exprList).add(0, (ExprNode) expr); RESULT = exprList; :}
-    | OUTPAR ID:id                                                              {: ArrayList<ExprNode> tmp_list = new ArrayList<ExprNode>(); tmp_list.add(0, new ExprNode("OUTPAR", new LeafID(id))); RESULT = tmp_list; :}
-    | OUTPAR ID:id COMMA ExprList:exprList                                      {: ((ArrayList<ExprNode>) exprList).add(new ExprNode("OUTPAR", new LeafID(id))); RESULT = exprList; :}
+    | Expr:expr COMMA ExprList:exprList                                         {: ((ArrayList<ExprNode>) exprList).add(0,(ExprNode) expr); RESULT = exprList; :}
+    | OUTPAR ID:id                                                              {: ArrayList<ExprNode> tmp_list = new ArrayList<ExprNode>(); tmp_list.add(new ExprNode("OUTPAR", new LeafID(id))); RESULT = tmp_list; :}
+    | OUTPAR ID:id COMMA ExprList:exprList                                      {: ((ArrayList<ExprNode>) exprList).add(0, new ExprNode("OUTPAR", new LeafID(id))); RESULT = exprList; :}
 ;
