@@ -1,0 +1,10 @@
+main
+    bool test_I := true;
+    bool test_II := false;
+
+    if (test_I = test_II) then
+        ?. 'ciao';
+    else
+        ?. 'ciao II';
+    end if;
+end main;
