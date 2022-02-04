@@ -2,8 +2,8 @@
 
 Il seguente documento contiene la specifica del linguaggio MyFun implementato all'interno del progetto.
 
-Project SDK
-Project Language Level
+Project SDK: 
+Project Language Level: 
 
 Trovate queste informazioni andando in "File/Project Structure.." e quindi selezionando il quadro "Project". 
 
@@ -40,30 +40,11 @@ Trovate queste informazioni andando in "File/Project Structure.." e quindi selez
 
 ## Scelte progettuali
 
-### Analisi Sintattica
-
 ### Analisi Lessicale
 
+### Analisi Sintattica
+
 ### Analisi Semantica
-
-
-## Regole di precedenze
-
-Sono state utilizzate le seguenti regole di precedenza dalla più alta alla più bassa. Eventuali altre ambiguità sono state risolte tramite l'uso dell'associativià sinistra (se non indicata nella tabella):
-
-| Operatore         | Precendenza |
-| ----------------- | ----------- |
-| ( )               |             |
-| ^                 | destra      |
-| \* / div          |
-| \+ -              |             |
-| &                 |             |
-| = != <> < <= > >= | nessuna     |
-| not               | destra      |
-| and               |             |
-| or                |             |
-
-**N.B.:** Sono state codificate in javacup solo quelle necessarie all'eliminazione dei conflitti.
 
 ## Gestione degli errori
 
@@ -131,9 +112,9 @@ Nel linguaggio sono implementate le seguenti parole chiave:
 | NULL           | null                                            |
 | TRUE           | true                                            |
 | FALSE          | false                                           |
-| INTEGER_CONST  | any integer number (sequence of decimal digits) |
-| REAL_CONST     | any real number                                 |
-| STRING_CONST   | any string between " or between                 |
+| INTEGER_CONST  | (([1-9][0-9]\*)\|(0))                           |
+| REAL_CONST     | (([1-9][0-9]\*)\|(0))\.(([0-9]\*[1-9]\+)\|(0))  |
+| STRING_CONST   | any string between " or between '               |
 | SEMI           | ;                                               |
 | COMMA          | ,                                               |
 | RETURN         | return                                          |
@@ -142,17 +123,51 @@ Nel linguaggio sono implementate le seguenti parole chiave:
 | OUT            | out                                             |
 | LOOP           | loop                                            |
 
-## Specifiche Grammaticali
 
-### Struttura di base
+## Specifica Grammaticale
 
-Un programma è strutturato come:
+### Regole di precedenze
+
+Sono state utilizzate le seguenti regole di precedenza dalla più alta alla più bassa. Eventuali altre ambiguità sono state risolte tramite l'uso dell'associativià sinistra (se non indicata nella tabella):
+
+| Operatore         | Precendenza |
+| ----------------- | ----------- |
+| uminus            |             |
+| ( )               |             |
+| ^                 | destra      |
+| \* / div / divint |
+| \+ -              |             |
+| &                 |             |
+| = != <> < <= > >= | nessuna     |
+| not               | destra      |
+| and               |             |
+| or                |             |
+
+**N.B.:** Sono state codificate in javacup solo quelle necessarie all'eliminazione dei conflitti.
+
+
+
+### Grammatica
+
+#### Struttura di base
+
+Un programma è composta da:
 
 ```c
 Program ::= VarDeclList FunList Main
 ```
 
-### Dichiarazioni di variabili
+#### Main
+
+Un Main è composto da:
+
+```c
+Main ::= MAIN VarDeclList StatList END MAIN SEMI
+```
+
+#### Gestione delle variabili
+
+##### Dichiarazione di variabile
 
 Una dichiarazione di una variabile è composta da:
 
@@ -168,7 +183,7 @@ VarDeclList ::= ε
  | VardDecl VarDeclList
 ```
 
-#### Gestione dei Tipi
+##### Gestione dei Tipi
 
 Un tipo è defito come segue:
 
@@ -176,7 +191,7 @@ Un tipo è defito come segue:
 Type ::= INTEGER | BOOL | REAL | STRING  
 ```
 
-#### Gestione degli ID
+##### Gestione degli ID
 
 Una lista semplice di **ID** e composta da una **ID** oppure da:
 
@@ -194,80 +209,78 @@ IdListInit ::= ID
  | IdListInit COMMA ID ASSIGN Expr
 ```
 
-Una lista di iniziallizazioni obbligatorie è definita come:
+Una lista di inizializzazioni obbligatorie è definita come:
 
 ```c
 IdListInitObbl ::= ID ASSIGN Const
  | IdListInitObbl COMMA ID ASSIGN Const
 ```
 
-#### Gestione delle costanti
+##### Gestione delle costanti
 
-Una costante è definita nel seguente modo:
+Una costante è definita come segue:
 
 ```c
 Const ::= INTEGER_CONST | REAL_CONST | TRUE | FALSE | STRING_CONST
 ```
 
-### Dichiarazioni di funzioni
+#### Gestione delle funzioni
 
-Una funzione è definita come:
+##### Dichiarazione di funzione
+
+
+Una dichiarazione di funzione è composta da:
 
 ```c
 Fun := FUN ID LPAR ParamDeclList RPAR COLON Type VarDeclList StatList END FUN SEMI 
  | FUN ID LPAR ParamDeclList RPAR VarDeclList StatList END FUN SEMI
 ```
 
-Una lista di funzioni è definita come la **parola vuota** oppure:
+Una lista di funzioni puo essere **vuota** o composta da:
 
 ```c
 FunList ::= ε  
  | Fun FunList
 ```
 
-#### Chiamate di funzioni
+##### Chiamate di funzioni
 
-Una chiamata di funzione è definita come:
+Una chiamata di funzione è composta da:
 
 ```c
 CallFun ::= ID LPAR ExprList RPAR   
  | ID LPAR RPAR 
 ```
 
-#### Gestione dei parametri
+##### Gestione dei parametri
 
-Un parametro è definito come:
+Un parametro è composto da:
 
 ```c
 ParDecl ::= Type ID
  | OUT Type ID
 ```
 
-Una lista di parametri è definita come la **parola vuota** oppure:
+Una lista di parametri puo essere **vuota** o composta da:
 
 ```c
 ParamDeclList ::= ε
  | NonEmptyParamDeclList
 ```
 
-Una lista non vuota di paramentri è definita come una **dichiarazione di parametro** oppure:
+Una lista non vuota di paramentri è composta da:
 
 ```c
 NonEmptyParamDeclList ::= ParDecl
  | NonEmptyParamDeclList COMMA ParDecl
 ```
 
-### Corpo Main
-
-Il corpo Main è definito come:
-
-```c
-Main ::= MAIN VarDeclList StatList END MAIN SEMI
-```
 
 #### Gestione degli statement
 
-Uno statement è definito come uno dei seguenti:
+##### Statement generico
+
+Uno statement è definito in uno dei seguenti modi:
 
 ```c
 Stat ::= IfStat SEMI
@@ -277,19 +290,18 @@ Stat ::= IfStat SEMI
  | AssignStat SEMI
  | CallFun SEMI
  | RETURN Expr SEMI
- | ε
 ```
 
-Una lista di statement è definita come uno **statement** oppure:
+Una lista di statement puo essere **vuota** o composta da:
 
 ```c
-StatList ::= Stat 
-  | Stat StatList
+StatList ::= ε
+  | StatList Stat
 ```
 
 ##### Statement di assegnamento
 
-Uno statement di assegnamento è definito come:
+Uno statement di assegnamento è composto da:
 
 ```c
 AssignStat ::=  ID ASSIGN Expr
@@ -297,16 +309,16 @@ AssignStat ::=  ID ASSIGN Expr
 
 ##### Statement di lettura
 
-Uno statement di lettura è definito come:
+Uno statement di lettura è composto da:
 
 ```c
-ReadStat ::= READ IdList Expr // Expr deve essere di tipo stringa
+ReadStat ::= READ IdList Expr
  | READ IdList
 ```
 
 ##### Statement di Scrittura
 
-Uno statement di scrittura è definit come:
+Uno statement di scrittura è definito in uno dei seguenti modi:
 
 ```c
 WriteStat ::=  WRITE  Expr 
@@ -317,11 +329,13 @@ WriteStat ::=  WRITE  Expr
 
 ##### Statement IF
 
-Lo statement if è composta da:
+Uno statement if è composto da:
 
 ```c
 IfStat ::= IF Expr THEN VarDeclList StatList Else END IF
 ```
+
+##### Statement Else
 
 Lo statement Else è composto da la parola vuota oppure:
 
@@ -378,3 +392,78 @@ ExprList ::= Expr
  | OUTPAR ID
  | OUTPAR ID COMMA ExprList
 ```
+
+## Specifica Semantica
+
+### Regole di type-checking
+
+Di seguito, le regole di type checking utilizzate all'interno del visitor per l'analisi semantica.
+
+#### Costanti
+
+<font size="3">Γ \vdash INTEGER_CONST : integer</font><br>
+<font size="3">Γ \vdash REAL_CONST : integer</font><br> 
+<font size="3">Γ \vdash STRING_CONST : string</font><br> 
+<font size="3">Γ \vdash TRUE : boolean</font><br>
+<font size="3">Γ \vdash FALSE : boolean</font><br>
+
+#### ID
+<font size="5">$\frac{Γ \ (id) \ = \ τ}{Γ \ \vdash \ id \ : \ τ}$</font><br>
+
+#### ID
+<font size="5">$\frac{Γ \ (id) \ = \ τ}{Γ \ \vdash \ id \ : \ τ}$</font><br>
+
+### Operatori unari
+<font size="5">$\frac{Γ \ \vdash \ e \ : \ τ_1 \ \ \ optype1(op_1, τ_1) \ = \ τ}{Γ \ \vdash \ op_1 \ e \ : \ τ}$</font><br>
+
+Tabella per optype1(op, t) 
+
+|  op1  | operando | risultato |
+|-------|----------|-----------|
+| MINUS | integer  | integer   |
+| MINUS | real     | real      |
+| NOT   | bool     | bool      |
+
+### Operatori binari
+<font size="5">$\frac{Γ \ \vdash \ e \ : \ τ_1 \ \ \ Γ \ \vdash \ e_2 \ : \ τ_2 \ \ \ optype2(op_2, τ_1, τ_2) \ = \ τ}{Γ \ \vdash \ e_1 \ op_2 \ e_2 \ : \ τ}$</font><br>
+
+Tabella  per optype2(op, $t_1$, $t_2$) 
+
+|  op1                      | operando | operando2 | risultato |
+|---------------------------|----------|-----------|-----------|
+| PLUS, MINUS, TIMES, DIV   | integer  | integer   | integer   |
+| PLUS, MINUS, TIMES, DIV   | integer  | real      | real      |
+| PLUS, MINUS, TIMES, DIV   | real     | integer   | real      |
+| PLUS, MINUS, TIMES, DIV   | real     | real      | real      |
+| DIVINT                    | integer  | integer   | integer   |
+| DIVINT                    | real     | integer   | integer   |
+| STR_CONCAT                | string   | string    | string    |
+| STR_CONCAT                | integer  | string    | string    |
+| STR_CONCAT                | string   | integer   | string    |
+| STR_CONCAT                | real     | string    | string    |
+| STR_CONCAT                | string   | real      | string    |
+| STR_CONCAT                | bool     | string    | string    |
+| STR_CONCAT                | string   | bool      | string    |
+| AND                       | bool     | bool      | bool      |
+| OR                        | bool     | bool      | bool      |
+| GT, GE, LT, LE            | integer  | integer   | bool      |
+| GT, GE, LT, LE            | integer  | real      | bool      |
+| GT, GE, LT, LE            | real     | integer   | bool      |
+| GT, GE, LT, LE            | real     | real      | bool      |
+| EQ, NE                    | integer  | integer   | bool      |
+| EQ, NE                    | real     | real      | bool      |
+| EQ, NE                    | integer  | real      | bool      |
+| EQ, NE                    | real     | integer   | bool      |
+| EQ, NE                    | string   | string    | bool      |
+| EQ, NE                    | bool     | bool      | bool      |
+
+### Lista di istruzioni
+<font size="5">$\frac{Γ \ \vdash \ stmt_1 \ : \ notype \ \ \ Γ \ \vdash \ stmt_2 \ : \ notype}{Γ \ \vdash \ stmt_1 \ ; \ stmt_2 \ : \ notype}$</font><br>
+
+### Assegnamento
+<font size="5">$\frac{Γ \ (id) \ = \ τ \ \ \ Γ \ \vdash \ e \ = \ τ}{Γ \ \vdash \ id \ := \ e \ : \ notype}$</font><br>
+
+### Chiamata a funzione con o senza tipo di ritorno
+<font size="5">$\frac{Γ \ \vdash \ f \ : \ τ_1 \ \times \ ... \ \times \ τ_n \ ⟶ \ τ \ \ \ Γ \ \vdash \ e_i \ : \ t_i^{i \in 1...n}}{Γ \ \vdash \ f(e_1,...,e_n) \ : \ τ}$</font><br>
+
+<font size="5">$\frac{Γ \ \vdash \ f \ : \ τ_1 \ \times \ ... \ \times \ τ_n \ ⟶ \ notype \ \ \ Γ \ \vdash \ e_i \ : \ t_i^{i \in 1...n}}{Γ \ \vdash \ f(e_1,...,e_n) \ : \ notype}$</font><br>

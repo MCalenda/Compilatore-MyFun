@@ -23,7 +23,6 @@ nonterminal Program, VarDecList, FunList, Main, VarDecl, Type, IdListInit, IdLis
 
 
 // PRECEDENCES
-
 precedence left OR;
 precedence left AND;
 precedence right NOT;
