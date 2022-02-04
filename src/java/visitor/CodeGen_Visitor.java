@@ -16,12 +16,12 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
     // Costruttore
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public CodeGen_Visitor(String name) throws IOException {
-        File file = new File("src/test_files/C_Code/" + name.substring(0, name.length() - 6).split("/")[2] + ".c");
+        File file = new File("src/test_files/c_out/" + name.substring(0, name.length() - 4).split("/")[2] + ".c");
         if (file.exists()) {
             file.delete();
         }
         file.createNewFile();
-        System.out.print("File " + file.getName() + " creato !!!");
+        System.out.print("File " + file.getName() + " creato nella cartella \"src/test_files/c_out\" !!!");
 
         wr = new PrintWriter(file);
     }
@@ -74,7 +74,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
 
         // Corpo del ProgramNode
         if (programNode.varDecList.size() != 0) {
-            wr.println("\n// Dichiarazione delle variabili locali");
+            wr.println("\n\n// Dichiarazione delle variabili locali");
             for (VarDeclNode varDeclNode : programNode.varDecList) {
                 varDeclNode.accept(this);
             }
@@ -510,25 +510,12 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
                 break;
 
             case "EQ":
-                // DA RIVEDERE
+                // Se il primo valore è una stringa lo sono entrambi
                 if (((ExprNode) exprNode.val_One).type == ValueType.string) {
                     wr.print("strcmp(");
                     ((ExprNode) exprNode.val_One).accept(this);
                     wr.print(", ");
                     ((ExprNode) exprNode.val_Two).accept(this);
-                    wr.print(") == 0");
-                } else if (((ExprNode) exprNode.val_Two).type == ValueType.string) {
-                    wr.print("strcmp(");
-                    ((ExprNode) exprNode.val_One).accept(this);
-                    wr.print(", ");
-                    ((ExprNode) exprNode.val_Two).accept(this);
-                    wr.print(") == 0");
-                } else if (exprNode.val_One instanceof LeafStringConst || exprNode.val_Two instanceof LeafStringConst) {
-                    wr.print("strcmp(");
-                    ((ExprNode) exprNode.val_One).accept(this);
-                    wr.print(", ");
-                    ((ExprNode) exprNode.val_Two).accept(this);
-                    wr.print(") == 0");
                 } else {
                     ((ExprNode) exprNode.val_One).accept(this);
                     wr.print(" == ");
@@ -585,10 +572,11 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
     /* ---------------------------------------------------------- */
     @Override
     public void visit(LeafID leafID) {
-        // Se è un ID di tipo (OUT/@) contenuto nella lista
-        if (this.isOutParam.contains(leafID.value)) {
-            wr.print("*");
-        }
+        // Se è un ID di tipo (OUT/@) contenuto nella
+        if (this.isOutParam != null)
+            if (this.isOutParam.contains(leafID.value)) {
+                wr.print("*");
+            }
 
         wr.print(leafID.value);
     }

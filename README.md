@@ -2,6 +2,11 @@
 
 Il seguente documento contiene la specifica del linguaggio MyFun implementato all'interno del progetto.
 
+Project SDK
+Project Language Level
+
+Trovate queste informazioni andando in "File/Project Structure.." e quindi selezionando il quadro "Project". 
+
 ## Indice dei contenuti
 
 - [Linguaggio MyFun](#linguaggio-myfun)

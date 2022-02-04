@@ -2,7 +2,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.util.Scanner;
 
 import cup.parser;
 import cup.sym;
@@ -19,30 +18,28 @@ class Tester {
         Lexer lexer = new Lexer(new FileReader(args[0]));
         // Creazione del parser sul flusso di token
         parser parser = new parser(lexer);
+        // Creazione del visitor semantico
+        Semantic_Visitor semanticVisitor = new Semantic_Visitor();
 
+        // Definizione dei vari oggetti di esecuzione
         File file;
         ProgramNode root;
         BufferedWriter bw;
         Symbol token;
         CodeGen_Visitor codeGen_Visitor;
 
-        // Creazione del visitor semantico
-        Semantic_Visitor semanticVisitor = new Semantic_Visitor();
+        /* --------------------------------------------------------- */
+        /* --------------------------------------------------------- */
+        // Modalità di esecuzione:
+        // 1: Analisi Sintattica
+        // 2: Analisi Lessicale
+        // 3: Analisi Semantica
+        // 4: Generazione del codice C @DEFAULT
+        /* --------------------------------------------------------- */
+        /* --------------------------------------------------------- */
+        int scelta = 4;
 
-        System.out.println("Quale operazione vuoi eseguire ?");
-        System.out.println("1: Analisi Sintattica (Salvataggio dei Token in un file)");
-        System.out.println("2: Analisi Lessicale (Stampa dell'albero di Parsing)");
-        System.out.println("3: Analisi Semantica (Stampa dei messaggi di Debug)");
-        System.out.println("4: Generazione del codice C (Senza esecuzione)");
-        System.out.println("5: Generazione del codice C (Con esecuzione)");
-        System.out.print("Effettuare una scelta: ");
-        try (Scanner scanner = new Scanner(System.in)) {
-            // int scelta = scanner.nextInt();
-            int scelta = 5;
-
-            System.out.println();
-
-            switch (scelta) {
+        switch (scelta) {
             case 1:
                 file = new File("debug/Lexer_Debug.txt");
                 token = lexer.next_token();
@@ -102,22 +99,10 @@ class Tester {
                 codeGen_Visitor.visit(root);
                 break;
 
-            case 5:
-                root = (ProgramNode) parser.parse().value;
-
-                System.out.println();
-
-                semanticVisitor.visit(root);
-
-                codeGen_Visitor = new CodeGen_Visitor(args[0]);
-                codeGen_Visitor.visit(root);
-                break;
-
             default:
                 System.out.println("Scelta effettuata non valida !!!");
                 System.exit(0);
                 break;
-            }
         }
     }
 }
