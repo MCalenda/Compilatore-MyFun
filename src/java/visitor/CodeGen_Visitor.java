@@ -8,11 +8,12 @@ import tree.leaves.*;
 import tree.nodes.*;
 
 public class CodeGen_Visitor implements CodeGen_Int_Visitor {
-
+    // Scrive all'interno del file finale
     private final PrintWriter wr;
-
+    // Lista di parametri dichiarato con (OUT/@)
     private ArrayList<String> isOutParam = null;
 
+    // Costruttore
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public CodeGen_Visitor(String name) throws IOException {
         File file = new File("src/test_files/C_Code/" + name.substring(0, name.length() - 6).split("/")[2] + ".c");
@@ -25,6 +26,9 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
         wr = new PrintWriter(file);
     }
 
+    // Metodi polimorfi per l'implementazione del visitor
+    /* ---------------------------------------------------------- */
+    /* ---------------------------------------------------------- */
     @Override
     public int visit(ProgramNode programNode) {
         wr.println("#include <stdio.h>");
@@ -33,6 +37,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
         wr.println("#include <string.h>");
         wr.println("#include <math.h>");
 
+        // Funzioni per la concatenazione
         wr.println("\n// Funzioni di concatenazione");
         wr.print("char *concatInt(char *string, int toConcat) {");
         wr.print("int length = snprintf(NULL, 0,\"%d\", toConcat);");
@@ -61,13 +66,13 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
         wr.print("strcat(concat, converted);");
         wr.print("return concat;}");
 
-
         wr.print("char *concatString(char *string, char *toConcat) {");
         wr.print("char *concat = (char *) malloc(1 + strlen(string)+ strlen(toConcat));");
         wr.print("strcpy(concat, string);");
         wr.print("strcat(concat, toConcat);");
         wr.print("return concat;}");
 
+        // Corpo del ProgramNode
         if (programNode.varDecList.size() != 0) {
             wr.println("\n// Dichiarazione delle variabili locali");
             for (VarDeclNode varDeclNode : programNode.varDecList) {
@@ -93,39 +98,50 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
     public void visit(VarDeclNode varDeclNode) {
         if (varDeclNode.idInitList != null) {
             for (IdInitNode idInitNode : varDeclNode.idInitList) {
+                // Stampa il tipo della dichiarazione
                 wr.print(convert_type(varDeclNode.type) + " ");
                 idInitNode.accept(this);
             }
         } else if (varDeclNode.IdListInitObbl != null) {
             for (IdInitObblNode idInitObblNode : varDeclNode.IdListInitObbl) {
+                // Stampa il tipo della dichiarazione
                 wr.print(convert_type(idInitObblNode.type) + " ");
                 idInitObblNode.accept(this);
             }
         }
     }
-    
+
     @Override
     public void visit(IdInitNode idInitNode) {
-        // Se sto inizializzando una stringa
+        // Se sto dichiarando una stringa
         if (idInitNode.type == ValueType.string)
             wr.print("*");
+
         idInitNode.leafID.accept(this);
+
+        // Se sto effettuando un inizializzazione
         if (idInitNode.exprNode != null) {
             wr.print(" = ");
-            idInitNode.exprNode.accept(this);   
+            idInitNode.exprNode.accept(this);
         } else {
+            // Se è una stringa faccio la malloc
             if (idInitNode.type == ValueType.string) {
                 wr.print(" = malloc(512 * sizeof(char))");
             }
         }
+
         wr.print(";");
     }
 
     @Override
     public void visit(IdInitObblNode idInitObblNode) {
+        // Se sto dichiarando una stringa
         if (idInitObblNode.type == ValueType.string)
             wr.print("*");
+
         idInitObblNode.leafID.accept(this);
+
+        // In questo nodo le inizializzazioni sono obbligatorie
         wr.print(" = ");
         idInitObblNode.value.accept(this);
         wr.print(";");
@@ -133,53 +149,80 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
 
     @Override
     public void visit(FunNode funNode) {
+        // Lista dei parametri (OUT/@)
         this.isOutParam = new ArrayList<>();
+
+        // Se la funzione ha un tipo di ritorno
         if (funNode.type != null) {
             wr.print(convert_type(funNode.type) + " ");
+
+            // Se questo tipo di ritorno è una stringa
             if (funNode.type == ValueType.string)
                 wr.print("*");
-        } else 
+        } else
             wr.print("void ");
 
         funNode.leafID.accept(this);
-
         wr.print("(");
+
+        // Se la funzione ha dei parametri
         if (funNode.paramDecList.size() != 0) {
             for (int i = 0; i < funNode.paramDecList.size(); i++) {
                 ParamDecNode paramDecNode = funNode.paramDecList.get(i);
                 paramDecNode.accept(this);
-                if (i != funNode.paramDecList.size()-1)
+                if (i != funNode.paramDecList.size() - 1)
                     wr.print(", ");
             }
         }
         wr.print(") {");
 
+        // Gestione delle Dichiarazioni e Statement
         if (funNode.varDecList != null) {
             for (VarDeclNode varDeclNode : funNode.varDecList) {
                 varDeclNode.accept(this);
             }
         }
-
         if (funNode.statList != null) {
             for (StatNode statNode : funNode.statList) {
                 statNode.accept(this);
             }
         }
-
         wr.print("}");
-        this.isOutParam = new ArrayList<>();
     }
 
     @Override
     public void visit(ParamDecNode paramDecNode) {
+        // Stampa il tipo di parametro
         wr.print(convert_type(paramDecNode.type) + " ");
+
+        // Se è di tipo out
         if (paramDecNode.out)
             this.isOutParam.add(paramDecNode.leafID.value);
+
+        // Se è un tipo stringa
         if (paramDecNode.type == ValueType.string)
             wr.print("*");
+
         paramDecNode.leafID.accept(this);
     }
 
+    @Override
+    public void visit(MainNode mainNode) {
+        wr.print("int main() {");
+
+        for (VarDeclNode varDeclNode : mainNode.varDeclList) {
+            varDeclNode.accept(this);
+        }
+        for (StatNode statNode : mainNode.statList) {
+            statNode.accept(this);
+        }
+
+        wr.print("return 0; ");
+        wr.print("}");
+    }
+
+    // Statement
+    /* ---------------------------------------------------------- */
     @Override
     public void visit(StatNode statNode) {
         if (statNode.ifStatNode != null) {
@@ -217,24 +260,39 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
         wr.print("if(");
         ifStatNode.expr.accept(this);
         wr.print(") {");
+
         for (VarDeclNode varDeclNode : ifStatNode.varDeclList) {
             varDeclNode.accept(this);
         }
         for (StatNode statNode : ifStatNode.statList) {
             statNode.accept(this);
         }
+
         wr.print("}");
+
         if (ifStatNode.elseNode != null) {
             ifStatNode.elseNode.accept(this);
         }
     }
 
     @Override
+    public void visit(ElseNode elseNode) {
+        wr.print("else {");
+
+        for (VarDeclNode varDeclNode : elseNode.varDeclList) {
+            varDeclNode.accept(this);
+        }
+        for (StatNode statNode : elseNode.statList) {
+            statNode.accept(this);
+        }
+
+        wr.print("} ");
+    }
+
+    @Override
     public void visit(WhileStatNode whileStatNode) {
         wr.print("while(");
-
         whileStatNode.expr.accept(this);
-
         wr.print(") {");
 
         for (VarDeclNode varDeclNode : whileStatNode.varDeclList) {
@@ -256,12 +314,13 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
             wr.print(");");
         }
 
+        // Per ogni ID nello statement di lettura
         for (LeafID leafID : readStatNode.IdList) {
             // Dal tipo dell'espressione carpisco il tipo di valore da stampare
             switch (leafID.type) {
-                case integer, bool -> wr.print("scanf(\"%d\", &");
-                case string -> wr.print("scanf(\"%s\", ");
-                case real -> wr.print("scanf(\"%f\", &");
+            case integer, bool -> wr.print("scanf(\"%d\", &");
+            case string -> wr.print("scanf(\"%s\", ");
+            case real -> wr.print("scanf(\"%f\", &");
             }
             leafID.accept(this);
             wr.print(");");
@@ -272,30 +331,30 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
     public void visit(WriteStatNode writeStatNode) {
         // Dal tipo dell'espressione carpisco il tipo di valore da stampare
         switch (writeStatNode.expr.type) {
-            case integer, bool -> wr.print("printf(\"%d\", ");
-            case string -> wr.print("printf(\"%s\", ");
-            case real -> wr.print("printf(\"%f\", ");
+        case integer, bool -> wr.print("printf(\"%d\", ");
+        case string -> wr.print("printf(\"%s\", ");
+        case real -> wr.print("printf(\"%f\", ");
         }
         writeStatNode.expr.accept(this);
         wr.print(");");
 
         // Aggiungo eventuali extra post stampa
         switch (writeStatNode.op) {
-            // La stampa ? (solo per chiarezza)
-            case "WRITE":
-                break;
-            // La stampa ?.
-            case "WRITELN":
-                wr.print("printf(\"\\r\\n\"); ");
-                break;
-            // La stampa ?:
-            case "WRITET":
-                wr.print("printf(\"\\t\"); ");
-                break;
-            // La stampa ?,
-            case "WRITEB":
-                wr.print("printf(\" \"); ");
-                break;
+        // La stampa ? (solo per chiarezza)
+        case "WRITE":
+            break;
+        // La stampa ?.
+        case "WRITELN":
+            wr.print("printf(\"\\r\\n\"); ");
+            break;
+        // La stampa ?:
+        case "WRITET":
+            wr.print("printf(\"\\t\"); ");
+            break;
+        // La stampa ?,
+        case "WRITEB":
+            wr.print("printf(\" \"); ");
+            break;
         }
     }
 
@@ -310,14 +369,17 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
     @Override
     public void visit(CallFunNode callFunNode) {
         callFunNode.leafID.accept(this);
+
         wr.print("(");
+        // Se la chiamata ha dei parametri
         if (callFunNode.exprList.size() != 0) {
             for (int i = 0; i < callFunNode.exprList.size(); i++) {
                 ExprNode exprNode = callFunNode.exprList.get(i);
+                // Se il parametro è di tipo (OUT/@)
                 if (exprNode.op.equalsIgnoreCase("OUTPAR"))
                     wr.print("&");
                 exprNode.accept(this);
-                if (i != callFunNode.exprList.size()-1)
+                if (i != callFunNode.exprList.size() - 1)
                     wr.print(", ");
             }
         }
@@ -331,21 +393,11 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
         wr.print(";");
     }
 
+    // ExprNode e Costanti
+    /* ---------------------------------------------------------- */
     @Override
-    public void visit(MainNode mainNode) {
-        wr.print("int main() {");
-        for (VarDeclNode varDeclNode : mainNode.varDeclList) {
-            varDeclNode.accept(this);
-        }
-        for (StatNode statNode : mainNode.statList) {
-            statNode.accept(this);
-        }
-        wr.print("return 0; ");
-        wr.print("}");
-    }
-
-     @Override
     public void visit(ExprNode exprNode) {
+        // Se si tratta di un espresisone a due valori
         if (exprNode.val_One != null && exprNode.val_Two != null) {
             switch (exprNode.op) {
             case "PLUS":
@@ -383,7 +435,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
                 wr.print(" && ");
                 ((ExprNode) exprNode.val_Two).accept(this);
                 break;
-                
+
             case "POW":
                 wr.print("pow(");
                 ((ExprNode) exprNode.val_One).accept(this);
@@ -393,28 +445,32 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
                 break;
 
             case "STR_CONCAT":
-                if(((ExprNode) exprNode.val_Two).type == ValueType.integer){
+                // Se è una concatenazione di tipo Stringa & Intero
+                if (((ExprNode) exprNode.val_Two).type == ValueType.integer) {
                     wr.print("concatInt( ");
                     ((ExprNode) exprNode.val_One).accept(this);
                     wr.print(", ");
                     ((ExprNode) exprNode.val_Two).accept(this);
                     wr.print(")");
                 }
-                if(((ExprNode) exprNode.val_Two).type == ValueType.real){
+                // Se è una concatenazione di tipo Stringa & Reale
+                if (((ExprNode) exprNode.val_Two).type == ValueType.real) {
                     wr.print("concatReal( ");
                     ((ExprNode) exprNode.val_One).accept(this);
                     wr.print(", ");
                     ((ExprNode) exprNode.val_Two).accept(this);
                     wr.print(")");
                 }
-                if(((ExprNode) exprNode.val_Two).type == ValueType.bool){
+                // Se è una concatenazione di tipo Stringa & Booleano
+                if (((ExprNode) exprNode.val_Two).type == ValueType.bool) {
                     wr.print("concatBool( ");
                     ((ExprNode) exprNode.val_One).accept(this);
                     wr.print(", ");
                     ((ExprNode) exprNode.val_Two).accept(this);
                     wr.print(")");
                 }
-                if(((ExprNode) exprNode.val_Two).type == ValueType.string){
+                // Se è una concatenazione di tipo Stringa & Stringa
+                if (((ExprNode) exprNode.val_Two).type == ValueType.string) {
                     wr.print("concatString( ");
                     ((ExprNode) exprNode.val_One).accept(this);
                     wr.print(", ");
@@ -454,6 +510,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
                 break;
 
             case "EQ":
+                // DA RIVEDERE
                 if (((ExprNode) exprNode.val_One).type == ValueType.string) {
                     wr.print("strcmp(");
                     ((ExprNode) exprNode.val_One).accept(this);
@@ -485,6 +542,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
                 ((ExprNode) exprNode.val_Two).accept(this);
                 break;
             }
+            // Se si tratta di un espresisone a singolo valore
         } else if (exprNode.val_One != null) {
             if (exprNode.val_One instanceof LeafIntegerConst) {
                 ((LeafIntegerConst) exprNode.val_One).accept(this);
@@ -511,10 +569,27 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
     }
 
     @Override
+    public void visit(ConstNode constNode) {
+        if (constNode.value instanceof LeafIntegerConst) {
+            ((LeafIntegerConst) constNode.value).accept(this);
+        } else if (constNode.value instanceof LeafRealConst) {
+            ((LeafRealConst) constNode.value).accept(this);
+        } else if (constNode.value instanceof LeafBool) {
+            ((LeafBool) constNode.value).accept(this);
+        } else if (constNode.value instanceof LeafStringConst) {
+            ((LeafStringConst) constNode.value).accept(this);
+        }
+    }
+
+    // Visite delle foglie
+    /* ---------------------------------------------------------- */
+    @Override
     public void visit(LeafID leafID) {
+        // Se è un ID di tipo (OUT/@) contenuto nella lista
         if (this.isOutParam.contains(leafID.value)) {
             wr.print("*");
         }
+
         wr.print(leafID.value);
     }
 
@@ -535,43 +610,22 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
 
     @Override
     public void visit(LeafStringConst leafStringConst) {
+        // Se non è una stringa vuota
         if (leafStringConst.value.length() != 0)
             wr.print("\"" + leafStringConst.value + "\"");
-         else
+        else
             wr.print("\"\"");
     }
 
-    @Override
-    public void visit(ConstNode constNode) {
-        if (constNode.value instanceof LeafIntegerConst) {
-            ((LeafIntegerConst) constNode.value).accept(this);
-        } else if (constNode.value instanceof LeafRealConst) {
-            ((LeafRealConst) constNode.value).accept(this);
-        } else if (constNode.value instanceof LeafBool) {
-            ((LeafBool) constNode.value).accept(this);
-        } else if (constNode.value instanceof LeafStringConst) {
-            ((LeafStringConst) constNode.value).accept(this);
-        }
-    }
-
-    @Override
-    public void visit(ElseNode elseNode) {
-        wr.print("else {");
-        for (VarDeclNode varDeclNode : elseNode.varDeclList) {
-            varDeclNode.accept(this);
-        }
-        for (StatNode statNode : elseNode.statList) {
-            statNode.accept(this);
-        }
-        wr.print("} ");
-    }
-
+    // Metodi di supporto all'implementazione del visitor
+    /* ---------------------------------------------------------- */
+    /* ---------------------------------------------------------- */
     private String convert_type(ValueType type) {
         return switch (type) {
-            case integer -> "int";
-            case string -> "char";
-            case real -> "float";
-            case bool -> "bool";
+        case integer -> "int";
+        case string -> "char";
+        case real -> "float";
+        case bool -> "bool";
         };
     }
 }
