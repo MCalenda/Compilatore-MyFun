@@ -401,20 +401,17 @@ Di seguito, le regole di type checking utilizzate all'interno del visitor per l'
 
 #### Costanti
 
-<font size="3">Γ \vdash INTEGER_CONST : integer</font><br>
-<font size="3">Γ \vdash REAL_CONST : integer</font><br> 
-<font size="3">Γ \vdash STRING_CONST : string</font><br> 
-<font size="3">Γ \vdash TRUE : boolean</font><br>
-<font size="3">Γ \vdash FALSE : boolean</font><br>
+<img src="https://latex.codecogs.com/svg.image?\bg_white&space;\Gamma&space;\vdash&space;INTEGER\_CONST&space;:&space;integer"/>
+<img src="https://latex.codecogs.com/svg.image?\bg_white&space;\Gamma&space;\vdash&space;REAL\_CONST&space;:&space;real"/>
+<img src="https://latex.codecogs.com/svg.image?\bg_white&space;\Gamma&space;\vdash&space;STRING\_CONST&space;:&space;string"/>
+<img src="https://latex.codecogs.com/svg.image?\bg_white&space;\Gamma&space;\vdash&space;TRUE&space;:&space;boolean"/>
+<img src="https://latex.codecogs.com/svg.image?\bg_white&space;\Gamma&space;\vdash&space;FALSE&space;:&space;boolean"/>
 
 #### ID
-<font size="5">$\frac{Γ \ (id) \ = \ τ}{Γ \ \vdash \ id \ : \ τ}$</font><br>
-
-#### ID
-<font size="5">$\frac{Γ \ (id) \ = \ τ}{Γ \ \vdash \ id \ : \ τ}$</font><br>
+<img src="https://latex.codecogs.com/svg.image?\bg_white&space;\frac{\Gamma&space;\&space;(id)&space;\&space;=&space;\&space;\tau}{\Gamma&space;\&space;\vdash&space;\&space;id&space;\&space;:&space;\&space;\tau}"/>
 
 ### Operatori unari
-<font size="5">$\frac{Γ \ \vdash \ e \ : \ τ_1 \ \ \ optype1(op_1, τ_1) \ = \ τ}{Γ \ \vdash \ op_1 \ e \ : \ τ}$</font><br>
+<img src="https://latex.codecogs.com/svg.image?\bg_white&space;\frac{\Gamma&space;\&space;\vdash&space;\&space;e&space;\&space;:&space;\&space;\tau_1&space;\&space;\&space;\&space;optype1(op_1,&space;\tau_1)&space;\&space;=&space;\&space;\tau}{\Gamma&space;\&space;\vdash&space;\&space;op_1&space;\&space;e&space;\&space;:&space;\&space;\tau}"/>
 
 Tabella per optype1(op, t) 
 
@@ -425,7 +422,7 @@ Tabella per optype1(op, t)
 | NOT   | bool     | bool      |
 
 ### Operatori binari
-<font size="5">$\frac{Γ \ \vdash \ e \ : \ τ_1 \ \ \ Γ \ \vdash \ e_2 \ : \ τ_2 \ \ \ optype2(op_2, τ_1, τ_2) \ = \ τ}{Γ \ \vdash \ e_1 \ op_2 \ e_2 \ : \ τ}$</font><br>
+<img src="https://latex.codecogs.com/svg.image?\bg_white&space;\frac{\Gamma&space;\&space;\vdash&space;\&space;e&space;\&space;:&space;\&space;\tau_1&space;\&space;\&space;\&space;\Gamma&space;\&space;\vdash&space;\&space;e_2&space;\&space;:&space;\&space;\tau_2&space;\&space;\&space;\&space;optype2(op_2,&space;\tau_1,&space;\tau_2)&space;\&space;=&space;\&space;\tau}{\Gamma&space;\&space;\vdash&space;\&space;e_1&space;\&space;op_2&space;\&space;e_2&space;\&space;:&space;\&space;\tau}" />
 
 Tabella  per optype2(op, $t_1$, $t_2$) 
 
@@ -458,12 +455,12 @@ Tabella  per optype2(op, $t_1$, $t_2$)
 | EQ, NE                    | bool     | bool      | bool      |
 
 ### Lista di istruzioni
-<font size="5">$\frac{Γ \ \vdash \ stmt_1 \ : \ notype \ \ \ Γ \ \vdash \ stmt_2 \ : \ notype}{Γ \ \vdash \ stmt_1 \ ; \ stmt_2 \ : \ notype}$</font><br>
+<img src="https://latex.codecogs.com/svg.image?\bg_white&space;\frac{\Gamma&space;\&space;\vdash&space;\&space;stmt_1&space;\&space;:&space;\&space;notype&space;\&space;\&space;\&space;\Gamma&space;\&space;\vdash&space;\&space;stmt_2&space;\&space;:&space;\&space;notype}{\Gamma&space;\&space;\vdash&space;\&space;stmt_1&space;\&space;;&space;\&space;stmt_2&space;\&space;:&space;\&space;notype}"/>
 
 ### Assegnamento
-<font size="5">$\frac{Γ \ (id) \ = \ τ \ \ \ Γ \ \vdash \ e \ = \ τ}{Γ \ \vdash \ id \ := \ e \ : \ notype}$</font><br>
+<img src="https://latex.codecogs.com/svg.image?\bg_white&space;\frac{\Gamma&space;\&space;(id)&space;\&space;=&space;\&space;\tau&space;\&space;\&space;\&space;\Gamma&space;\&space;\vdash&space;\&space;e&space;\&space;=&space;\&space;\tau}{\Gamma&space;\&space;\vdash&space;\&space;id&space;\&space;:=&space;\&space;e&space;\&space;:&space;\&space;notype}"/>
 
 ### Chiamata a funzione con o senza tipo di ritorno
-<font size="5">$\frac{Γ \ \vdash \ f \ : \ τ_1 \ \times \ ... \ \times \ τ_n \ ⟶ \ τ \ \ \ Γ \ \vdash \ e_i \ : \ t_i^{i \in 1...n}}{Γ \ \vdash \ f(e_1,...,e_n) \ : \ τ}$</font><br>
+<img src="https://latex.codecogs.com/svg.image?\bg_white&space;\frac{\Gamma&space;\&space;\vdash&space;\&space;f&space;\&space;:&space;\&space;\tau_1&space;\&space;\times&space;\&space;...&space;\&space;\times&space;\&space;\tau_n&space;\&space;\rightarrow&space;&space;\&space;\tau&space;\&space;\&space;\&space;\Gamma&space;\&space;\vdash&space;\&space;e_i&space;\&space;:&space;\&space;\tau_i^{i&space;\in&space;1...n}}{\Gamma&space;\&space;\vdash&space;\&space;f(e_1,...,e_n)&space;\&space;:&space;\&space;\tau}"/>
 
-<font size="5">$\frac{Γ \ \vdash \ f \ : \ τ_1 \ \times \ ... \ \times \ τ_n \ ⟶ \ notype \ \ \ Γ \ \vdash \ e_i \ : \ t_i^{i \in 1...n}}{Γ \ \vdash \ f(e_1,...,e_n) \ : \ notype}$</font><br>
+<img src="https://latex.codecogs.com/svg.image?\bg_white&space;\frac{\Gamma&space;\&space;\vdash&space;\&space;f&space;\&space;:&space;\&space;\tau_1&space;\&space;\times&space;\&space;...&space;\&space;\times&space;\&space;\tau_n&space;\&space;\rightarrow&space;\&space;notype&space;\&space;\&space;\&space;\Gamma&space;\&space;\vdash&space;\&space;e_i&space;\&space;:&space;\&space;\tau_i^{i&space;\in&space;1...n}}{\Gamma&space;\&space;\vdash&space;\&space;f(e_1,...,e_n)&space;\&space;:&space;\&space;notype}"/>
