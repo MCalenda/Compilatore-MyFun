@@ -1,9 +1,3 @@
 main
-    var choose := 0, conti := true;
-
-    while conti loop
-        if choose = 0 then
-            conti := false;
-        end if;
-    end loop;
+    string ciao := 'ciao';
 end main;

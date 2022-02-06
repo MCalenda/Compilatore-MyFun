@@ -49,11 +49,13 @@ float sommac(int a, float b, char **size) {
     float result;
     result = a + b + c;
     if (result > 100) {
-        char *valore = "grande";
+        char *valore = malloc(512 * sizeof(char));
+        strcpy(valore, "grande");
         *size = valore;
 
     } else {
-        char *valore = "piccola";
+        char *valore = malloc(512 * sizeof(char));
+        strcpy(valore, "piccola");
         *size = valore;
     }
     return result;
@@ -75,7 +77,8 @@ int main() {
     int a = 1;
     float b = 2.2;
     char *taglia = malloc(512 * sizeof(char));
-    char *ans = "no";
+    char *ans = malloc(512 * sizeof(char));
+    strcpy(ans, "no");
     float risultato = sommac(a, b, &taglia);
     printf("%s", "vuoi continuare? (si/no)");
     printf("\t");
