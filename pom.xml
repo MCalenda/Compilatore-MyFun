@@ -31,9 +31,9 @@
                 <artifactId>jflex-maven-plugin</artifactId>
                 <version>1.8.2</version>
                 <configuration>
-                    <outputDirectory>src\java</outputDirectory>
+                    <outputDirectory>src/java</outputDirectory>
                     <lexDefinitions>
-                        <lexDefinition>src\jflex_cup</lexDefinition>
+                        <lexDefinition>src/jflex_cup</lexDefinition>
                     </lexDefinitions>
                 </configuration>
                 <executions>
@@ -50,8 +50,8 @@
                 <artifactId>cup-maven-plugin</artifactId>
                 <version>11b-20160615-1</version>
                 <configuration>
-                    <outputDirectory>src\java</outputDirectory>
-                    <cupDefinition>src\jflex_cup\MyFun.cup</cupDefinition>
+                    <outputDirectory>src/java</outputDirectory>
+                    <cupDefinition>src/jflex_cup/MyFun.cup</cupDefinition>
                     <packageName>cup</packageName>
                 </configuration>
                 <executions>
