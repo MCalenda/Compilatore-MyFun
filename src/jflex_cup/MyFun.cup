@@ -1,4 +1,4 @@
-Bimport java.util.ArrayList;
+import java.util.ArrayList;
 
 import tree.nodes.*;
 import tree.leaves.*;
