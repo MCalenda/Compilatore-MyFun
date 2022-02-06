@@ -39,38 +39,38 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
 
         // Funzioni per la concatenazione
         wr.println("\n// Funzioni di concatenazione");
-        wr.print("char *concatInt(char *string, int toConcat) {");
-        wr.print("int length = snprintf(NULL, 0,\"%d\", toConcat);");
-        wr.print("char *converted = (char *) malloc(length + 1);");
-        wr.print("sprintf(converted, \"%d\", toConcat);");
-        wr.print("char *concat = (char *) malloc(1 + strlen(string)+ strlen(converted));");
-        wr.print("strcpy(concat, string);");
-        wr.print("strcat(concat, converted);");
-        wr.print("return concat;}");
+        wr.print("char *concatInt(char *string, int toConcat) {\n");
+        wr.print("int length = snprintf(NULL, 0,\"%d\", toConcat);\n");
+        wr.print("char *converted = (char *) malloc(length + 1);\n");
+        wr.print("sprintf(converted, \"%d\", toConcat);\n");
+        wr.print("char *concat = (char *) malloc(1 + strlen(string)+ strlen(converted));\n");
+        wr.print("strcpy(concat, string);\n");
+        wr.print("strcat(concat, converted);\n");
+        wr.print("return concat;\n}\n");
 
-        wr.print("char *concatReal(char *string, float toConcat) {");
-        wr.print("int length = snprintf(NULL, 0,\"%f\", toConcat);");
-        wr.print("char *converted = (char *) malloc(length + 1);");
-        wr.print("sprintf(converted, \"%f\", toConcat);");
-        wr.print("char *concat = (char *) malloc(1 + strlen(string)+ strlen(converted));");
-        wr.print("strcpy(concat, string);");
-        wr.print("strcat(concat, converted);");
-        wr.print("return concat;}");
+        wr.print("char *concatReal(char *string, float toConcat) {\n");
+        wr.print("int length = snprintf(NULL, 0,\"%f\", toConcat);\n");
+        wr.print("char *converted = (char *) malloc(length + 1);\n");
+        wr.print("sprintf(converted, \"%f\", toConcat);\n");
+        wr.print("char *concat = (char *) malloc(1 + strlen(string)+ strlen(converted));\n");
+        wr.print("strcpy(concat, string);\n");
+        wr.print("strcat(concat, converted);\n");
+        wr.print("return concat;\n}\n");
 
-        wr.print("char *concatBool(char *string, int toConcat) {");
-        wr.print("char *converted = (char *) malloc(6);");
-        wr.print("if(toConcat == 1) strcpy(converted, \"true\");");
-        wr.print("else strcpy(converted, \"false\");");
-        wr.print("char *concat = (char *) malloc(1 + strlen(string)+ strlen(converted));");
-        wr.print("strcpy(concat, string);");
-        wr.print("strcat(concat, converted);");
-        wr.print("return concat;}");
+        wr.print("char *concatBool(char *string, int toConcat) {\n");
+        wr.print("char *converted = (char *) malloc(6);\n");
+        wr.print("if(toConcat == 1) strcpy(converted, \"true\");\n");
+        wr.print("else strcpy(converted, \"false\");\n");
+        wr.print("char *concat = (char *) malloc(1 + strlen(string)+ strlen(converted));\n");
+        wr.print("strcpy(concat, string);\n");
+        wr.print("strcat(concat, converted);\n");
+        wr.print("return concat;\n}\n");
 
-        wr.print("char *concatString(char *string, char *toConcat) {");
-        wr.print("char *concat = (char *) malloc(1 + strlen(string)+ strlen(toConcat));");
-        wr.print("strcpy(concat, string);");
-        wr.print("strcat(concat, toConcat);");
-        wr.print("return concat;}");
+        wr.print("char *concatString(char *string, char *toConcat) {\n");
+        wr.print("char *concat = (char *) malloc(1 + strlen(string)+ strlen(toConcat));\n");
+        wr.print("strcpy(concat, string);\n");
+        wr.print("strcat(concat, toConcat);\n");
+        wr.print("return concat;\n}\n");
 
         // Corpo del ProgramNode
         if (programNode.varDecList.size() != 0) {
@@ -130,7 +130,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
             }
         }
 
-        wr.print(";");
+        wr.print(";\n");
     }
 
     @Override
@@ -144,7 +144,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
         // In questo nodo le inizializzazioni sono obbligatorie
         wr.print(" = ");
         idInitObblNode.value.accept(this);
-        wr.print(";");
+        wr.print(";\n");
     }
 
     @Override
@@ -174,7 +174,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
                     wr.print(", ");
             }
         }
-        wr.print(") {");
+        wr.print(") {\n");
 
         // Gestione delle Dichiarazioni e Statement
         if (funNode.varDecList != null) {
@@ -187,7 +187,9 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
                 statNode.accept(this);
             }
         }
-        wr.print("}");
+        wr.print("\n}\n");
+
+        this.isOutParam = new ArrayList<String>();
     }
 
     @Override
@@ -208,7 +210,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
 
     @Override
     public void visit(MainNode mainNode) {
-        wr.print("int main() {");
+        wr.print("int main() {\n");
 
         for (VarDeclNode varDeclNode : mainNode.varDeclList) {
             varDeclNode.accept(this);
@@ -218,7 +220,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
         }
 
         wr.print("return 0; ");
-        wr.print("}");
+        wr.print("\n}\n");
     }
 
     // Statement
@@ -247,7 +249,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
 
         if (statNode.callFunNode != null) {
             statNode.callFunNode.accept(this);
-            wr.print(";");
+            wr.print(";\n");
         }
 
         if (statNode.returnNode != null) {
@@ -259,7 +261,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
     public void visit(IfStatNode ifStatNode) {
         wr.print("if(");
         ifStatNode.expr.accept(this);
-        wr.print(") {");
+        wr.print(") {\n");
 
         for (VarDeclNode varDeclNode : ifStatNode.varDeclList) {
             varDeclNode.accept(this);
@@ -268,7 +270,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
             statNode.accept(this);
         }
 
-        wr.print("}");
+        wr.print("\n}\n");
 
         if (ifStatNode.elseNode != null) {
             ifStatNode.elseNode.accept(this);
@@ -277,7 +279,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
 
     @Override
     public void visit(ElseNode elseNode) {
-        wr.print("else {");
+        wr.print("else {\n");
 
         for (VarDeclNode varDeclNode : elseNode.varDeclList) {
             varDeclNode.accept(this);
@@ -293,7 +295,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
     public void visit(WhileStatNode whileStatNode) {
         wr.print("while(");
         whileStatNode.expr.accept(this);
-        wr.print(") {");
+        wr.print(") {\n");
 
         for (VarDeclNode varDeclNode : whileStatNode.varDeclList) {
             varDeclNode.accept(this);
@@ -303,7 +305,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
             statNode.accept(this);
         }
 
-        wr.print("}");
+        wr.print("\n}\n");
     }
 
     @Override
@@ -311,7 +313,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
         if (readStatNode.expr != null) {
             wr.print("printf(");
             readStatNode.expr.accept(this);
-            wr.print(");");
+            wr.print(");\n");
         }
 
         // Per ogni ID nello statement di lettura
@@ -323,7 +325,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
             case real -> wr.print("scanf(\"%f\", &");
             }
             leafID.accept(this);
-            wr.print(");");
+            wr.print(");\n");
         }
     }
 
@@ -336,7 +338,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
         case real -> wr.print("printf(\"%f\", ");
         }
         writeStatNode.expr.accept(this);
-        wr.print(");");
+        wr.print(");\n");
 
         // Aggiungo eventuali extra post stampa
         switch (writeStatNode.op) {
@@ -363,7 +365,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
         assignStatNode.leafID.accept(this);
         wr.print(" = ");
         assignStatNode.expr.accept(this);
-        wr.print(";");
+        wr.print(";\n");
     }
 
     @Override
@@ -390,7 +392,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
     public void visit(ReturnNode returnNode) {
         wr.print("return ");
         returnNode.expr.accept(this);
-        wr.print(";");
+        wr.print(";\n");
     }
 
     // ExprNode e Costanti
@@ -516,6 +518,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
                     ((ExprNode) exprNode.val_One).accept(this);
                     wr.print(", ");
                     ((ExprNode) exprNode.val_Two).accept(this);
+                    wr.print(") == 0");
                 } else {
                     ((ExprNode) exprNode.val_One).accept(this);
                     wr.print(" == ");

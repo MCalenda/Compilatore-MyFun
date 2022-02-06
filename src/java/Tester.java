@@ -31,9 +31,9 @@ class Tester {
         /* --------------------------------------------------------- */
         /* --------------------------------------------------------- */
         // Modalità di esecuzione:
-        // 1: Analisi Sintattica
-        // 2: Analisi Lessicale
-        // 3: Analisi Semantica
+        // 1: Stampa token Lexer
+        // 2: Stampa albero versione JSON
+        // 3: Debug analisi semantica
         // 4: Generazione del codice C @DEFAULT
         /* --------------------------------------------------------- */
         /* --------------------------------------------------------- */
@@ -84,6 +84,10 @@ class Tester {
 
                 System.out.println("Visualizzo fasi di Debug !!!");
                 System.out.println();
+
+                // Attivazione del DEBUG per il Semantic_Visitor
+                semanticVisitor.debugTab = true;
+                semanticVisitor.debugVar = true;
 
                 semanticVisitor.visit(root);
                 break;

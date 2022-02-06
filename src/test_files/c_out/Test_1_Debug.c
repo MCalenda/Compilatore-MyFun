@@ -43,14 +43,12 @@ char *concatString(char *string, char *toConcat) {
 
 // Funzione Main
 int main() {
-    bool test_I = true;
-    bool test_II = false;
-    if (test_I == test_II) {
-        printf("%s", "ciao");
-        printf("\r\n");
-    } else {
-        printf("%s", "ciao II");
-        printf("\r\n");
+    int choose = 0;
+    bool conti = true;
+    while (conti) {
+        if (choose == 0) {
+            conti = false;
+        }
     }
     return 0;
 }

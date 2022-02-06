@@ -1,10 +1,9 @@
 main
-    bool test_I := true;
-    bool test_II := false;
+    var choose := 0, conti := true;
 
-    if (test_I = test_II) then
-        ?. 'ciao';
-    else
-        ?. 'ciao II';
-    end if;
+    while conti loop
+        if choose = 0 then
+            conti := false;
+        end if;
+    end loop;
 end main;
