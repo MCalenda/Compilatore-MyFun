@@ -550,7 +550,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
                     ((ExprNode) exprNode.val_One).accept(this);
                     wr.print(", ");
                     ((ExprNode) exprNode.val_Two).accept(this);
-                    wr.print(") == 1");
+                    wr.print(") != 0");
                 } else {
                     ((ExprNode) exprNode.val_One).accept(this);
                     wr.print(" != ");
