@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
-    <artifactId>arienzo-pisapia-calenda_es5_scg</artifactId>
+    <artifactId>arienzo-pisapia-calenda_es4_mfp</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
@@ -20,8 +20,8 @@
     </dependencies>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>18</maven.compiler.source>
+        <maven.compiler.target>18</maven.compiler.target>
     </properties>
 
     <build>
@@ -31,9 +31,9 @@
                 <artifactId>jflex-maven-plugin</artifactId>
                 <version>1.8.2</version>
                 <configuration>
-                    <outputDirectory>src/java</outputDirectory>
+                    <outputDirectory>src\java</outputDirectory>
                     <lexDefinitions>
-                        <lexDefinition>src/jflex_cup</lexDefinition>
+                        <lexDefinition>src\jflex_cup</lexDefinition>
                     </lexDefinitions>
                 </configuration>
                 <executions>
@@ -50,8 +50,8 @@
                 <artifactId>cup-maven-plugin</artifactId>
                 <version>11b-20160615-1</version>
                 <configuration>
-                    <outputDirectory>src/java</outputDirectory>
-                    <cupDefinition>src/jflex_cup/MyFun.cup</cupDefinition>
+                    <outputDirectory>src\java</outputDirectory>
+                    <cupDefinition>src\jflex_cup\MyFun.cup</cupDefinition>
                     <packageName>cup</packageName>
                 </configuration>
                 <executions>
