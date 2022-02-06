@@ -401,17 +401,17 @@ Di seguito, le regole di type checking utilizzate all'interno del visitor per l'
 
 #### Costanti
 
-<img src="https://latex.codecogs.com/svg.image?\bg_white&space;\Gamma&space;\vdash&space;INTEGER\_CONST&space;:&space;integer"/><br>
-<img src="https://latex.codecogs.com/svg.image?\bg_white&space;\Gamma&space;\vdash&space;REAL\_CONST&space;:&space;real"/><br>
-<img src="https://latex.codecogs.com/svg.image?\bg_white&space;\Gamma&space;\vdash&space;STRING\_CONST&space;:&space;string"/><br>
-<img src="https://latex.codecogs.com/svg.image?\bg_white&space;\Gamma&space;\vdash&space;TRUE&space;:&space;boolean"/><br>
-<img src="https://latex.codecogs.com/svg.image?\bg_white&space;\Gamma&space;\vdash&space;FALSE&space;:&space;boolean"/><br>
+<img src="https://latex.codecogs.com/png.image?\bg_white&space;\Gamma&space;\vdash&space;INTEGER\_CONST&space;:&space;integer"/><br>
+<img src="https://latex.codecogs.com/png.image?\bg_white&space;\Gamma&space;\vdash&space;REAL\_CONST&space;:&space;real"/><br>
+<img src="https://latex.codecogs.com/png.image?\bg_white&space;\Gamma&space;\vdash&space;STRING\_CONST&space;:&space;string"/><br>
+<img src="https://latex.codecogs.com/png.image?\bg_white&space;\Gamma&space;\vdash&space;TRUE&space;:&space;boolean"/><br>
+<img src="https://latex.codecogs.com/png.image?\bg_white&space;\Gamma&space;\vdash&space;FALSE&space;:&space;boolean"/><br><br>
 
 #### ID
-<img src="https://latex.codecogs.com/svg.image?\bg_white&space;\frac{\Gamma&space;\&space;(id)&space;\&space;=&space;\&space;\tau}{\Gamma&space;\&space;\vdash&space;\&space;id&space;\&space;:&space;\&space;\tau}"/><br>
+<img src="https://latex.codecogs.com/png.image?\bg_white&space;\frac{\Gamma&space;\&space;(id)&space;\&space;=&space;\&space;\tau}{\Gamma&space;\&space;\vdash&space;\&space;id&space;\&space;:&space;\&space;\tau}"/><br><br>
 
 ### Operatori unari
-<img src="https://latex.codecogs.com/svg.image?\bg_white&space;\frac{\Gamma&space;\&space;\vdash&space;\&space;e&space;\&space;:&space;\&space;\tau_1&space;\&space;\&space;\&space;optype1(op_1,&space;\tau_1)&space;\&space;=&space;\&space;\tau}{\Gamma&space;\&space;\vdash&space;\&space;op_1&space;\&space;e&space;\&space;:&space;\&space;\tau}"/><br>
+<img src="https://latex.codecogs.com/png.image?\bg_white&space;\frac{\Gamma&space;\&space;\vdash&space;\&space;e&space;\&space;:&space;\&space;\tau_1&space;\&space;\&space;\&space;optype1(op_1,&space;\tau_1)&space;\&space;=&space;\&space;\tau}{\Gamma&space;\&space;\vdash&space;\&space;op_1&space;\&space;e&space;\&space;:&space;\&space;\tau}"/><br>
 
 Tabella per optype1(op, t) 
 
@@ -421,8 +421,10 @@ Tabella per optype1(op, t)
 | MINUS | real     | real      |
 | NOT   | bool     | bool      |
 
+<br>
+
 ### Operatori binari
-<img src="https://latex.codecogs.com/svg.image?\bg_white&space;\frac{\Gamma&space;\&space;\vdash&space;\&space;e&space;\&space;:&space;\&space;\tau_1&space;\&space;\&space;\&space;\Gamma&space;\&space;\vdash&space;\&space;e_2&space;\&space;:&space;\&space;\tau_2&space;\&space;\&space;\&space;optype2(op_2,&space;\tau_1,&space;\tau_2)&space;\&space;=&space;\&space;\tau}{\Gamma&space;\&space;\vdash&space;\&space;e_1&space;\&space;op_2&space;\&space;e_2&space;\&space;:&space;\&space;\tau}"/><br>
+<img src="https://latex.codecogs.com/png.image?\bg_white&space;\frac{\Gamma&space;\&space;\vdash&space;\&space;e&space;\&space;:&space;\&space;\tau_1&space;\&space;\&space;\&space;\Gamma&space;\&space;\vdash&space;\&space;e_2&space;\&space;:&space;\&space;\tau_2&space;\&space;\&space;\&space;optype2(op_2,&space;\tau_1,&space;\tau_2)&space;\&space;=&space;\&space;\tau}{\Gamma&space;\&space;\vdash&space;\&space;e_1&space;\&space;op_2&space;\&space;e_2&space;\&space;:&space;\&space;\tau}"/><br>
 
 Tabella  per optype2(op, $t_1$, $t_2$) 
 
@@ -454,13 +456,31 @@ Tabella  per optype2(op, $t_1$, $t_2$)
 | EQ, NE                    | string   | string    | bool      |
 | EQ, NE                    | bool     | bool      | bool      |
 
-### Lista di istruzioni
-<img src="https://latex.codecogs.com/svg.image?\bg_white&space;\frac{\Gamma&space;\&space;\vdash&space;\&space;stmt_1&space;\&space;:&space;\&space;notype&space;\&space;\&space;\&space;\Gamma&space;\&space;\vdash&space;\&space;stmt_2&space;\&space;:&space;\&space;notype}{\Gamma&space;\&space;\vdash&space;\&space;stmt_1&space;\&space;;&space;\&space;stmt_2&space;\&space;:&space;\&space;notype}"/><br>
+<br>
 
-### Assegnamento
-<img src="https://latex.codecogs.com/svg.image?\bg_white&space;\frac{\Gamma&space;\&space;(id)&space;\&space;=&space;\&space;\tau&space;\&space;\&space;\&space;\Gamma&space;\&space;\vdash&space;\&space;e&space;\&space;=&space;\&space;\tau}{\Gamma&space;\&space;\vdash&space;\&space;id&space;\&space;:=&space;\&space;e&space;\&space;:&space;\&space;notype}"/><br>
+### Lista di istruzioni
+<img src="https://latex.codecogs.com/png.image?\bg_white&space;\frac{\Gamma&space;\&space;\vdash&space;\&space;stmt_1&space;\&space;:&space;\&space;notype&space;\&space;\&space;\&space;\Gamma&space;\&space;\vdash&space;\&space;stmt_2&space;\&space;:&space;\&space;notype}{\Gamma&space;\&space;\vdash&space;\&space;stmt_1&space;\&space;;&space;\&space;stmt_2&space;\&space;:&space;\&space;notype}"/><br><br>
+
+### Assegnazione
+<img src="https://latex.codecogs.com/png.image?\bg_white&space;\frac{\Gamma&space;\&space;(id)&space;\&space;=&space;\&space;\tau&space;\&space;\&space;\&space;\Gamma&space;\&space;\vdash&space;\&space;e&space;\&space;=&space;\&space;\tau}{\Gamma&space;\&space;\vdash&space;\&space;id&space;\&space;:=&space;\&space;e&space;\&space;:&space;\&space;notype}"/><br><br>
 
 ### Chiamata a funzione con o senza tipo di ritorno
-<img src="https://latex.codecogs.com/svg.image?\bg_white&space;\frac{\Gamma&space;\&space;\vdash&space;\&space;f&space;\&space;:&space;\&space;\tau_1&space;\&space;\times&space;\&space;...&space;\&space;\times&space;\&space;\tau_n&space;\&space;\rightarrow&space;&space;\&space;\tau&space;\&space;\&space;\&space;\Gamma&space;\&space;\vdash&space;\&space;e_i&space;\&space;:&space;\&space;\tau_i^{i&space;\in&space;1...n}}{\Gamma&space;\&space;\vdash&space;\&space;f(e_1,...,e_n)&space;\&space;:&space;\&space;\tau}"/><br>
+<img src="https://latex.codecogs.com/png.image?\bg_white&space;\frac{\Gamma&space;\&space;\vdash&space;\&space;f&space;\&space;:&space;\&space;\tau_1&space;\&space;\times&space;\&space;...&space;\&space;\times&space;\&space;\tau_n&space;\&space;\rightarrow&space;&space;\&space;\tau&space;\&space;\&space;\&space;\Gamma&space;\&space;\vdash&space;\&space;e_i&space;\&space;:&space;\&space;\tau_i^{i&space;\in&space;1...n}}{\Gamma&space;\&space;\vdash&space;\&space;f(e_1,...,e_n)&space;\&space;:&space;\&space;\tau}"/><br>
 
-<img src="https://latex.codecogs.com/svg.image?\bg_white&space;\frac{\Gamma&space;\&space;\vdash&space;\&space;f&space;\&space;:&space;\&space;\tau_1&space;\&space;\times&space;\&space;...&space;\&space;\times&space;\&space;\tau_n&space;\&space;\rightarrow&space;\&space;notype&space;\&space;\&space;\&space;\Gamma&space;\&space;\vdash&space;\&space;e_i&space;\&space;:&space;\&space;\tau_i^{i&space;\in&space;1...n}}{\Gamma&space;\&space;\vdash&space;\&space;f(e_1,...,e_n)&space;\&space;:&space;\&space;notype}"/><br>
+<img src="https://latex.codecogs.com/png.image?\bg_white&space;\frac{\Gamma&space;\&space;\vdash&space;\&space;f&space;\&space;:&space;\&space;\tau_1&space;\&space;\times&space;\&space;...&space;\&space;\times&space;\&space;\tau_n&space;\&space;\rightarrow&space;\&space;notype&space;\&space;\&space;\&space;\Gamma&space;\&space;\vdash&space;\&space;e_i&space;\&space;:&space;\&space;\tau_i^{i&space;\in&space;1...n}}{\Gamma&space;\&space;\vdash&space;\&space;f(e_1,...,e_n)&space;\&space;:&space;\&space;notype}"/><br><br>
+
+### Istruzione while
+<img src="https://latex.codecogs.com/png.image?\dpi{110}&space;\bg_white&space;\frac{\Gamma&space;\&space;\vdash&space;\&space;e&space;\&space;:&space;\&space;boolean&space;\&space;\&space;\&space;\Gamma&space;\&space;\vdash&space;\&space;block&space;\&space;:&space;\&space;notype}{\Gamma&space;\&space;\vdash&space;\&space;\mathbf{while}&space;\&space;e&space;\&space;\mathbf{loop}&space;\&space;block&space;\&space;\mathbf{end&space;\&space;loop}&space;\&space;:&space;\&space;notype}"/><br><br>
+
+### Istruzione if then else
+<img src="https://latex.codecogs.com/png.image?\dpi{110}&space;\bg_white&space;\frac{\Gamma&space;\&space;\vdash&space;\&space;e&space;\&space;:&space;\&space;boolean&space;\&space;\&space;\&space;\Gamma&space;\&space;\vdash&space;\&space;block&space;\&space;:&space;\&space;notype}{\Gamma&space;\&space;\vdash&space;\&space;\mathbf{if}&space;\&space;e&space;\&space;\mathbf{then}&space;\&space;block&space;\&space;\mathbf{else}&space;\&space;block&space;\&space;\mathbf{end&space;\&space;if}&space;\&space;:&space;\&space;notype}"/><br><br>
+
+### Istruzione read
+<img src="https://latex.codecogs.com/png.image?\dpi{110}&space;\bg_white&space;\frac{\Gamma&space;\&space;(&space;\&space;id_1,...,id_n&space;\&space;)&space;=&space;\tau_1,...,\tau_n\&space;\&space;\&space;\Gamma&space;\&space;\vdash&space;e&space;:&space;string}{\Gamma&space;\&space;\vdash&space;\&space;\mathbf{READ}&space;\&space;id_1,...,id_n\&space;e&space;\&space;:&space;\&space;notype}"/><br><br>
+
+### Istruzione write
+<img src="https://latex.codecogs.com/png.image?\dpi{110}&space;\bg_white&space;\frac{\Gamma&space;\&space;\vdash&space;\&space;e&space;\&space;:&space;\&space;\tau}{\Gamma&space;\&space;\vdash&space;\&space;\mathbf{WRITE}&space;\&space;e&space;\&space;:&space;\&space;notype}"/><br><br>
+
+### Istruzione return
+<img src="https://latex.codecogs.com/png.image?\dpi{110}&space;\bg_white&space;\frac{\Gamma&space;\&space;\vdash&space;e&space;:&space;\tau&space;\&space;\&space;\&space;\Gamma&space;\&space;\vdash&space;f&space;\&space;\rightarrow&space;\tau}{\Gamma&space;\&space;\vdash&space;\&space;\mathbf{return}&space;\&space;e&space;\&space;:&space;\&space;notype}"/><br><br>
+

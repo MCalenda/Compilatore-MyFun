@@ -40,16 +40,12 @@ return concat;
 }
 
 
+// Dichiarazione delle variabili locali
+char *ciao = malloc(512 * sizeof(char));
+strcpy(ciao, "ciao");
+
+
 // Funzione Main
 int main() {
-int choose = 0;
-bool conti = true;
-while(conti) {
-if(choose == 0) {
-conti = false;
-
-}
-
-}
 return 0; 
 }

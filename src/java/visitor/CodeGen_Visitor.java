@@ -74,7 +74,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
 
         // Corpo del ProgramNode
         if (programNode.varDecList.size() != 0) {
-            wr.println("\n\n// Dichiarazione delle variabili locali");
+            wr.println("\n\n// Dichiarazione delle variabili globali");
             for (VarDeclNode varDeclNode : programNode.varDecList) {
                 varDeclNode.accept(this);
             }
@@ -118,12 +118,13 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
             wr.print("*");
 
         idInitNode.leafID.accept(this);
+        if (idInitNode.type == ValueType.string)
+            wr.print(" = malloc(512 * sizeof(char));\n");
 
         // Se sto effettuando un inizializzazione
         if (idInitNode.exprNode != null) {
             if (idInitNode.type == ValueType.string) {
                 // Inizializzazione della variabile stringa
-                wr.print(" = malloc(512 * sizeof(char));\n");
                 wr.print("strcpy(");
                 idInitNode.leafID.accept(this);
                 wr.print(", ");
@@ -134,9 +135,8 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
                 wr.print(" = ");
                 idInitNode.exprNode.accept(this);
             }
+            wr.print(";\n");
         }
-
-        wr.print(";\n");
     }
 
     @Override
