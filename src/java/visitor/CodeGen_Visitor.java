@@ -121,12 +121,18 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
 
         // Se sto effettuando un inizializzazione
         if (idInitNode.exprNode != null) {
-            wr.print(" = ");
-            idInitNode.exprNode.accept(this);
-        } else {
-            // Se è una stringa faccio la malloc
             if (idInitNode.type == ValueType.string) {
-                wr.print(" = malloc(512 * sizeof(char))");
+                // Inizializzazione della variabile stringa
+                wr.print(" = malloc(512 * sizeof(char));\n");
+                wr.print("strcpy(");
+                idInitNode.leafID.accept(this);
+                wr.print(", ");
+                idInitNode.exprNode.accept(this);
+                wr.print(")");
+            } else {
+                // Inizializzazione di un tipo non stringa
+                wr.print(" = ");
+                idInitNode.exprNode.accept(this);
             }
         }
 
@@ -142,9 +148,20 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
         idInitObblNode.leafID.accept(this);
 
         // In questo nodo le inizializzazioni sono obbligatorie
-        wr.print(" = ");
-        idInitObblNode.value.accept(this);
-        wr.print(";\n");
+        if (idInitObblNode.type == ValueType.string) {
+            // Inizializzazione della variabile stringa
+            wr.print(" = malloc(512 * sizeof(char));\n");
+            wr.print("strcpy(");
+            idInitObblNode.leafID.accept(this);
+            wr.print(", ");
+            idInitObblNode.value.accept(this);
+            wr.print(");\n");
+        } else {
+            // Inizializzazione di un tipo non stringa
+            wr.print(" = ");
+            idInitObblNode.value.accept(this);
+            wr.print(";\n");
+        }
     }
 
     @Override
@@ -312,7 +329,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
     public void visit(ReadStatNode readStatNode) {
         if (readStatNode.expr != null) {
             wr.print("printf(");
-            readStatNode.expr.accept(this);          
+            readStatNode.expr.accept(this);
             wr.print(");\n");
         }
 
@@ -398,7 +415,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
     // ExprNode e Costanti
     /* ---------------------------------------------------------- */
     @Override
-    public void visit(ExprNode exprNode) { 
+    public void visit(ExprNode exprNode) {
         // Se si tratta di un espresisone a due valori
         if (exprNode.val_One != null && exprNode.val_Two != null) {
             switch (exprNode.op) {
@@ -527,8 +544,8 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
                 break;
 
             case "NE":
-                  // Se il primo valore è una stringa lo sono entrambi
-                  if (((ExprNode) exprNode.val_One).type == ValueType.string) {
+                // Se il primo valore è una stringa lo sono entrambi
+                if (((ExprNode) exprNode.val_One).type == ValueType.string) {
                     wr.print("strcmp(");
                     ((ExprNode) exprNode.val_One).accept(this);
                     wr.print(", ");
