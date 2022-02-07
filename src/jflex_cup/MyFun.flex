@@ -39,17 +39,14 @@ INTEGER_CONST = (({Number_From_One}{Number_From_Zero}*)|(0))
 REAL_CONST = (({Number_From_One}{Number_From_Zero}*)|(0))\.(({Number_From_Zero}*{Number_From_One}+)|(0))
 
 // Stringhe
-String_Const_Start_I = "'"
-String_Const_Start_II = "\""
-
+String_Const_Start = \'|\"
 
 // Commenti
 Comment_Block_Start = "#*"
 Comment_Line_Start_I = "#"
 Comment_Line_Start_II = "//"
 
-%state STRING1
-%state STRING2
+%state STRING
 %state COMMENT_BLOCK
 %state COMMENT_LINE
 
@@ -145,14 +142,9 @@ Comment_Line_Start_II = "//"
         }
 
     // Inizio di stringa
-    {String_Const_Start_I}    { 
+    {String_Const_Start}    { 
             string.setLength(0); 
-            yybegin(STRING1); 
-        }
-
-    {String_Const_Start_II}    { 
-            string.setLength(0); 
-            yybegin(STRING2); 
+            yybegin(STRING); 
         }
 
     // Inizio di commento a blocco
@@ -174,44 +166,22 @@ Comment_Line_Start_II = "//"
         }
 }
 
-<STRING1> {
+<STRING> {
     // Stringa terminata
-    "'"             { 
+    ' | \"           { 
             yybegin(YYINITIAL); 
             return new Symbol(sym.STRING_CONST, string.toString()); 
         }
 
 
     // Finchè trovi caratteri non presenti nelle quadre
-    [^\n\r\'\\]+    { string.append(yytext()); }
+    [^\n\r\'\"\\]+    { string.append(yytext()); }
 
     // CONTROLLARE QUESTO /n CHE DEVE FARE
     "\n"            { string.append('\n');}
     "\r"            { string.append('\r'); }
     "\\'"           { string.append('\''); }
-    "\\"            { string.append('\\'); }
-
-    <<EOF>>         { 
-        yybegin(YYINITIAL);
-        return new Symbol(sym.error, "String not closed"); 
-    }
-}
-
-<STRING2> {
-    // Stringa terminata
-    "\""            { 
-            yybegin(YYINITIAL); 
-            return new Symbol(sym.STRING_CONST, string.toString()); 
-        }
-
-
-    // Finchè trovi caratteri non presenti nelle quadre
-    [^\n\r\"\\]+    { string.append(yytext()); }
-
-    // CONTROLLARE QUESTO /n CHE DEVE FARE
-    "\n"            { string.append('\n');}
-    "\r"            { string.append('\r'); }
-    "\\'"           { string.append('\''); }
+    "\\\""           { string.append("\\\""); }
     "\\"            { string.append('\\'); }
 
     <<EOF>>         { 
