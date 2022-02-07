@@ -433,8 +433,10 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
         SymbolTableEntry functionDef = symbolTable.containsFunctionEntry(symbolTable.symbolTableName);
 
         // Risalgo fino alla tabella Global
-        while (functionDef == null)
-            functionDef = symbolTable.containsFunctionEntry(symbolTable.fatherSymbolTable.symbolTableName);
+        while (functionDef == null){
+            symbolTable = symbolTable.fatherSymbolTable;
+            functionDef = symbolTable.containsFunctionEntry(symbolTable.symbolTableName);
+        }
 
         // Se il tipo di ritorno della funzione non è compatibile con l'espressione del
         // return
@@ -687,15 +689,9 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
         // Controlli sulle operazioni di concatenzazione
         if (type1 == ValueType.string && type2 == ValueType.string)
             return ValueType.string;
-        if (type1 == ValueType.integer && type2 == ValueType.string)
-            return ValueType.string;
         if (type1 == ValueType.string && type2 == ValueType.integer)
             return ValueType.string;
-        if (type1 == ValueType.real && type2 == ValueType.string)
-            return ValueType.string;
         if (type1 == ValueType.string && type2 == ValueType.real)
-            return ValueType.string;
-        if (type1 == ValueType.bool && type2 == ValueType.string)
             return ValueType.string;
         if (type1 == ValueType.string && type2 == ValueType.bool)
             return ValueType.string;

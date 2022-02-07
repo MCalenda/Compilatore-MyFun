@@ -1,6 +1,7 @@
 # Linguaggio MyFun
 
 NON GESTIAMO CONCATENAZIONI GLOBALI
+LIMITAZIONE LINGUAGGIO CONCAT CON INIZIO DIVERSO DA STRINGA
 
 Il seguente documento contiene la specifica del linguaggio MyFun implementato all'interno del progetto.
 
@@ -439,11 +440,8 @@ Tabella  per optype2(op, $t_1$, $t_2$)
 | DIVINT                    | integer  | integer   | integer   |
 | DIVINT                    | real     | integer   | integer   |
 | STR_CONCAT                | string   | string    | string    |
-| STR_CONCAT                | integer  | string    | string    |
 | STR_CONCAT                | string   | integer   | string    |
-| STR_CONCAT                | real     | string    | string    |
 | STR_CONCAT                | string   | real      | string    |
-| STR_CONCAT                | bool     | string    | string    |
 | STR_CONCAT                | string   | bool      | string    |
 | AND                       | bool     | bool      | bool      |
 | OR                        | bool     | bool      | bool      |
