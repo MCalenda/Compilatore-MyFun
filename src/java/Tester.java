@@ -49,14 +49,19 @@ class Tester {
                 }
 
                 bw = new BufferedWriter(new FileWriter(file));
-                while (token.sym != sym.EOF) {
+                while (token.sym != sym.EOF && token.sym != sym.error) {
                     bw.write("<" + sym.terminalNames[token.sym] + (token.value == null ? ">" : ", " + token.value + ">"));
                     bw.write("\n");
 
                     token = lexer.next_token();
                 }
 
-                System.out.println("Token salvati all'interno del file \"debug/Lexer_Debug.txt\" !!!");
+                if (token.sym == sym.error) {
+                    bw.write("<" + sym.terminalNames[token.sym] + (token.value == null ? ">" : ", " + token.value + ">"));
+                    System.out.println("Errore durante l'esecuzione del Lexer !!!");
+                } else {   
+                    System.out.println("Token salvati all'interno del file \"debug/Lexer_Debug.txt\" !!!");
+                }
 
                 bw.flush();
                 bw.close();
