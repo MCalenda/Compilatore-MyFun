@@ -2,7 +2,7 @@
 
 Il seguente documento contiene la specifica del linguaggio MyFun implementato all'interno del progetto.
 
-## Configurazione IntelliJ IDEA:
+### Configurazione IntelliJ IDEA:
 
 - Project SDK: **17**
 - Project Language Level: **SDK Default**
@@ -372,7 +372,9 @@ Di seguito, le regole di type checking utilizzate all'interno del visitor per l'
 
 #### Costanti
 
-<img src="https://latex.codecogs.com/png.image?\bg_white&space;\Gamma&space;\vdash&space;INTEGER\_CONST&space;:&space;integer"/><br>
+<img src="https://render.githubusercontent.com/render/math?math=e^{i \pi} = -1">
+
+<img src="https://latex.codecogs.com/png.image?\Gamma&space;\vdash&space;INTEGER\_CONST&space;:&space;integer"/><br>
 <img src="https://latex.codecogs.com/png.image?\bg_white&space;\Gamma&space;\vdash&space;REAL\_CONST&space;:&space;real"/><br>
 <img src="https://latex.codecogs.com/png.image?\bg_white&space;\Gamma&space;\vdash&space;STRING\_CONST&space;:&space;string"/><br>
 <img src="https://latex.codecogs.com/png.image?\bg_white&space;\Gamma&space;\vdash&space;TRUE&space;:&space;boolean"/><br>
