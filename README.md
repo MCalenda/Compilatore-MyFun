@@ -360,11 +360,9 @@ ExprList ::= Expr
  | OUTPAR ID COMMA ExprList
 ```
 
-## Analisi Semantica e Generazione del Codice Intermedio
+## Analisi Semantica
 
-Per l'analisi sematica è stato utilizzato il patter **VISITOR** con la creazione di due visitor distinti:
-* **Semantic_Visitor.java**: per l'analisi semantica;
-* **CodeGen_Visitor.java**: per la generazione del codice intermedio (C).
+Per l'analisi sematica è stato utilizzato il patter **VISITOR** implementato nel file **Semantic_Visitor.java**: per l'analisi semantica;
 
 ### Regole di type-checking
 
@@ -377,7 +375,7 @@ Di seguito, le regole di type checking utilizzate all'interno del visitor per l'
 * <img src="https://latex.codecogs.com/png.image?\bg_white&space;\Gamma&space;\vdash&space;STRING\_CONST&space;:&space;string"/><br>
 * <img src="https://latex.codecogs.com/png.image?\bg_white&space;\Gamma&space;\vdash&space;TRUE&space;:&space;boolean"/><br>
 * <img src="https://latex.codecogs.com/png.image?\bg_white&space;\Gamma&space;\vdash&space;FALSE&space;:&space;boolean"/><br>
-* 
+  
 **ID**
 
   <img src="https://latex.codecogs.com/png.image?\bg_white&space;\frac{\Gamma&space;\&space;(id)&space;\&space;=&space;\&space;\tau}{\Gamma&space;\&space;\vdash&space;\&space;id&space;\&space;:&space;\&space;\tau}"/><br>
@@ -459,6 +457,17 @@ Tabella per optype2(op, $t_1$, $t_2$)
 
 <img src="https://latex.codecogs.com/png.image?\dpi{110}&space;\bg_white&space;\frac{\Gamma&space;\&space;\vdash&space;e&space;:&space;\tau&space;\&space;\&space;\&space;\Gamma&space;\&space;\vdash&space;f&space;\&space;\rightarrow&space;\tau}{\Gamma&space;\&space;\vdash&space;\&space;\mathbf{return}&space;\&space;e&space;\&space;:&space;\&space;notype}"/><br>
 
+## Generazione del Codice Intermedio
+
+Per la generazione del codice è stato utilizza il pattern **VISITOR** implementato nel file **CodeGen_Visitor.java**: per la generazione del codice intermedio (C).
+
+* Sono state introdotte le librerie **stdio.h**, **stdlib.h**, **stdbool.h** e **string.h** al fine di effettuare le operazioni standard di input/output, effettuare operazioni sulle stringhe (es. strcmp, strcpy) e poter gestire i tipi booleani.
+
+* Per la gestione della concatenazione delle stringhe e le conversione implicite richieste sono state create quattro funzioni all'interno del codice C:
+  * ``` char *concatInt(char *string, int toConcat) ```
+  * ``` char *concatReal(char *string, float toConcat) ```
+  * ``` char *concatBool(char *string, int toConcat) ```
+  * ``` char *concatString(char *string, char *toConcat) ```
 
 ## Bug Noti e Scelte Progettuali Fatte
 
