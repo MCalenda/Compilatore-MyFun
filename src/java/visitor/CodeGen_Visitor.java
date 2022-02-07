@@ -135,8 +135,8 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
                 wr.print(" = ");
                 idInitNode.exprNode.accept(this);
             }
-            wr.print(";\n");
         }
+        wr.print(";\n");
     }
 
     @Override
@@ -328,7 +328,13 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
     @Override
     public void visit(ReadStatNode readStatNode) {
         if (readStatNode.expr != null) {
-            wr.print("printf(");
+            // Dal tipo dell'espressione carpisco il tipo di valore da stampare
+            switch (readStatNode.expr.type) {
+            case integer, bool -> wr.print("printf(\"%d\", ");
+            case string -> wr.print("printf(\"%s\", ");
+            case real -> wr.print("printf(\"%f\", ");
+            }
+            
             readStatNode.expr.accept(this);
             wr.print(");\n");
         }
@@ -354,6 +360,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
         case string -> wr.print("printf(\"%s\", ");
         case real -> wr.print("printf(\"%f\", ");
         }
+
         writeStatNode.expr.accept(this);
         wr.print(");\n");
 

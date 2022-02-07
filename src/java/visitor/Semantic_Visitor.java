@@ -19,7 +19,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
     /* ---------------------------------------------------------- */
     @Override
     public void visit(ProgramNode programNode) {
-        // Creao la ST globale e la pusho nello stack
+        // Creo la ST globale e la pusho nello stack
         SymbolTable symbolTable = new SymbolTable("Global");
         stack.push(symbolTable);
 
@@ -44,6 +44,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
             System.out.println("-----------------------------------------------------");
         }
 
+        // Rimuovo la ST dallo stack, in quanto non serve più
         stack.pop();
     }
 
@@ -62,6 +63,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
                     System.out.println("[ERRORE SEMANTICO] variabile " + idInitNode.leafID.value + " già dichiarata nel T.E. " + stack.peek().symbolTableName);
                     System.exit(1);
                 }
+                // Controllo idInitNode
                 idInitNode.accept(this);
             }
 
@@ -77,6 +79,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
                     System.out.println("[ERRORE SEMANTICO] variabile " + idInitObblNode.leafID.value + " già dichiarata nel T.E. " + stack.peek().symbolTableName);
                     System.exit(1);
                 }
+                // Controllo idInitObblNode
                 idInitObblNode.accept(this);
             }
         }
@@ -105,6 +108,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
     @Override
     public void visit(IdInitObblNode idInitObblNode) {
+        // Controllo il tipo della leafID
         idInitObblNode.leafID.accept(this);
 
         // DEBUG
@@ -114,29 +118,32 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
     @Override
     public void visit(FunNode funNode) {
+        // Creo una nuova ST per la funzione
         SymbolTable symbolTable = new SymbolTable(funNode.leafID.value);
 
-        // Setto come padre la tabella Global
+        // Setto come padre la tabella Global e la inserisco nello stack
         symbolTable.setFatherSymTab(stack.firstElement());
         stack.push(symbolTable);
 
         // Lista di tipi dei parametri
         ArrayList<ValueType> params = new ArrayList<>();
-        // Lista di booleani, i-imo è un outParam
+        // Lista di booleani, se è un OUT/@
         ArrayList<Boolean> isOut = new ArrayList<>();
 
         // Controllo la lista di parametri
         if (funNode.paramDecList != null)
             for (ParamDecNode parDecNode : funNode.paramDecList) {
                 parDecNode.accept(this);
+                // Inserisco il tipo del paramentro nella lista
                 params.add(parDecNode.type);
+                // Inserisco se il paramentro è di tipo OUT/@ o meno, nella lista
                 if (parDecNode.out)
                     isOut.add(true);
                 else
                     isOut.add(false);
             }
 
-        // Creo la funzione in tabella
+        // Creo la funzione nella tabella ROOT (firstElement)
         if (!stack.firstElement().createEntry_function(funNode.leafID.value, funNode.type, params, isOut)) {
             System.err.println("[ERRORE SEMANTICO] funzione " + funNode.leafID.value + " gia dichiarata nel T.E. " + stack.peek().symbolTableName);
             System.exit(1);
@@ -161,12 +168,14 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
             System.out.println("-----------------------------------------------------");
         }
 
+        // Rimuovo la ST dallo stack, in quanto non serve più
         stack.pop();
     }
 
     @Override
     public void visit(ParamDecNode paramDecNode) {
-        // Prendo la tabella al top (sarà sempre quella della funzione)
+        // Prendo la tabella al top (sarà sempre quella della funzione essendo in
+        // creazione)
         SymbolTable picked = stack.peek();
 
         // Creo la variabile in tabella
@@ -178,9 +187,10 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
     @Override
     public void visit(MainNode mainNode) {
+        // Creo una nuova ST per il main
         SymbolTable symbolTable = new SymbolTable("Main");
 
-        // Setto come padre la tabella Global
+        // Setto come padre la tabella Global e la inserisco nello stack
         symbolTable.setFatherSymTab(stack.firstElement());
         stack.push(symbolTable);
 
@@ -202,6 +212,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
             System.out.println("-----------------------------------------------------");
         }
 
+        // Rimuovo la ST dallo stack, in quanto non serve più
         stack.pop();
     }
 
@@ -209,6 +220,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
     /* ---------------------------------------------------------- */
     @Override
     public void visit(StatNode statNode) {
+        // Controllo in vase a quella attiva
         if (statNode.ifStatNode != null) {
             statNode.ifStatNode.accept(this);
         } else if (statNode.whileStatNode != null) {
@@ -228,14 +240,15 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
     @Override
     public void visit(IfStatNode ifStatNode) {
-        // Controllo il tipo dell'espressione dell'IF, deve essere un booleano
+        // Controllo che il tipo dell'espressione dell'IF, sia un booleano
         ifStatNode.expr.accept(this);
         if (ifStatNode.expr.type != ValueType.bool) {
             System.err.println("[ERRORE SEMANTICO] espressione dello statement IF di tipo non bool");
             System.exit(1);
         }
 
-        // Creo una nuova tabella e setto il padre come il top dello stack
+        // Creo una nuova tabella e setto il padre come il top dello stack (Il
+        // chiamante) e inserisco
         SymbolTable symbolTable = new SymbolTable(ifStatNode.name);
         symbolTable.setFatherSymTab(stack.peek());
         stack.push(symbolTable);
@@ -256,6 +269,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
             System.out.println("-----------------------------------------------------");
         }
 
+        // Rimuovo la ST dallo stack, in quanto non serve più
         stack.pop();
 
         // Controllo, se c'è, il nodo ELSE
@@ -266,8 +280,8 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
     @Override
     public void visit(ElseNode elseNode) {
-
-        // Creo una nuova tabella e setto il padre come il top dello stack
+        // Creo una nuova tabella e setto il padre come il top dello stack (Il
+        // chiamante) e inserisco
         SymbolTable symbolTable = new SymbolTable(elseNode.name);
         symbolTable.setFatherSymTab(stack.peek());
         stack.push(symbolTable);
@@ -288,20 +302,21 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
             System.out.println("-----------------------------------------------------");
         }
 
+        // Rimuovo la ST dallo stack, in quanto non serve più
         stack.pop();
     }
 
     @Override
     public void visit(WhileStatNode whileStatNode) {
-
-        // Controllo il tipo dell'espressione del WHILE, deve essere un booleano
+        // Controllo che il tipo dell'espressione del WHILE, sia un booleano
         whileStatNode.expr.accept(this);
         if (whileStatNode.expr.type != ValueType.bool) {
             System.err.println("[ERRORE SEMANTICO] espressione dello statement WHILE di tipo non bool");
             System.exit(1);
         }
 
-        // Creo una nuova tabella e setto il padre come il top dello stack
+        // Creo una nuova tabella e setto il padre come il top dello stack (Il
+        // chiamante) e inserisco
         SymbolTable symbolTable = new SymbolTable(whileStatNode.name);
         symbolTable.setFatherSymTab(stack.peek());
         stack.push(symbolTable);
@@ -322,12 +337,12 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
             System.out.println("-----------------------------------------------------");
         }
 
+        // Rimuovo la ST dallo stack, in quanto non serve più
         stack.pop();
     }
 
     @Override
     public void visit(ReadStatNode readStatNode) {
-
         // Controllo il tipo dell'espressione della READ, se c'è
         if (readStatNode.expr != null) {
             readStatNode.expr.accept(this);
@@ -337,20 +352,20 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
             }
         }
 
-        // Controllo che che le leafID siano state dichiarate
+        // Controllo gli ID
         for (LeafID leafID : readStatNode.IdList)
             leafID.accept(this);
     }
 
     @Override
     public void visit(WriteStatNode writeStatNode) {
+        // Controllo l'espressione
         writeStatNode.expr.accept(this);
     }
 
     @Override
     public void visit(AssignStatNode assignStatNode) {
-
-        // Controllo il tipo della leafID (e se è stata dichiarata)
+        // Controllo l'ID
         assignStatNode.leafID.accept(this);
 
         // Controllo il tipo dell'espressione
@@ -369,7 +384,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
     @Override
     public void visit(CallFunNode callFunNode) {
-        // Trovo la definizione di funzione nella tabella Global
+        // Trovo la definizione di funzione nella tabella Global partendo dalla ROOT
         SymbolTable symbolTable = stack.firstElement();
         SymbolTableEntry functionDef = symbolTable.containsFunctionEntry(callFunNode.leafID.value);
 
@@ -409,11 +424,11 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
     @Override
     public void visit(ReturnNode returnNode) {
-
         // Controllo il tipo dell'espressione del return
         returnNode.expr.accept(this);
 
-        // Controllo se esiste una funzione con il nome della tabella corrente
+        // Controllo se esiste una funzione in cui il return si trova nella tabella
+        // corrente
         SymbolTable symbolTable = stack.peek();
         SymbolTableEntry functionDef = symbolTable.containsFunctionEntry(symbolTable.symbolTableName);
 
@@ -433,7 +448,6 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
     /* ---------------------------------------------------------- */
     @Override
     public void visit(ExprNode exprNode) {
-
         // Se è un'operazione con doppio argomento
         if (exprNode.val_One != null && exprNode.val_Two != null) {
             // Controllo il tipo delle due espressioni
@@ -446,103 +460,108 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
             // Se è un operazione aritmetica
             if (exprNode.op.equalsIgnoreCase("PLUS") || exprNode.op.equalsIgnoreCase("MINUS") || exprNode.op.equalsIgnoreCase("TIMES") || exprNode.op.equalsIgnoreCase("DIV") || exprNode.op.equalsIgnoreCase("POW")) {
-                // Controllo che i tipi delle due espressioni siano compatibili per questa
-                // operazione
+                // Controllo che i tipi delle due espressioni siano compatibili per questa operazione
                 ValueType resultType = getType_Operations(((ExprNode) exprNode.val_One).type, ((ExprNode) exprNode.val_Two).type);
                 if (resultType == null) {
                     System.err.println("[ERRORE SEMANTICO] tipi per op " + exprNode.op + " errati");
                     System.exit(1);
                 } else
+                    // Assegno il tipo risultante all'espressione
                     exprNode.type = resultType;
 
                 // Se è una operazione di divisione per intero
             } else if (exprNode.op.equalsIgnoreCase("DIVINT")) {
-                // Controllo che i tipi delle due espressioni siano compatibili per questa
-                // operazione
+                // Controllo che i tipi delle due espressioni siano compatibili per questa operazione
                 ValueType resultType = getTypeDivInt(((ExprNode) exprNode.val_One).type, ((ExprNode) exprNode.val_Two).type);
                 if (resultType == null) {
                     System.err.println("[ERRORE SEMANTICO] tipi per op " + exprNode.op + " errati");
                     System.exit(1);
                 } else
+                    // Assegno il tipo risultante all'espressione
                     exprNode.type = resultType;
 
                 // Se è un AND o un OR
             } else if (exprNode.op.equalsIgnoreCase("AND") || exprNode.op.equalsIgnoreCase("OR")) {
-                // Controllo che i tipi delle due espressioni siano compatibili per questa
-                // operazione
+                // Controllo che i tipi delle due espressioni siano compatibili per questa operazione
                 ValueType resultType = getType_AndOr(((ExprNode) exprNode.val_One).type, ((ExprNode) exprNode.val_Two).type);
                 if (resultType == null) {
                     System.err.println("[ERRORE SEMANTICO] tipi per op " + exprNode.op + " errati");
                     System.exit(1);
                 } else
+                    // Assegno il tipo risultante all'espressione
                     exprNode.type = resultType;
 
                 // Se è una concatenzazione di stringhe
             } else if (exprNode.op.equalsIgnoreCase("STR_CONCAT")) {
-                // Controllo che i tipi delle due espressioni siano compatibili per questa
-                // operazione
+                // Controllo che i tipi delle due espressioni siano compatibili per questa operazione
                 ValueType resultType = getType_StrConc(((ExprNode) exprNode.val_One).type, ((ExprNode) exprNode.val_Two).type);
                 if (resultType == null) {
                     System.err.println("[ERRORE SEMANTICO] tipi per op " + exprNode.op + " errati");
                     System.exit(1);
                 } else
+                    // Assegno il tipo risultante all'espressione
                     exprNode.type = resultType;
 
                 // Se è una operazione EQ o NE (=, !=)
             } else if (exprNode.op.equalsIgnoreCase("EQ") || exprNode.op.equalsIgnoreCase("NE")) {
-                // Controllo che i tipi delle due espressioni siano compatibili per questa
-                // operazione
+                // Controllo che i tipi delle due espressioni siano compatibili per questa operazione
                 ValueType resultType = getTypeEQNE(((ExprNode) exprNode.val_One).type, ((ExprNode) exprNode.val_Two).type);
                 if (resultType == null) {
                     System.err.println("[ERRORE SEMANTICO] tipi per op " + exprNode.op + " errati");
                     System.exit(1);
                 } else
+                    // Assegno il tipo risultante all'espressione
                     exprNode.type = resultType;
 
                 // Se è una qualsiasi altra operazione a doppio argomento (<, <=, >, >=)
             } else {
-                // Controllo che i tipi delle due espressioni siano compatibili per questa
-                // operazione
+                // Controllo che i tipi delle due espressioni siano compatibili per questa operazione
                 ValueType resultType = getType_Boolean(((ExprNode) exprNode.val_One).type, ((ExprNode) exprNode.val_Two).type);
                 if (resultType == null) {
                     System.err.println("[ERRORE SEMANTICO] tipi per op " + exprNode.op + " errati");
                     System.exit(1);
                 } else
+                    // Assegno il tipo risultante all'espressione
                     exprNode.type = resultType;
             }
 
             // Se è un'operazione a singolo argomento
         } else if (exprNode.val_One != null) {
-
             // Se è una costante intera
             if (exprNode.val_One instanceof LeafIntegerConst) {
+                // Converto, controllo e salvo il tipo
                 ((LeafIntegerConst) exprNode.val_One).accept(this);
                 exprNode.type = ((LeafIntegerConst) exprNode.val_One).type;
 
                 // Se è una costante reale
             } else if (exprNode.val_One instanceof LeafRealConst) {
+                // Converto, controllo e salvo il tipo
                 ((LeafRealConst) exprNode.val_One).accept(this);
                 exprNode.type = ((LeafRealConst) exprNode.val_One).type;
 
                 // Se è una costante stringa
             } else if (exprNode.val_One instanceof LeafStringConst) {
+                // Converto, controllo e salvo il tipo
                 ((LeafStringConst) exprNode.val_One).accept(this);
                 exprNode.type = ((LeafStringConst) exprNode.val_One).type;
 
                 // Se è una costante booleana
             } else if (exprNode.val_One instanceof LeafBool) {
+                // Converto, controllo e salvo il tipo
                 ((LeafBool) exprNode.val_One).accept(this);
                 exprNode.type = ((LeafBool) exprNode.val_One).type;
 
                 // Se è una leafID
             } else if (exprNode.val_One instanceof LeafID) {
+                // Converto, controllo e salvo il tipo
                 ((LeafID) exprNode.val_One).accept(this);
                 exprNode.type = ((LeafID) exprNode.val_One).type;
 
                 // Se è un'operazione di meno unario
             } else if (exprNode.op.equalsIgnoreCase("UMINUS")) {
+                // Converto e controllo
                 ((ExprNode) exprNode.val_One).accept(this);
-                // Controllo che il tipo dell'argomento sia compatibile per questa operazione
+                // Controllo che il tipo dell'argomento sia compatibile per questa operazione (Intero o Reale)
                 if (((ExprNode) exprNode.val_One).type == ValueType.integer || ((ExprNode) exprNode.val_One).type == ValueType.real)
                     exprNode.type = (((ExprNode) exprNode.val_One).type);
                 else {
@@ -555,8 +574,9 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
                 // Se è un operazione di not
             } else if (exprNode.op.equalsIgnoreCase("NOT")) {
+                // Converto e controllo
                 ((ExprNode) exprNode.val_One).accept(this);
-                // Controllo che il tipo dell'argomento sia compatibile per questa operazione
+                // Controllo che il tipo dell'argomento sia compatibile per questa operazione (Boolean)
                 if (((ExprNode) exprNode.val_One).type == ValueType.bool)
                     exprNode.type = (((ExprNode) exprNode.val_One).type);
                 else {
@@ -568,6 +588,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
                 // Se è una chiamata a funzione
             } else if (exprNode.val_One instanceof CallFunNode) {
+                // Converto, controllo e salvo il tipo
                 ((CallFunNode) exprNode.val_One).accept(this);
                 exprNode.type = ((CallFunNode) exprNode.val_One).type;
             }
@@ -591,10 +612,11 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
     /* ---------------------------------------------------------- */
     @Override
     public void visit(LeafID leafID) {
+        // Prendo la tabella sul top dello stack
         SymbolTable symbolTable = stack.peek();
         SymbolTableEntry symbolTableEntry = symbolTable.containsEntry(leafID.value);
 
-        // controllo se la variabile è stata dichiarata e ne salvo il tipo
+        // Controllo se la variabile è stata dichiarata e ne salvo il tipo
         if (symbolTableEntry != null)
             leafID.type = symbolTableEntry.valueType;
         else {
@@ -605,21 +627,25 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
 
     @Override
     public void visit(LeafIntegerConst leafIntegerConst) {
+        // Passo il mio tipo al padre
         leafIntegerConst.type = ValueType.integer;
     }
 
     @Override
     public void visit(LeafBool leafBool) {
+        // Passo il mio tipo al padre
         leafBool.type = ValueType.bool;
     }
 
     @Override
     public void visit(LeafRealConst leafRealConst) {
+        // Passo il mio tipo al padre
         leafRealConst.type = ValueType.real;
     }
-    
+
     @Override
     public void visit(LeafStringConst leafStringConst) {
+        // Passo il mio tipo al padre
         leafStringConst.type = ValueType.string;
     }
 
@@ -627,6 +653,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
     /* ---------------------------------------------------------- */
     /* ---------------------------------------------------------- */
     public static boolean checkAssignmentType(ValueType variable, ValueType assign) {
+        // Controlli sulle operazioni di assegnamento
         if (variable == ValueType.integer && assign == ValueType.integer)
             return true;
         if (variable == ValueType.real && assign == ValueType.real)
@@ -644,6 +671,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
     }
 
     public static ValueType getType_Operations(ValueType type1, ValueType type2) {
+        // Controlli sulle operazioni
         if (type1 == ValueType.integer && type2 == ValueType.integer)
             return ValueType.integer;
         if (type1 == ValueType.integer && type2 == ValueType.real)
@@ -656,6 +684,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
     }
 
     public static ValueType getType_StrConc(ValueType type1, ValueType type2) {
+        // Controlli sulle operazioni di concatenzazione
         if (type1 == ValueType.string && type2 == ValueType.string)
             return ValueType.string;
         if (type1 == ValueType.integer && type2 == ValueType.string)
@@ -674,12 +703,14 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
     }
 
     public static ValueType getType_AndOr(ValueType type1, ValueType type2) {
+        // Controlli sulle operazioni di AND e OR
         if (type1 == ValueType.bool && type2 == ValueType.bool)
             return ValueType.bool;
         return null;
     }
 
     public static ValueType getTypeEQNE(ValueType type1, ValueType type2) {
+        // Controlli sulle operazioni di EQ e NE
         if (type1 == ValueType.integer && type2 == ValueType.integer)
             return ValueType.bool;
         if (type1 == ValueType.real && type2 == ValueType.real)
@@ -696,6 +727,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
     }
 
     public static ValueType getType_Boolean(ValueType type1, ValueType type2) {
+        // Controlli sulle operazioni booleane
         if (type1 == ValueType.integer && type2 == ValueType.integer)
             return ValueType.bool;
         if (type1 == ValueType.real && type2 == ValueType.real)
@@ -708,6 +740,7 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
     }
 
     public static ValueType getTypeDivInt(ValueType type1, ValueType type2) {
+        // Controlli sulle operazioni di DIV
         if (type1 == ValueType.integer && type2 == ValueType.integer)
             return ValueType.integer;
         if (type1 == ValueType.real && type2 == ValueType.integer)

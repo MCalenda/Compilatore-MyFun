@@ -1,3 +1,9 @@
 string ciao := "ciao";
 main
 end main;
+
+
+const [valueSum, weightSum] = tuples.reduce(([valueSum, weightSum], [value, weight]) =>
+    ([valueSum + value * weight, weightSum + weight]), [0, 0]);
+
+console.log(valueSum / weightSum); // 29.667
