@@ -13,6 +13,9 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
     // Lista di parametri dichiarato con (OUT/@)
     private ArrayList<String> isOutParam = null;
 
+    // Nel caso sia una dichiarazione globale
+    private boolean isDeclVar = false;
+
     // Costruttore
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public CodeGen_Visitor(String name) throws IOException {
@@ -74,10 +77,13 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
 
         // Corpo del ProgramNode
         if (programNode.varDecList.size() != 0) {
+            // È una dichiarazione globale
+            this.isDeclVar = true;
             wr.println("\n\n// Dichiarazione delle variabili globali");
             for (VarDeclNode varDeclNode : programNode.varDecList) {
                 varDeclNode.accept(this);
             }
+            this.isDeclVar = false;
         }
 
         if (programNode.funList.size() != 0) {
@@ -113,29 +119,52 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
 
     @Override
     public void visit(IdInitNode idInitNode) {
-        // Se sto dichiarando una stringa
-        if (idInitNode.type == ValueType.string)
-            wr.print("*");
+        // Se è una dichiarazione globale
+        if (this.isDeclVar) {
+            idInitNode.leafID.accept(this);
+            if (idInitNode.type == ValueType.string)
+                wr.print("[512]");
 
-        idInitNode.leafID.accept(this);
-        if (idInitNode.type == ValueType.string)
-            wr.print(" = malloc(512 * sizeof(char));\n");
+            // Se sto effettuando un inizializzazione
+            if (idInitNode.exprNode != null) {
+                if (idInitNode.type == ValueType.string) {
+                    // Inizializzazione della variabile stringa
+                    wr.print(" = ");
+                    idInitNode.exprNode.accept(this);
 
-        // Se sto effettuando un inizializzazione
-        if (idInitNode.exprNode != null) {
-            if (idInitNode.type == ValueType.string) {
-                // Inizializzazione della variabile stringa
-                wr.print("strcpy(");
-                idInitNode.leafID.accept(this);
-                wr.print(", ");
-                idInitNode.exprNode.accept(this);
-                wr.print(")");
-            } else {
-                // Inizializzazione di un tipo non stringa
-                wr.print(" = ");
-                idInitNode.exprNode.accept(this);
+                } else {
+                    // Inizializzazione di un tipo non stringa
+                    wr.print(" = ");
+                    idInitNode.exprNode.accept(this);
+                }
+            }
+        } else {
+            // Se sto dichiarando una stringa
+            if (idInitNode.type == ValueType.string)
+                wr.print("*");
+
+            idInitNode.leafID.accept(this);
+            if (idInitNode.type == ValueType.string)
+                wr.print(" = malloc(512 * sizeof(char))");
+
+            // Se sto effettuando un inizializzazione
+            if (idInitNode.exprNode != null) {
+                if (idInitNode.type == ValueType.string) {
+                    // Inizializzazione della variabile stringa
+                    wr.print(";\n");
+                    wr.print("strcpy(");
+                    idInitNode.leafID.accept(this);
+                    wr.print(", ");
+                    idInitNode.exprNode.accept(this);
+                    wr.print(")");
+                } else {
+                    // Inizializzazione di un tipo non stringa
+                    wr.print(" = ");
+                    idInitNode.exprNode.accept(this);
+                }
             }
         }
+
         wr.print(";\n");
     }
 
@@ -328,13 +357,7 @@ public class CodeGen_Visitor implements CodeGen_Int_Visitor {
     @Override
     public void visit(ReadStatNode readStatNode) {
         if (readStatNode.expr != null) {
-            // Dal tipo dell'espressione carpisco il tipo di valore da stampare
-            switch (readStatNode.expr.type) {
-            case integer, bool -> wr.print("printf(\"%d\", ");
-            case string -> wr.print("printf(\"%s\", ");
-            case real -> wr.print("printf(\"%f\", ");
-            }
-            
+            wr.print("printf(\"%s\", ");
             readStatNode.expr.accept(this);
             wr.print(");\n");
         }

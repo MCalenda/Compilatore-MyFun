@@ -46,20 +46,20 @@ int main() {
     int n;
     int value;
     int weight;
-    int valueSum;
+    float valueSum;
     int weightSum;
-    printf("%s", "Quanti valori vuoi inserire ?");
+    printf("%s", "Quanti valori vuoi inserire ? ");
     scanf("%d", &n);
     while (n > 0) {
         printf("%s", concatString(concatInt("Inserisci il valore ", n), ": "));
         scanf("%d", &value);
         printf("%s", concatString(concatInt("Inserisci il peso ", n), ": "));
         scanf("%d", &weight);
-        valueSum = valueSum + value;
+        valueSum = valueSum + value * weight;
         weightSum = weightSum + weight;
         n = n - 1;
     }
     printf("%s", "\n");
-    printf("%s", concatInt("Media pesata: ", valueSum / weightSum));
+    printf("%s", concatReal("Media pesata: ", valueSum / weightSum));
     return 0;
 }

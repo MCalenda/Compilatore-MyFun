@@ -740,10 +740,8 @@ public class Semantic_Visitor implements Semantic_Int_Visitor {
     }
 
     public static ValueType getTypeDivInt(ValueType type1, ValueType type2) {
-        // Controlli sulle operazioni di DIV
+        // Controlli sulle operazioni di DIVINT
         if (type1 == ValueType.integer && type2 == ValueType.integer)
-            return ValueType.integer;
-        if (type1 == ValueType.real && type2 == ValueType.integer)
             return ValueType.integer;
         return null;
     }

@@ -1,5 +1,7 @@
 # Linguaggio MyFun
 
+NON GESTIAMO CONCATENAZIONI GLOBALI
+
 Il seguente documento contiene la specifica del linguaggio MyFun implementato all'interno del progetto.
 
 Project SDK: 
