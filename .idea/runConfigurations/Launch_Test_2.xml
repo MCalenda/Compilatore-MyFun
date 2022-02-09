@@ -2,7 +2,7 @@
   <configuration default="false" name="Launch Test 2" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="Tester" />
     <module name="arienzo-pisapia-calenda_es5_scg" />
-    <option name="PROGRAM_PARAMETERS" value="src/test_files/Test_2_Sample_Programm.txt" />
+    <option name="PROGRAM_PARAMETERS" value="test_files/Test_2_Sample_Programm.txt" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

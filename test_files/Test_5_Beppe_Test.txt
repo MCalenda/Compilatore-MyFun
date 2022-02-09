@@ -1,0 +1,25 @@
+# Media Pesata
+main
+    # Numero di valori da inserire
+    integer n;
+
+    # Variabili per i singoli valori
+    integer value;
+    integer weight;
+
+    # Variabili per il calcolo del totale
+    real valueSum := 0;
+    integer weightSum := 0;
+
+    # Computazione
+    % n 'Quanti valori vuoi inserire ? ';
+    while n > 0 loop
+        % value 'Inserisci il valore ' & n & ': ';
+        % weight 'Inserisci il peso ' & n & ': ';
+        valueSum := valueSum + (value * weight);
+        weightSum := weightSum + weight;
+        n := n - 1;
+    end loop;
+    ? '\n';
+    ? 'Media pesata: ' & valueSum / weightSum;
+end main;

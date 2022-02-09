@@ -40,78 +40,78 @@ class Tester {
         int scelta = 4;
 
         switch (scelta) {
-            case 1:
-                file = new File("debug/Lexer_Debug.txt");
+        case 1:
+            file = new File("debug" + File.separator + "Lexer_Debug.txt");
+            token = lexer.next_token();
+
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
+            bw = new BufferedWriter(new FileWriter(file));
+            while (token.sym != sym.EOF && token.sym != sym.error) {
+                bw.write("<" + sym.terminalNames[token.sym] + (token.value == null ? ">" : ", " + token.value + ">"));
+                bw.write("\n");
+
                 token = lexer.next_token();
+            }
 
-                if (!file.exists()) {
-                    file.createNewFile();
-                }
+            if (token.sym == sym.error) {
+                bw.write("<" + sym.terminalNames[token.sym] + (token.value == null ? ">" : ", " + token.value + ">"));
+                System.out.println("Errore durante l'esecuzione del Lexer !!!");
+            } else {
+                System.out.println("Token salvati all'interno del file \"debug" + File.separator + "Lexer_Debug.txt\" !!!");
+            }
 
-                bw = new BufferedWriter(new FileWriter(file));
-                while (token.sym != sym.EOF && token.sym != sym.error) {
-                    bw.write("<" + sym.terminalNames[token.sym] + (token.value == null ? ">" : ", " + token.value + ">"));
-                    bw.write("\n");
+            bw.flush();
+            bw.close();
+            break;
 
-                    token = lexer.next_token();
-                }
+        case 2:
+            file = new File("debug" + File.separator + "Syntax_Debug.json");
+            root = (ProgramNode) parser.parse().value;
 
-                if (token.sym == sym.error) {
-                    bw.write("<" + sym.terminalNames[token.sym] + (token.value == null ? ">" : ", " + token.value + ">"));
-                    System.out.println("Errore durante l'esecuzione del Lexer !!!");
-                } else {   
-                    System.out.println("Token salvati all'interno del file \"debug/Lexer_Debug.txt\" !!!");
-                }
+            if (!file.exists()) {
+                file.createNewFile();
+            }
 
-                bw.flush();
-                bw.close();
-                break;
+            bw = new BufferedWriter(new FileWriter(file));
+            bw.write(root.toString());
 
-            case 2:
-                file = new File("debug/Syntax_Debug.json");
-                root = (ProgramNode) parser.parse().value;
+            System.out.println("Albero JSON salvato all'interno del file \"debug" + File.separator + "Syntax_Debug.json\" !!!");
 
-                if (!file.exists()) {
-                    file.createNewFile();
-                }
+            bw.flush();
+            bw.close();
+            break;
 
-                bw = new BufferedWriter(new FileWriter(file));
-                bw.write(root.toString());
+        case 3:
+            root = (ProgramNode) parser.parse().value;
 
-                System.out.println("Albero JSON salvato all'interno del file \"debug/Syntax_Debug.json\" !!!");
+            System.out.println("Visualizzo fasi di Debug !!!");
+            System.out.println();
 
-                bw.flush();
-                bw.close();
-                break;
+            // Attivazione del DEBUG per il Semantic_Visitor
+            semanticVisitor.debugTab = true;
+            semanticVisitor.debugVar = true;
 
-            case 3:
-                root = (ProgramNode) parser.parse().value;
+            semanticVisitor.visit(root);
+            break;
 
-                System.out.println("Visualizzo fasi di Debug !!!");
-                System.out.println();
+        case 4:
+            root = (ProgramNode) parser.parse().value;
 
-                // Attivazione del DEBUG per il Semantic_Visitor
-                semanticVisitor.debugTab = true;
-                semanticVisitor.debugVar = true;
+            System.out.println();
 
-                semanticVisitor.visit(root);
-                break;
+            semanticVisitor.visit(root);
 
-            case 4:
-                root = (ProgramNode) parser.parse().value;
+            codeGen_Visitor = new CodeGen_Visitor(args[0]);
+            codeGen_Visitor.visit(root);
+            break;
 
-                System.out.println();
-
-                semanticVisitor.visit(root);
-
-                codeGen_Visitor = new CodeGen_Visitor(args[0]);
-                codeGen_Visitor.visit(root);
-                break;
-
-            default:
-                System.out.println("Scelta effettuata non valida !!!");
-                System.exit(0);
-                break;
+        default:
+            System.out.println("Scelta effettuata non valida !!!");
+            System.exit(0);
+            break;
         }
     }
 }

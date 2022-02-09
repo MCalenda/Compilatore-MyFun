@@ -6,6 +6,13 @@ Il seguente documento contiene la specifica del linguaggio MyFun implementato al
 
 - Project SDK: **17**
 - Project Language Level: **SDK Default**
+- Maven: **Utilizzato (pom.xml versione MacOS su Gitlab)**
+
+**GENERAZIONE PARSER,LEXER E JAR:** Si consiglia di utilizzare le configurazioni fornite in IntelliJ.
+
+**ISTRUZIONI ESECUZIONE:** Si consiglia di utilizzare per il lancio del progetto le configurazioni create in IntelliJ (eventualmente modificando i path per aggiungere file esterni), inoltre è stato fornito il test file 8, vuoto per l'eventuale aggiunta di codice di test. 
+
+**ATTENZIONE:** Il file valid2.txt contiene alcuni errori sintattici che sono stati corretti, rispetto alla versione originiale (' all'interno di stringhe, e l'utilzzo della variabile continue, keyword di C).
 
 Indice dei contenuti:
 

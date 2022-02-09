@@ -6,49 +6,49 @@
             "name": "Launch Test 1",
             "request": "launch",
             "mainClass": "Tester",
-            "args": "src/test_files/Test_1_Debug.txt"
+            "args": "test_files/Desktop/Test_1_Debug.txt"
         },
         {
             "type": "java",
             "name": "Launch Test 2",
             "request": "launch",
             "mainClass": "Tester",
-            "args": "src/test_files/Test_2_Sample_Programm.txt"
+            "args": "test_files/Test_2_Sample_Programm.txt"
         },
         {
             "type": "java",
             "name": "Launch Test 3",
             "request": "launch",
             "mainClass": "Tester",
-            "args": "src/test_files/Test_3_My_Programm.txt"
+            "args": "test_files/Test_3_My_Programm.txt"
         },
         {
             "type": "java",
             "name": "Launch Test 4",
             "request": "launch",
             "mainClass": "Tester",
-            "args": "src/test_files/Test_4_Valid_II.txt"
+            "args": "test_files/Test_4_Valid_II.txt"
         },
         {
             "type": "java",
             "name": "Launch Test 5",
             "request": "launch",
             "mainClass": "Tester",
-            "args": "src/test_files/Test_5_Beppe_Test.txt"
+            "args": "test_files/Test_5_Beppe_Test.txt"
         },
         {
             "type": "java",
             "name": "Launch Test 6",
             "request": "launch",
             "mainClass": "Tester",
-            "args": "src/test_files/Test_6_Marco_Test.txt"
+            "args": "test_files/Test_6_Marco_Test.txt"
         },
         {
             "type": "java",
             "name": "Launch Test 7",
             "request": "launch",
             "mainClass": "Tester",
-            "args": "src/test_files/Test_7_Gabri_Test.txt"
+            "args": "test_files/Test_7_Gabri_Test.txt"
         }
     ]
 }
