@@ -16,9 +16,15 @@
       "group": "build"
     },
     {
+      "label": "Generate JAR file",
+      "type": "shell",
+      "command": "mvn package",
+      "group": "build"
+    },
+    {
       "type": "shell",
       "label": "C Compile (Only Mac)",
-      "command": "gcc -g ${fileDirname}/${fileBasename} -o src/test_files/Compiled/${fileBasenameNoExtension}.out",
+      "command": "gcc -g ${fileDirname}/${fileBasename} -o test_files/Compiled/${fileBasenameNoExtension}.out",
       "presentation": {
         "reveal": "always"
       },
@@ -33,7 +39,7 @@
     {
       "type": "shell",
       "label": "C Compile and Run (Only Mac)",
-      "command": "gcc -g ${fileDirname}/${fileBasename} -o src/test_files/Compiled/${fileBasenameNoExtension}.out && src/test_files/Compiled/${fileBasenameNoExtension}.out",
+      "command": "gcc -g ${fileDirname}/${fileBasename} -o test_files/Compiled/${fileBasenameNoExtension}.out && test_files/Compiled/${fileBasenameNoExtension}.out",
       "presentation": {
         "reveal": "always"
       },
@@ -48,7 +54,7 @@
     {
       "type": "shell",
       "label": "C Compile and Run (Only Windows)",
-      "command": "gcc -g ${fileDirname}\\${fileBasename} -o src\\test_files\\Compiled\\${fileBasenameNoExtension}.exe ; src\\test_files\\Compiled\\${fileBasenameNoExtension}.exe",
+      "command": "gcc -g ${fileDirname}\\${fileBasename} -o test_files\\Compiled\\${fileBasenameNoExtension}.exe ; test_files\\Compiled\\${fileBasenameNoExtension}.exe",
       "presentation": {
         "reveal": "always"
       },
